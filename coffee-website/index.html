@@ -17,7 +17,7 @@
     <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="page-transition">
     <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="container">
@@ -36,7 +36,11 @@
 
     <!-- Hero Section -->
     <section class="hero" id="home">
-        <div class="hero-background"></div>
+        <div class="hero-background" aria-hidden="true">
+            <video class="hero-video" autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=1600&q=80">
+                <source src="https://cdn.coverr.co/videos/coverr-coffee-beans-roasting-6027/1080p.mp4" type="video/mp4">
+            </video>
+        </div>
         <div class="hero-overlay"></div>
         <div class="hero-content">
             <div class="container">
@@ -55,6 +59,69 @@
         <div class="scroll-indicator" data-aos="fade-up" data-aos-delay="1500">
             <span>Scroll to explore</span>
             <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Signature Collections Showcase -->
+    <section class="section design-showcase section-padding-lg" id="collections">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <p class="section-subtitle">Signature Collections</p>
+                <h2 class="section-title gradient-text">Curated Coffee Journeys</h2>
+                <p class="section-description">
+                    Explore distinct design moods for your next coffee ritual – from bright mornings to slow, contemplative evenings.
+                </p>
+            </div>
+
+            <div class="showcase-grid">
+                <article class="glass-card reveal-on-scroll" data-aos="fade-up" data-aos-delay="100">
+                    <header class="card-header">
+                        <span class="premium-text">Dawn Ritual</span>
+                        <h3>Nordic Minimal</h3>
+                    </header>
+                    <p class="card-description">
+                        A luminous palette with airy spacing, frosted glass accents, and gentle gradients crafted for clean, energising mornings.
+                    </p>
+                    <ul class="card-list">
+                        <li>Soft cream backdrops</li>
+                        <li>Frosted glass product cards</li>
+                        <li>Feather-light micro interactions</li>
+                    </ul>
+                    <a href="#products" class="card-link">Preview collection</a>
+                </article>
+
+                <article class="glass-card reveal-on-scroll" data-aos="fade-up" data-aos-delay="200">
+                    <header class="card-header">
+                        <span class="premium-text">Golden Hour</span>
+                        <h3>Urban Atelier</h3>
+                    </header>
+                    <p class="card-description">
+                        A warm grey experience infused with copper highlights, layered textures, and bold typography inspired by boutique roasteries.
+                    </p>
+                    <ul class="card-list">
+                        <li>Layered parallax imagery</li>
+                        <li>High-contrast serif headings</li>
+                        <li>Immersive storytelling blocks</li>
+                    </ul>
+                    <a href="#about" class="card-link">Discover the vibe</a>
+                </article>
+
+                <article class="glass-card reveal-on-scroll" data-aos="fade-up" data-aos-delay="300">
+                    <header class="card-header">
+                        <span class="premium-text">Twilight</span>
+                        <h3>Midnight Reserve</h3>
+                    </header>
+                    <p class="card-description">
+                        Deep charcoal layering with shimmering gradients and luxurious accents for a slow, sophisticated evening brew.
+                    </p>
+                    <ul class="card-list">
+                        <li>Charcoal + coffee-brown gradients</li>
+                        <li>Floating call-to-action ribbons</li>
+                        <li>Ambient glow hover states</li>
+                    </ul>
+                    <a href="#reserve" class="card-link">View limited release</a>
+                </article>
+            </div>
         </div>
     </section>
 
@@ -189,6 +256,41 @@
         </div>
     </section>
 
+    <!-- Immersive Roastery Experience -->
+    <section class="section experience-section section-padding-xl" data-parallax data-parallax-speed="0.3">
+        <div class="container">
+            <div class="experience-grid">
+                <div class="experience-content" data-aos="fade-right">
+                    <span class="premium-text">Roastery Immersion</span>
+                    <h2 class="section-title">Step Into The Heat Of The Roast</h2>
+                    <p class="experience-description">
+                        Feel the slow tumbling of beans inside our vintage drum roaster. Subtle parallax layers create depth as you scroll, mirroring the sensory build-up within the roastery.
+                    </p>
+                    <div class="experience-highlights">
+                        <div class="highlight-item">
+                            <h3>0.5x</h3>
+                            <p>Parallax motion</p>
+                        </div>
+                        <div class="highlight-item">
+                            <h3>94°</h3>
+                            <p>Precision roast curve</p>
+                        </div>
+                        <div class="highlight-item">
+                            <h3>16 hrs</h3>
+                            <p>Rested before release</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="experience-visual reveal-on-scroll" data-aos="fade-left">
+                    <div class="parallax-frame">
+                        <img src="https://images.unsplash.com/photo-1504753793650-d4a2b783c15e?w=900&q=80" alt="Barista pouring latte art" class="reveal-image">
+                        <div class="parallax-badge">Signature Roast</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- About Section -->
     <section class="section about-section" id="about">
         <div class="container">
@@ -226,6 +328,110 @@
         </div>
     </section>
 
+    <!-- Brew Masterclass -->
+    <section class="section brew-section section-padding-lg" id="brew">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <p class="section-subtitle">Brew Masterclass</p>
+                <h2 class="section-title">Design Your Perfect Pour</h2>
+                <p class="section-description">Three tactile recipes, each styled with a distinct visual language inspired by our premium brief.</p>
+            </div>
+
+            <div class="brew-grid">
+                <article class="brew-card neuro-card reveal-on-scroll" data-aos="fade-up" data-aos-delay="100">
+                    <h3>V60 Serenity</h3>
+                    <p class="brew-description">Clean lines, ample white space, and glassmorphism overlays echo the calm ritual of hand-poured mornings.</p>
+                    <ul class="brew-steps">
+                        <li>Bloom 40g for 45 seconds</li>
+                        <li>Slow circular pours</li>
+                        <li>Finish at 3:00 minutes</li>
+                    </ul>
+                </article>
+                <article class="brew-card neuro-card reveal-on-scroll" data-aos="fade-up" data-aos-delay="200">
+                    <h3>Syphon Theatre</h3>
+                    <p class="brew-description">Dark charcoal gradients with glowing accents mimic the dramatic rise and fall of vapor in a glass chamber.</p>
+                    <ul class="brew-steps">
+                        <li>92°C filtered water</li>
+                        <li>Gentle agitation mid-brew</li>
+                        <li>Serve immediately</li>
+                    </ul>
+                </article>
+                <article class="brew-card neuro-card reveal-on-scroll" data-aos="fade-up" data-aos-delay="300">
+                    <h3>Velvet Espresso</h3>
+                    <p class="brew-description">Rich tonal layering with brass CTAs mirrors the intensity of a precise double shot extraction.</p>
+                    <ul class="brew-steps">
+                        <li>19g in, 40g out</li>
+                        <li>28 second extraction</li>
+                        <li>Finish with micro-foam</li>
+                    </ul>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="section testimonials-section section-padding-lg" id="testimonials">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <p class="section-subtitle">Voices From The Bar</p>
+                <h2 class="section-title">What Tastemakers Say</h2>
+            </div>
+
+            <div class="testimonial-carousel" data-aos="fade-up" data-aos-delay="150">
+                <article class="testimonial-card">
+                    <p class="testimonial-quote">“Every interaction feels composed — the hover states, the parallax, the warmth. It’s coffee design executed with restraint.”</p>
+                    <div class="testimonial-author">
+                        <span class="author-name">Elena Marquez</span>
+                        <span class="author-role">Creative Director, Daily Grind</span>
+                    </div>
+                </article>
+                <article class="testimonial-card">
+                    <p class="testimonial-quote">“The Midnight Reserve flow is cinematic. Smooth fades, luxurious gradients, and a story arc that mirrors the roast.”</p>
+                    <div class="testimonial-author">
+                        <span class="author-name">Marco Li</span>
+                        <span class="author-role">Roastery Consultant</span>
+                    </div>
+                </article>
+                <article class="testimonial-card">
+                    <p class="testimonial-quote">“An elevated digital tasting room. The design articulates aroma, texture, and heritage without a single wasted pixel.”</p>
+                    <div class="testimonial-author">
+                        <span class="author-name">Priya Das</span>
+                        <span class="author-role">Coffee Competition Judge</span>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Visual Gallery -->
+    <section class="section gallery-section section-padding-lg" id="gallery">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <p class="section-subtitle">Visual Moodboard</p>
+                <h2 class="section-title">Textural Moments</h2>
+            </div>
+
+            <div class="gallery-grid">
+                <figure class="gallery-item reveal-on-scroll">
+                    <img src="https://images.unsplash.com/photo-1461988091159-192b6df7054c?w=800&q=80" alt="Coffee beans in a scoop" class="reveal-image">
+                    <figcaption>Signature beans ready for cupping</figcaption>
+                </figure>
+                <figure class="gallery-item reveal-on-scroll">
+                    <img src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=800&q=80" alt="Pour over coffee" class="reveal-image">
+                    <figcaption>Nordic minimal pour-over styling</figcaption>
+                </figure>
+                <figure class="gallery-item reveal-on-scroll">
+                    <img src="https://images.unsplash.com/photo-1459257868276-5e65389e2722?w=800&q=80" alt="Coffee shop interior" class="reveal-image">
+                    <figcaption>Urban atelier tasting room</figcaption>
+                </figure>
+                <figure class="gallery-item reveal-on-scroll">
+                    <img src="https://images.unsplash.com/photo-1503410759643-3947d2e4d1f6?w=800&q=80" alt="Barista making espresso" class="reveal-image">
+                    <figcaption>Midnight reserve espresso service</figcaption>
+                </figure>
+            </div>
+        </div>
+    </section>
+
     <!-- Contact Section -->
     <section class="section contact-section" id="contact">
         <div class="container">
@@ -258,6 +464,23 @@
                 </div>
                 <button type="submit" class="btn btn-primary">Send Message</button>
             </form>
+        </div>
+    </section>
+
+    <!-- Reserve CTA -->
+    <section class="section reserve-section section-padding-lg" id="reserve">
+        <div class="container">
+            <div class="reserve-card reveal-on-scroll" data-aos="fade-up">
+                <div class="reserve-content">
+                    <span class="premium-text">Limited Release</span>
+                    <h2 class="reserve-title">The Midnight Reserve Collection</h2>
+                    <p class="reserve-description">An exclusive micro-lot pairing available to pre-order for a limited time. Experience the full spectrum of our premium design ethos in cup and craft.</p>
+                </div>
+                <div class="reserve-actions">
+                    <a href="#products" class="btn btn-primary">Pre-Order Now</a>
+                    <a href="#contact" class="btn btn-secondary">Book A Tasting</a>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -307,5 +530,6 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <!-- Main Script -->
     <script src="script.js"></script>
+    <div class="custom-cursor" aria-hidden="true"></div>
 </body>
 </html>

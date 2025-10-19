@@ -13,6 +13,8 @@ AOS.init({
     offset: 100
 });
 
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
 // ===================================
 // Navbar Scroll Effect
 // ===================================
@@ -38,11 +40,18 @@ window.addEventListener('scroll', () => {
 const heroBackground = document.querySelector('.hero-background');
 const heroContent = document.querySelector('.hero-content');
 
-window.addEventListener('scroll', () => {
-    const scrolled = window.pageYOffset;
-    const heroHeight = document.querySelector('.hero').offsetHeight;
+function handleHeroParallax() {
+    if (!heroBackground && !heroContent) {
+        return;
+    }
 
-    // Only apply parallax while hero is visible
+    const scrolled = window.pageYOffset;
+    const hero = document.querySelector('.hero');
+    if (!hero) {
+        return;
+    }
+    const heroHeight = hero.offsetHeight;
+
     if (scrolled < heroHeight) {
         if (heroBackground) {
             heroBackground.style.transform = `translateY(${scrolled * 0.5}px)`;
@@ -53,7 +62,37 @@ window.addEventListener('scroll', () => {
             heroContent.style.transform = `translateY(${scrolled * 0.3}px)`;
         }
     }
-});
+}
+
+if (!prefersReducedMotion.matches) {
+    window.addEventListener('scroll', handleHeroParallax, { passive: true });
+}
+
+handleHeroParallax();
+
+// Experience section parallax
+const parallaxSections = document.querySelectorAll('[data-parallax]');
+
+function handleSectionParallax() {
+    if (prefersReducedMotion.matches || parallaxSections.length === 0) {
+        return;
+    }
+
+    const viewportHeight = window.innerHeight;
+
+    parallaxSections.forEach(section => {
+        const speed = parseFloat(section.getAttribute('data-parallax-speed')) || 0.3;
+        const rect = section.getBoundingClientRect();
+        const progress = (viewportHeight - rect.top) / (viewportHeight + rect.height);
+        const translate = Math.min(Math.max(progress, 0), 1) * speed * 100;
+        section.style.setProperty('--parallax-shift', `${translate}px`);
+    });
+}
+
+if (!prefersReducedMotion.matches) {
+    window.addEventListener('scroll', handleSectionParallax, { passive: true });
+    handleSectionParallax();
+}
 
 // ===================================
 // Shopping Cart Functionality
@@ -521,7 +560,31 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // ===================================
 // Image Lazy Loading Enhancement
 // ===================================
-if ('IntersectionObserver' in window) {
+function initRevealAnimations() {
+    const revealTargets = document.querySelectorAll('.reveal-on-scroll, .reveal-image');
+
+    if (!('IntersectionObserver' in window)) {
+        revealTargets.forEach(el => el.classList.add('visible'));
+        return;
+    }
+
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.2 });
+
+    revealTargets.forEach(el => revealObserver.observe(el));
+}
+
+function initLazyImages() {
+    if (!('IntersectionObserver' in window)) {
+        return;
+    }
+
     const imageObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -532,8 +595,56 @@ if ('IntersectionObserver' in window) {
         });
     });
 
-    document.querySelectorAll('.product-image img, .about-image img').forEach(img => {
+    document.querySelectorAll('.product-image img, .about-image img, .gallery-item img').forEach(img => {
         imageObserver.observe(img);
+    });
+}
+
+function initCustomCursor() {
+    const cursor = document.querySelector('.custom-cursor');
+    if (!cursor) {
+        return;
+    }
+
+    const isFinePointer = window.matchMedia('(pointer: fine)');
+
+    if (!isFinePointer.matches) {
+        cursor.remove();
+        return;
+    }
+
+    const moveCursor = (event) => {
+        cursor.style.left = `${event.clientX}px`;
+        cursor.style.top = `${event.clientY}px`;
+    };
+
+    const handleMouseEnter = () => {
+        cursor.classList.add('active');
+    };
+
+    const handleMouseLeave = () => {
+        cursor.classList.remove('active');
+    };
+
+    const interactiveSelector = 'a, button, .btn, .card-link, .product-card, input, textarea';
+
+    window.addEventListener('mousemove', moveCursor, { passive: true });
+    window.addEventListener('mouseenter', handleMouseEnter);
+    window.addEventListener('mouseleave', handleMouseLeave);
+
+    document.addEventListener('mouseover', (event) => {
+        if (event.target.closest(interactiveSelector)) {
+            cursor.classList.add('cursor-hover');
+        }
+    });
+
+    document.addEventListener('mouseout', (event) => {
+        if (event.target.closest(interactiveSelector)) {
+            const related = event.relatedTarget;
+            if (!related || !related.closest(interactiveSelector)) {
+                cursor.classList.remove('cursor-hover');
+            }
+        }
     });
 }
 
@@ -543,6 +654,15 @@ if ('IntersectionObserver' in window) {
 document.addEventListener('DOMContentLoaded', () => {
     loadCart();
 
+    document.body.classList.add('is-loaded');
+
+    initLazyImages();
+    initRevealAnimations();
+
+    if (!prefersReducedMotion.matches) {
+        initCustomCursor();
+    }
+
     // Add fade-in class to images when loaded
     document.querySelectorAll('img').forEach(img => {
         img.addEventListener('load', () => {
@@ -550,6 +670,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+if (!prefersReducedMotion.matches) {
+    window.addEventListener('beforeunload', () => {
+        document.body.classList.add('is-exiting');
+    });
+}
 
 // ===================================
 // Handle Page Visibility
