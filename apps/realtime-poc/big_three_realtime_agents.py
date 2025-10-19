@@ -1946,7 +1946,11 @@ class OpenAIRealtimeVoiceAgent:
                     for name, data in agents.items()
                 ],
             ]
-            base_prompt = f"{base_prompt}\n\n{'\n'.join(roster_lines)}"
+            joined_roster = '\n'.join(roster_lines)
+            base_prompt = f"{base_prompt}\n\n{joined_roster}"
+
+        # Force English language
+        base_prompt = f"{base_prompt}\n\n# Language\nYou MUST respond only in English. Never use any other language under any circumstances."
 
         return base_prompt
 
@@ -2022,6 +2026,7 @@ class OpenAIRealtimeVoiceAgent:
                         "turn_detection": {"type": "semantic_vad"},
                         "transcription": {
                             "model": "gpt-4o-transcribe",
+                            "language": "en",
                         },
                     },
                     "output": {
@@ -2353,7 +2358,10 @@ class OpenAIRealtimeVoiceAgent:
 
         response_event = {
             "type": "response.create",
-            "response": {"output_modalities": self.default_output_modalities},
+            "response": {
+                "output_modalities": self.default_output_modalities,
+                "instructions": "Respond only in English. Never use any other language.",
+            },
         }
         self.ws.send(json.dumps(response_event))
 
@@ -2471,7 +2479,10 @@ class OpenAIRealtimeVoiceAgent:
 
         response_event = {
             "type": "response.create",
-            "response": {"output_modalities": self.default_output_modalities},
+            "response": {
+                "output_modalities": self.default_output_modalities,
+                "instructions": "Respond only in English. Never use any other language.",
+            },
         }
         self.ws.send(json.dumps(response_event))
 

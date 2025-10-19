@@ -1,17 +1,59 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import NewsFeed from './components/NewsFeed.vue'
+import IdeasDashboard from './components/IdeasDashboard.vue'
 import VideoCreator from './components/VideoCreator.vue'
 import VideoProgress from './components/VideoProgress.vue'
 import VideoLibrary from './components/VideoLibrary.vue'
 import VideoPlayer from './components/VideoPlayer.vue'
+import PublishingDashboard from './components/PublishingDashboard.vue'
 import type { VideoJob } from './types/video'
 
-type View = 'home' | 'progress' | 'player' | 'library'
+type View = 'news' | 'ideas' | 'create' | 'progress' | 'player' | 'library' | 'published'
 
-const currentView = ref<View>('home')
+const currentView = ref<View>('news')
 const currentVideoId = ref<string | null>(null)
+const currentArticleId = ref<string | null>(null)
+const currentIdea = ref<any | null>(null)
 const remixPrompt = ref('')
 const showRemixDialog = ref(false)
+
+// Navigation handlers
+const goToNews = () => {
+  currentView.value = 'news'
+  currentArticleId.value = null
+}
+
+const goToIdeas = () => {
+  currentView.value = 'ideas'
+}
+
+const goToCreate = () => {
+  currentView.value = 'create'
+  currentIdea.value = null
+}
+
+const goToLibrary = () => {
+  currentView.value = 'library'
+}
+
+const goToPublished = () => {
+  currentView.value = 'published'
+}
+
+// Workflow handlers
+const handleGenerateIdeas = (articleId: string) => {
+  currentArticleId.value = articleId
+  currentView.value = 'ideas'
+}
+
+const handleGenerateVideo = (idea: any) => {
+  console.log('App: handleGenerateVideo called with idea:', idea)
+  console.log('App: Idea title:', idea?.title)
+  console.log('App: Idea prompt length:', idea?.video_prompt?.length)
+  currentIdea.value = idea
+  currentView.value = 'create'
+}
 
 const handleVideoCreated = (videoId: string) => {
   currentVideoId.value = videoId
@@ -52,43 +94,68 @@ const cancelRemix = () => {
   showRemixDialog.value = false
   remixPrompt.value = ''
 }
-
-const goToHome = () => {
-  currentView.value = 'home'
-  currentVideoId.value = null
-}
-
-const goToLibrary = () => {
-  currentView.value = 'library'
-}
 </script>
 
 <template>
   <div class="app-container">
     <!-- Header -->
     <header class="app-header">
-      <h1 @click="goToHome" class="app-title">SORA VIDEO GENERATOR</h1>
+      <h1 @click="goToNews" class="app-title">AI CONTENT GENERATOR</h1>
       <nav class="app-nav">
         <button
-          :class="{ active: currentView === 'home' }"
-          @click="goToHome"
+          :class="{ active: currentView === 'news' }"
+          @click="goToNews"
         >
-          Create
+          📰 News
+        </button>
+        <button
+          :class="{ active: currentView === 'ideas' }"
+          @click="goToIdeas"
+        >
+          ✨ Ideas
+        </button>
+        <button
+          :class="{ active: currentView === 'create' }"
+          @click="goToCreate"
+        >
+          🎬 Create
         </button>
         <button
           :class="{ active: currentView === 'library' }"
           @click="goToLibrary"
         >
-          Library
+          📚 Library
+        </button>
+        <button
+          :class="{ active: currentView === 'published' }"
+          @click="goToPublished"
+        >
+          📺 Published
         </button>
       </nav>
     </header>
 
     <!-- Main Content -->
     <main class="app-main">
-      <!-- Home View: Video Creator -->
-      <div v-if="currentView === 'home'" class="view">
-        <VideoCreator @video-created="handleVideoCreated" />
+      <!-- News View -->
+      <div v-if="currentView === 'news'" class="view">
+        <NewsFeed @generate-ideas="handleGenerateIdeas" />
+      </div>
+
+      <!-- Ideas View -->
+      <div v-if="currentView === 'ideas'" class="view">
+        <IdeasDashboard
+          :article-id="currentArticleId || undefined"
+          @generate-video="handleGenerateVideo"
+        />
+      </div>
+
+      <!-- Create View: Video Creator -->
+      <div v-if="currentView === 'create'" class="view">
+        <VideoCreator
+          :idea="currentIdea"
+          @video-created="handleVideoCreated"
+        />
       </div>
 
       <!-- Progress View -->
@@ -100,7 +167,7 @@ const goToLibrary = () => {
           @failed="handleProgressFailed"
         />
         <div class="view-actions">
-          <button @click="goToHome" class="secondary-btn">Create Another Video</button>
+          <button @click="goToCreate" class="secondary-btn">Create Another Video</button>
           <button @click="goToLibrary" class="secondary-btn">View Library</button>
         </div>
       </div>
@@ -120,6 +187,11 @@ const goToLibrary = () => {
           @select-video="handleSelectVideo"
           @remix-video="handleRemixVideo"
         />
+      </div>
+
+      <!-- Published View -->
+      <div v-if="currentView === 'published'" class="view">
+        <PublishingDashboard />
       </div>
     </main>
 

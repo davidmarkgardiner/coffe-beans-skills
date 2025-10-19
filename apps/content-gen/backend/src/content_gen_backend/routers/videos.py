@@ -14,6 +14,7 @@ from ..models import (
     VideoDeleteResponse,
 )
 from ..services import SoraService, StorageService
+from ..services.model_router_service import ModelRouterService
 from ..config import settings
 from ..utils.logging_setup import logger
 
@@ -22,36 +23,53 @@ router = APIRouter(prefix="/api/v1/videos", tags=["videos"])
 # Initialize services
 sora_service = SoraService()
 storage_service = StorageService()
+model_router = ModelRouterService()  # Phase 3: Multi-model support
 
 
 @router.post("", response_model=VideoJob, status_code=201)
 async def create_video(
     prompt: str = Form(...),
-    model: Literal["sora-2", "sora-2-pro"] = Form(settings.default_model),
+    model: Literal["sora-2", "sora-2-pro", "veo-3.1", "wan-2.5", "auto"] = Form(settings.default_model),
     seconds: int = Form(settings.default_seconds),
     size: str = Form(settings.default_size),
     input_reference: Optional[UploadFile] = File(None),
+    image_url: Optional[str] = Form(None),
 ):
     """
-    Create a new video generation job.
+    Create a new video generation job (Phase 3: Multi-model support).
 
     Args:
         prompt: Text description of the video to generate
-        model: Model to use (sora-2 or sora-2-pro)
-        seconds: Duration in seconds (4, 8, or 12)
+        model: Model to use (sora-2, sora-2-pro, veo-3.1, wan-2.5, or auto for intelligent selection)
+        seconds: Duration in seconds (4, 8, or 12 for Sora; 5 or 10 for Veo/Wan)
         size: Resolution as widthxheight (e.g., 1280x720)
-        input_reference: Optional reference image
+        input_reference: Optional reference image (Sora only)
+        image_url: Optional image URL for image-to-video (Wan 2.5)
 
     Returns:
         VideoJob with initial status
     """
     try:
-        # Validate seconds parameter
-        if seconds not in [4, 8, 12]:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Invalid duration. Must be 4, 8, or 12 seconds, got {seconds}",
-            )
+        # Validate seconds parameter based on model
+        if model == "auto":
+            # For auto mode, accept all valid durations (will be validated by selected model)
+            if seconds not in [4, 5, 8, 10, 12]:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Invalid duration. Must be 4, 5, 8, 10, or 12 seconds, got {seconds}",
+                )
+        elif model in ["veo-3.1", "wan-2.5"]:
+            if seconds not in [5, 10]:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Invalid duration for {model}. Must be 5 or 10 seconds, got {seconds}",
+                )
+        elif model in ["sora-2", "sora-2-pro"]:
+            if seconds not in [4, 8, 12]:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Invalid duration for Sora. Must be 4, 8, or 12 seconds, got {seconds}",
+                )
 
         logger.info(f"Received create video request: model={model}, seconds={seconds}, size={size}")
 
@@ -76,13 +94,14 @@ async def create_video(
             reference_bytes = content
             logger.info(f"Reference image received: {input_reference.filename}, size: {len(content)} bytes")
 
-        # Create video
-        video = await sora_service.create_video(
+        # Phase 3: Use ModelRouter for multi-model support
+        video = await model_router.generate_video(
             prompt=prompt,
             model=model,
             seconds=seconds,
             size=size,
             input_reference=reference_bytes,
+            image_url=image_url,  # For Wan 2.5 image-to-video
         )
 
         return video
@@ -108,7 +127,23 @@ async def get_video_status(video_id: str):
     try:
         logger.info(f"Fetching status for video: {video_id}")
 
-        video = await sora_service.get_video_status(video_id)
+        # Route to appropriate service based on video ID format
+        # Sora videos start with "video_", Kie.ai videos are other formats
+        if video_id.startswith("video_"):
+            video = await sora_service.get_video_status(video_id)
+        else:
+            # Kie.ai video - try Veo first, then Wan
+            # Both use same task ID format, try to detect from response
+            try:
+                video = await model_router.kie_veo.get_video_status(video_id)
+            except Exception as veo_error:
+                # If Veo fails, try Wan
+                try:
+                    video = await model_router.kie_wan.get_video_status(video_id)
+                except Exception:
+                    # If both fail, re-raise original error
+                    raise veo_error
+
         return video
 
     except Exception as e:
@@ -133,7 +168,21 @@ async def poll_video(video_id: str, timeout: int = Query(300, ge=1, le=600)):
     try:
         logger.info(f"Starting poll for video: {video_id}, timeout: {timeout}s")
 
-        video = await sora_service.poll_until_complete(video_id, timeout=timeout)
+        # Route to appropriate service based on video ID format
+        if video_id.startswith("video_"):
+            video = await sora_service.poll_until_complete(video_id, timeout=timeout)
+        else:
+            # Kie.ai video - try Veo first, then Wan
+            try:
+                video = await model_router.kie_veo.poll_until_complete(video_id, timeout=timeout)
+            except Exception as veo_error:
+                # If Veo fails, try Wan
+                try:
+                    video = await model_router.kie_wan.poll_until_complete(video_id, timeout=timeout)
+                except Exception:
+                    # If both fail, re-raise original error
+                    raise veo_error
+
         return video
 
     except TimeoutError as e:

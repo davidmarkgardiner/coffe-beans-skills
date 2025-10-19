@@ -48,8 +48,8 @@
           <select id="size" v-model="form.size" :disabled="isGenerating">
             <option value="1280x720">HD 720p (Landscape)</option>
             <option value="720x1280">HD 720p (Portrait)</option>
-            <option value="1024x1024">Square (Social)</option>
-            <option value="1920x1080">Full HD 1080p</option>
+            <option value="1024x1792">Vertical (9:16)</option>
+            <option value="1792x1024">Wide (16:9)</option>
           </select>
         </div>
       </div>
@@ -208,6 +208,10 @@ const handleCreateVideo = async () => {
     error.value = null
 
     currentVideo.value = await createVideo(form.value)
+
+    // Store the prompt for this video in localStorage for later use (publishing)
+    const videoPromptKey = `video_prompt_${currentVideo.value.id}`
+    localStorage.setItem(videoPromptKey, form.value.prompt)
 
     // Start polling for progress
     pollVideoProgress(currentVideo.value.id)

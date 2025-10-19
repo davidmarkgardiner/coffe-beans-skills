@@ -14,6 +14,8 @@ const { deleteVideo } = useVideoGeneration()
 
 const filterStatus = ref<VideoStatus | 'all'>('all')
 const sortOrder = ref<'desc' | 'asc'>('desc')
+const publishing = ref<Record<string, boolean>>({})
+const publishedVideoIds = ref<Set<string>>(new Set())
 
 const filteredVideos = computed(() => {
   let filtered = videos.value
@@ -24,6 +26,24 @@ const filteredVideos = computed(() => {
 
   return filtered
 })
+
+// Check which videos are already published
+const checkPublishedStatus = async () => {
+  try {
+    const response = await fetch('http://localhost:4444/api/v1/publish')
+    if (response.ok) {
+      const data = await response.json()
+      const publishedIds = new Set(data.videos.map((v: any) => v.video_id))
+      publishedVideoIds.value = publishedIds
+    }
+  } catch (err) {
+    console.error('Failed to fetch published videos:', err)
+  }
+}
+
+const isPublished = (videoId: string) => {
+  return publishedVideoIds.value.has(videoId)
+}
 
 const statusCounts = computed(() => {
   return {
@@ -40,6 +60,7 @@ const loadVideos = async () => {
     order: sortOrder.value,
     ...(filterStatus.value !== 'all' && { status: filterStatus.value })
   })
+  await checkPublishedStatus()
 }
 
 const handleDelete = async (videoId: string) => {
@@ -61,6 +82,65 @@ const handleView = (videoId: string) => {
 
 const handleRemix = (videoId: string) => {
   emit('remixVideo', videoId)
+}
+
+const handlePublish = async (videoId: string) => {
+  publishing.value[videoId] = true
+
+  try {
+    // Get the stored prompt for this video
+    const videoPromptKey = `video_prompt_${videoId}`
+    const storedPrompt = localStorage.getItem(videoPromptKey)
+
+    // 1. Generate metadata
+    const metaResponse = await fetch('http://localhost:4444/api/v1/publish/metadata', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        video_id: videoId,
+        platform: 'youtube',
+        tone: 'engaging',
+        prompt: storedPrompt || undefined  // Pass the prompt if available
+      })
+    })
+
+    if (!metaResponse.ok) {
+      throw new Error('Failed to generate metadata')
+    }
+
+    const metadata = await metaResponse.json()
+
+    // 2. Publish to YouTube
+    const pubResponse = await fetch('http://localhost:4444/api/v1/publish/youtube', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        video_id: videoId,
+        platform: 'youtube',
+        metadata: metadata.youtube_metadata
+      })
+    })
+
+    if (!pubResponse.ok) {
+      const errorData = await pubResponse.json()
+      throw new Error(errorData.detail || 'Failed to publish video')
+    }
+
+    const result = await pubResponse.json()
+
+    // 3. Success!
+    alert(`Published to YouTube!\n\nTitle: ${result.title}\n\nView at: ${result.platform_url}`)
+    window.open(result.platform_url, '_blank')
+
+    // Refresh published status
+    await checkPublishedStatus()
+
+  } catch (err) {
+    console.error('Failed to publish:', err)
+    alert(`Failed to publish: ${err instanceof Error ? err.message : 'Unknown error'}`)
+  } finally {
+    publishing.value[videoId] = false
+  }
 }
 
 const formatDate = (timestamp: number) => {
@@ -152,7 +232,7 @@ onMounted(() => {
           >
             {{ video.status }}
           </span>
-          <span class="video-id">{{ video.id }}</span>
+          <span v-if="isPublished(video.id)" class="published-badge">✓ Published</span>
         </div>
 
         <div class="card-body">
@@ -191,6 +271,21 @@ onMounted(() => {
             @click="handleView(video.id)"
           >
             View
+          </button>
+          <button
+            v-if="video.status === 'completed' && !isPublished(video.id)"
+            class="action-btn publish"
+            @click="handlePublish(video.id)"
+            :disabled="publishing[video.id]"
+          >
+            {{ publishing[video.id] ? 'Publishing...' : '📺 Publish' }}
+          </button>
+          <button
+            v-if="video.status === 'completed' && isPublished(video.id)"
+            class="action-btn published"
+            disabled
+          >
+            ✓ Published to YouTube
           </button>
           <button
             v-if="video.status === 'completed'"
@@ -364,6 +459,15 @@ onMounted(() => {
   color: white;
 }
 
+.published-badge {
+  padding: 0.25rem 0.75rem;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
 .video-id {
   font-size: 0.85rem;
   color: #666;
@@ -437,6 +541,30 @@ onMounted(() => {
 
 .action-btn.primary:hover {
   background: #333;
+}
+
+.action-btn.publish {
+  background: #ff0000;
+  color: white;
+  border-color: #ff0000;
+}
+
+.action-btn.publish:hover:not(:disabled) {
+  background: #cc0000;
+}
+
+.action-btn.publish:disabled {
+  background: #fcc;
+  border-color: #fcc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.action-btn.published {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-color: #4caf50;
+  cursor: not-allowed;
 }
 
 .action-btn.danger {

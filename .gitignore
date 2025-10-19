@@ -236,3 +236,11 @@ output_screenshots/
 
 adws/
 .env.ready
+
+# Credentials - NEVER commit these!
+credentials/
+**/credentials/
+youtube_credentials.json
+youtube_token.json
+*_credentials.json
+*_token.json

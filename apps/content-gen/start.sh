@@ -18,7 +18,8 @@ echo ""
 # Start backend
 echo "📦 Starting backend on http://localhost:4444"
 cd backend
-uv run uvicorn src.content_gen_backend.main:app --reload --port 4444 &
+# Force ARM64 architecture to match uv binary
+arch -arm64 uv run uvicorn src.content_gen_backend.main:app --reload --port 4444 &
 BACKEND_PID=$!
 
 # Start frontend

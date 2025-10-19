@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-grey-200;
+  }
+
+  body {
+    @apply font-sans text-grey-700 antialiased m-0;
+  }
+}

@@ -35,8 +35,20 @@ const loadVideo = async () => {
 
 const loadVideoContent = async () => {
   try {
-    const blob = await downloadVideo(props.videoId, 'video')
-    videoUrl.value = URL.createObjectURL(blob)
+    // First check if video has a direct URL
+    if (video.value?.video_url) {
+      videoUrl.value = video.value.video_url
+      return
+    }
+
+    // Otherwise try to download via API
+    try {
+      const blob = await downloadVideo(props.videoId, 'video')
+      videoUrl.value = URL.createObjectURL(blob)
+    } catch (err) {
+      // If API download fails, try direct backend URL
+      videoUrl.value = `http://localhost:4444/api/v1/videos/${props.videoId}/content?variant=video`
+    }
   } catch (err) {
     console.error('Failed to load video content:', err)
   }

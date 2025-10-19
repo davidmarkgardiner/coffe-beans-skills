@@ -1,7 +1,16 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useVideoGeneration } from '../composables/useVideoGeneration'
 import type { VideoModel, VideoDuration } from '../types/video'
+
+const props = defineProps<{
+  idea?: {
+    id: string
+    title: string
+    video_prompt: string
+    style: string
+  } | null
+}>()
 
 const emit = defineEmits<{
   videoCreated: [videoId: string]
@@ -10,20 +19,29 @@ const emit = defineEmits<{
 const { createVideo, loading, error } = useVideoGeneration()
 
 const prompt = ref('')
+
+// Pre-fill prompt if idea is provided
+watch(() => props.idea, (newIdea) => {
+  console.log('VideoCreator: Idea prop changed:', newIdea)
+  if (newIdea) {
+    console.log('VideoCreator: Auto-filling prompt with:', newIdea.video_prompt?.substring(0, 100) + '...')
+    prompt.value = newIdea.video_prompt
+  }
+}, { immediate: true })
 const model = ref<VideoModel>('sora-2')
 const seconds = ref<VideoDuration>(4)
 const size = ref('1280x720')
 const inputReference = ref<File | undefined>()
 const previewUrl = ref<string | null>(null)
 
-const MAX_PROMPT_LENGTH = 500
+const MAX_PROMPT_LENGTH = 2000  // Increased for AI-generated prompts
 const promptLength = computed(() => prompt.value.length)
 
 const resolutionOptions = [
   { value: '1280x720', label: 'HD 720p Landscape (1280x720)' },
   { value: '720x1280', label: 'HD 720p Portrait (720x1280)' },
-  { value: '1024x1024', label: 'Square (1024x1024)' },
-  { value: '1920x1080', label: 'Full HD (1920x1080)' }
+  { value: '1024x1792', label: 'Vertical 9:16 (1024x1792)' },
+  { value: '1792x1024', label: 'Wide 16:9 (1792x1024)' }
 ]
 
 const promptTemplates = [
@@ -77,6 +95,10 @@ const handleSubmit = async () => {
       input_reference: inputReference.value
     })
 
+    // Store the prompt for this video in localStorage for later use (publishing)
+    const videoPromptKey = `video_prompt_${video.id}`
+    localStorage.setItem(videoPromptKey, prompt.value)
+
     emit('videoCreated', video.id)
 
     // Reset form
@@ -90,7 +112,14 @@ const handleSubmit = async () => {
 
 <template>
   <div class="video-creator">
-    <h2>Create Video</h2>
+    <div class="creator-header">
+      <h2>Create Video</h2>
+      <div v-if="idea" class="idea-info">
+        <span class="label">From Idea:</span>
+        <span class="idea-title">{{ idea.title }}</span>
+        <span class="idea-style">Style: {{ idea.style }}</span>
+      </div>
+    </div>
 
     <!-- Prompt Templates -->
     <div class="templates">
@@ -209,12 +238,42 @@ const handleSubmit = async () => {
   border-radius: 4px;
 }
 
-h2 {
-  margin-top: 0;
+.creator-header {
   margin-bottom: 1.5rem;
+}
+
+h2 {
+  margin: 0 0 0.5rem 0;
   font-size: 1.8rem;
   font-weight: bold;
   color: black;
+}
+
+.idea-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: #e8f5e9;
+  border: 1px solid #c8e6c9;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.idea-info .label {
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+.idea-title {
+  font-weight: 600;
+  color: black;
+}
+
+.idea-style {
+  color: #666;
+  font-style: italic;
+  margin-left: auto;
 }
 
 .templates {

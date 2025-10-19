@@ -25,6 +25,7 @@ class VideoJob(BaseModel):
     size: str = Field(..., description="Video resolution")
     seconds: str = Field(..., description="Video duration")
     remixed_from_video_id: Optional[str] = Field(None, description="Source video ID if remix")
+    video_url: Optional[str] = Field(None, description="URL to download video (for non-OpenAI providers)")
     error: Optional[ErrorDetail] = Field(None, description="Error details if failed")
 
     class Config:

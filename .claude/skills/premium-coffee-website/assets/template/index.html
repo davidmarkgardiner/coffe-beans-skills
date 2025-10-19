@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Coffee - Artisan Coffee Delivered</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+    <!-- AOS (Animate On Scroll) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="nav" id="navbar">
+        <div class="container-lg">
+            <div class="nav-content">
+                <div class="nav-logo">
+                    <h2 class="logo-text">PREMIUM COFFEE</h2>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="#home" class="nav-link">Home</a></li>
+                    <li><a href="#products" class="nav-link">Products</a></li>
+                    <li><a href="#about" class="nav-link">About</a></li>
+                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                </ul>
+                <div class="nav-cart">
+                    <button class="cart-button">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="9" cy="21" r="1"/>
+                            <circle cx="20" cy="21" r="1"/>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                        </svg>
+                        <span class="cart-badge">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero section-padding-xl" id="home">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <p class="premium-text" data-aos="fade-up" data-aos-delay="300">Artisan Coffee Experience</p>
+            <h1 data-aos="fade-up" data-aos-delay="500">Elevate Your<br>Morning Ritual</h1>
+            <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="700">
+                Discover premium coffee beans sourced from the world's finest plantations
+            </p>
+            <button class="cta-button premium-button" data-aos="fade-up" data-aos-delay="900">
+                Explore Collection
+            </button>
+        </div>
+        <div class="scroll-indicator" data-aos="fade-in" data-aos-delay="1200">
+            <div class="scroll-icon"></div>
+        </div>
+    </section>
+
+    <!-- Featured Products Section -->
+    <section class="products-section section-padding-lg" id="products">
+        <div class="container-lg">
+            <div class="section-header" data-aos="fade-up">
+                <p class="premium-text">Our Collection</p>
+                <h2>Premium Selection</h2>
+                <p class="section-description">
+                    Handpicked beans from renowned coffee-growing regions
+                </p>
+            </div>
+
+            <div class="product-grid">
+                <!-- Product Card 1 -->
+                <div class="product-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="product-image image-container">
+                        <img src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=600" alt="Ethiopian Blend">
+                        <span class="product-badge">Bestseller</span>
+                    </div>
+                    <div class="product-info">
+                        <p class="premium-text">Single Origin</p>
+                        <h3 class="product-title">Ethiopian Yirgacheffe</h3>
+                        <p class="product-description">
+                            Bright citrus notes with floral undertones
+                        </p>
+                        <div class="product-footer">
+                            <span class="product-price">$24.99</span>
+                            <button class="product-button">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 2 -->
+                <div class="product-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="product-image image-container">
+                        <img src="https://images.unsplash.com/photo-1611564035878-2e0e9864ea85?w=600" alt="Colombian Supremo">
+                    </div>
+                    <div class="product-info">
+                        <p class="premium-text">House Blend</p>
+                        <h3 class="product-title">Colombian Supremo</h3>
+                        <p class="product-description">
+                            Rich, balanced flavor with caramel sweetness
+                        </p>
+                        <div class="product-footer">
+                            <span class="product-price">$22.99</span>
+                            <button class="product-button">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 3 -->
+                <div class="product-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="product-image image-container">
+                        <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=600" alt="Costa Rican Reserve">
+                        <span class="product-badge">Limited</span>
+                    </div>
+                    <div class="product-info">
+                        <p class="premium-text">Reserve</p>
+                        <h3 class="product-title">Costa Rican Reserve</h3>
+                        <p class="product-description">
+                            Smooth body with honey and chocolate notes
+                        </p>
+                        <div class="product-footer">
+                            <span class="product-price">$29.99</span>
+                            <button class="product-button">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section section-padding-md glass-card">
+        <div class="container-md">
+            <div class="about-content" data-aos="fade-up">
+                <p class="premium-text">Our Story</p>
+                <h2>Crafted with Passion</h2>
+                <p class="about-text">
+                    We travel the world to source the finest coffee beans, building relationships
+                    with farmers who share our commitment to quality and sustainability. Each batch
+                    is carefully roasted to perfection, bringing out the unique characteristics of
+                    every origin.
+                </p>
+                <button class="cta-button premium-button">Learn More</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer section-padding-md">
+        <div class="container-lg">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Premium Coffee</h3>
+                    <p class="footer-text">
+                        Elevating your coffee experience, one cup at a time.
+                    </p>
+                </div>
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#products">Products</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Contact</h4>
+                    <ul class="footer-links">
+                        <li>hello@premiumcoffee.com</li>
+                        <li>1-800-COFFEE</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Premium Coffee. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- AOS Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
