@@ -33,11 +33,11 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
             </div>
           )}
 
-          {/* Overlay on hover */}
+          {/* Overlay on hover - Desktop only */}
           <motion.div
             initial={{ opacity: 0 }}
             whileHover={{ opacity: 1 }}
-            className="absolute inset-0 bg-black/70 flex items-center justify-center"
+            className="absolute inset-0 bg-black/70 items-center justify-center hidden md:flex"
           >
             <motion.button
               onClick={() => onAddToCart(product)}
@@ -68,6 +68,15 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
             </span>
             <span className="text-sm text-grey-500">{product.weight}</span>
           </div>
+
+          {/* Mobile Add to Cart Button */}
+          <motion.button
+            onClick={() => onAddToCart(product)}
+            whileTap={{ scale: 0.95 }}
+            className="w-full mt-4 px-6 py-3 bg-coffee-700 text-white hover:bg-coffee-800 font-semibold text-sm tracking-wide uppercase rounded-full transition-colors duration-200 md:hidden"
+          >
+            Add to Cart
+          </motion.button>
         </div>
       </div>
     </motion.div>
