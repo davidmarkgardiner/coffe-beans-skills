@@ -111,10 +111,20 @@ export default {
         sans: ['Inter', 'sans-serif'],
       },
       boxShadow: {
-        'soft': '0 2px 4px rgba(0, 0, 0, 0.04)',
-        'medium': '0 4px 12px rgba(0, 0, 0, 0.08)',
-        'large': '0 12px 24px rgba(0, 0, 0, 0.12)',
-        'xl': '0 24px 48px rgba(0, 0, 0, 0.16)',
+        // Two-layer shadow system for premium depth
+        'soft': 'inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 1px 2px rgba(15, 23, 42, 0.08)',
+        'medium': 'inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 3px 6px rgba(15, 23, 42, 0.12)',
+        'large': 'inset 0 2px 0 rgba(255, 255, 255, 0.2), 0 6px 12px rgba(15, 23, 42, 0.18)',
+        'xl': 'inset 0 3px 0 rgba(255, 255, 255, 0.24), 0 12px 24px rgba(15, 23, 42, 0.24)',
+      },
+      backgroundImage: {
+        // Premium gradient system
+        'gradient-cta': 'linear-gradient(to bottom, #c4ab80 0%, #a88f66 45%, #6B4423 100%)',
+        'gradient-cta-hover': 'linear-gradient(to bottom, #d6c5a8 0%, #a88f66 50%, #4b2f18 100%)',
+        'gradient-surface': 'linear-gradient(to bottom, #fafafa 0%, #ffffff 45%, #e5e5e5 100%)',
+        'gradient-surface-hover': 'linear-gradient(to bottom, #ffffff 0%, #f5f5f5 50%, #d4d4d4 100%)',
+        'gradient-nav-strong': 'linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 50%, rgba(255, 255, 255, 0.8) 100%)',
+        'gradient-nav-soft': 'linear-gradient(to bottom, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.85) 50%, rgba(255, 255, 255, 0.7) 100%)',
       },
       animation: {
         'fade-in': 'fade-in 0.5s ease-out',
@@ -281,8 +291,8 @@ export function Navigation() {
       animate={{ y: 0 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-medium'
-          : 'bg-white/80 backdrop-blur-sm'
+          ? 'bg-gradient-nav-strong backdrop-blur-md shadow-medium'
+          : 'bg-gradient-nav-soft backdrop-blur-sm shadow-soft'
       }`}
     >
       <div className="container mx-auto px-6 py-4">
@@ -359,12 +369,22 @@ export function Hero() {
         </p>
 
         <div className="flex gap-4 justify-center flex-wrap">
-          <Button size="lg" className="bg-coffee-700 hover:bg-coffee-800 text-white">
+          <motion.a
+            href="#products"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+            className="inline-block px-8 py-3 rounded-full bg-gradient-cta text-white font-semibold text-sm tracking-wide uppercase shadow-large transition-all duration-200 hover:bg-gradient-cta-hover hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+          >
             Shop Collection
-          </Button>
-          <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+          </motion.a>
+          <motion.a
+            href="#about"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+            className="inline-block px-8 py-3 rounded-full border border-white/40 bg-white/10 text-white font-semibold text-sm tracking-wide uppercase shadow-soft backdrop-blur-sm transition-all duration-200 hover:bg-white/20 hover:shadow-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+          >
             Learn More
-          </Button>
+          </motion.a>
         </div>
       </motion.div>
 
@@ -404,9 +424,10 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       whileHover={{ y: -8 }}
-      transition={{ duration: 0.4 }}
+      transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+      className="group"
     >
-      <Card className="overflow-hidden border-grey-200 shadow-soft hover:shadow-large transition-shadow">
+      <div className="relative rounded-2xl overflow-hidden bg-gradient-surface shadow-medium transition-all duration-300 hover:bg-gradient-surface-hover hover:shadow-large before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-white/70 before:content-['']">
         {/* Image */}
         <div className="relative h-64 overflow-hidden bg-grey-100">
           <motion.img
@@ -427,19 +448,21 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
           <motion.div
             initial={{ opacity: 0 }}
             whileHover={{ opacity: 1 }}
-            className="absolute inset-0 bg-black/70 flex items-center justify-center"
+            className="absolute inset-0 bg-black/60 flex items-center justify-center"
           >
-            <Button
+            <motion.button
               onClick={() => onAddToCart(product)}
-              className="bg-white text-coffee-700 hover:bg-grey-100"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+              className="px-6 py-2 rounded-full bg-gradient-surface text-coffee-700 font-semibold text-sm tracking-wide uppercase shadow-soft transition-all duration-200 hover:bg-gradient-surface-hover hover:shadow-medium"
             >
               Add to Cart
-            </Button>
+            </motion.button>
           </motion.div>
         </div>
 
         {/* Content */}
-        <CardContent className="p-6">
+        <div className="p-6">
           <p className="text-xs font-semibold tracking-widest uppercase text-grey-500 mb-2">
             {product.category}
           </p>
@@ -454,14 +477,14 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
 
           <div className="flex items-center justify-between pt-4 border-t border-grey-200">
             <span className="font-display text-3xl font-bold tracking-tight text-coffee-700">
-              ${product.price}
+              ${product.price.toFixed(2)}
             </span>
             <span className="text-sm text-grey-500">
               {product.weight}
             </span>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </motion.div>
   )
 }
@@ -627,6 +650,113 @@ npm run build
 npm run preview
 ```
 
+## Premium Design Enhancements
+
+### Two-Layer Shadow System
+
+The skill uses a sophisticated two-layer shadow technique for premium depth. Each shadow combines an **inset top highlight** and a **bottom shadow**:
+
+```css
+/* Pattern: inset [top highlight], [bottom shadow] */
+
+/* SOFT - Subtle cards, minimal elevation */
+box-shadow:
+  inset 0 1px 0 rgba(255, 255, 255, 0.12),  /* Top highlight */
+  0 1px 2px rgba(15, 23, 42, 0.08);         /* Bottom shadow */
+
+/* MEDIUM - Standard elevation, interactive elements */
+box-shadow:
+  inset 0 1px 0 rgba(255, 255, 255, 0.16),
+  0 3px 6px rgba(15, 23, 42, 0.12);
+
+/* LARGE - Hover states, elevated cards */
+box-shadow:
+  inset 0 2px 0 rgba(255, 255, 255, 0.2),
+  0 6px 12px rgba(15, 23, 42, 0.18);
+
+/* XL - Modals, overlays, maximum elevation */
+box-shadow:
+  inset 0 3px 0 rgba(255, 255, 255, 0.24),
+  0 12px 24px rgba(15, 23, 42, 0.24);
+```
+
+**Usage in Components:**
+
+```tsx
+// Card transitions from medium to large shadow on hover
+<div className="shadow-medium hover:shadow-large transition-shadow duration-300">
+  {/* Content */}
+</div>
+```
+
+### Gradient System
+
+Premium gradient backgrounds for CTAs and surfaces create depth and sophistication:
+
+```tsx
+// CTA Buttons - Coffee gradient
+<button className="bg-gradient-cta hover:bg-gradient-cta-hover">
+  Shop Now
+</button>
+
+// Surface Cards - Subtle grey gradient
+<div className="bg-gradient-surface hover:bg-gradient-surface-hover">
+  {/* Content */}
+</div>
+
+// Navigation - Glassmorphism gradient
+<nav className="bg-gradient-nav-strong backdrop-blur-md">
+  {/* Nav items */}
+</nav>
+```
+
+**Gradient Definitions:**
+
+```typescript
+backgroundImage: {
+  // CTA gradients - from light coffee to dark coffee
+  'gradient-cta': 'linear-gradient(to bottom, #c4ab80 0%, #a88f66 45%, #6B4423 100%)',
+  'gradient-cta-hover': 'linear-gradient(to bottom, #d6c5a8 0%, #a88f66 50%, #4b2f18 100%)',
+
+  // Surface gradients - subtle depth
+  'gradient-surface': 'linear-gradient(to bottom, #fafafa 0%, #ffffff 45%, #e5e5e5 100%)',
+  'gradient-surface-hover': 'linear-gradient(to bottom, #ffffff 0%, #f5f5f5 50%, #d4d4d4 100%)',
+
+  // Navigation gradients - glassmorphism effect
+  'gradient-nav-strong': 'linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 50%, rgba(255, 255, 255, 0.8) 100%)',
+  'gradient-nav-soft': 'linear-gradient(to bottom, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.85) 50%, rgba(255, 255, 255, 0.7) 100%)',
+}
+```
+
+### Glassmorphism Effects
+
+Combine gradients with backdrop blur for modern glass effects:
+
+```tsx
+// Navigation with glassmorphism
+<nav className="bg-gradient-nav-strong backdrop-blur-md shadow-medium">
+  {/* Nav content */}
+</nav>
+
+// Card with top highlight border
+<div className="bg-gradient-surface before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-white/70 before:content-['']">
+  {/* Card content */}
+</div>
+```
+
+**Complete Premium Card Pattern:**
+
+```tsx
+<motion.div
+  whileHover={{ y: -8 }}
+  transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+>
+  <div className="relative rounded-2xl overflow-hidden bg-gradient-surface shadow-medium transition-all duration-300 hover:bg-gradient-surface-hover hover:shadow-large before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-white/70 before:content-['']">
+    {/* Content */}
+  </div>
+</motion.div>
+```
+
 ## Best Practices
 
 ### 1. Always Load Design Docs
@@ -655,14 +785,73 @@ Before building components, load:
 - Code-split routes if multi-page
 
 ### 5. Accessibility
+
+**Always implement accessibility features:**
+
 ```tsx
-// Good button
+// Semantic HTML with ARIA labels
 <Button aria-label="Add Ethiopian Yirgacheffe to cart">
   Add to Cart
 </Button>
 
 // Keyboard navigation
 <Card tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && onClick()}>
+  {/* Content */}
+</Card>
+
+// Focus-visible states (not just focus)
+<button className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-600/60">
+  Shop Now
+</button>
+```
+
+**Respect Motion Preferences:**
+
+```tsx
+// Disable animations for users who prefer reduced motion
+import { useReducedMotion } from 'framer-motion'
+
+export function AnimatedComponent() {
+  const shouldReduceMotion = useReducedMotion()
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: shouldReduceMotion ? 0 : 0.4 }}
+    >
+      {/* Content */}
+    </motion.div>
+  )
+}
+```
+
+**Or use CSS media queries in Tailwind:**
+
+```tsx
+<motion.div
+  className="motion-safe:animate-fade-in-up motion-reduce:opacity-100"
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+>
+  {/* Content */}
+</motion.div>
+```
+
+**Video/Media Accessibility:**
+
+```tsx
+// Always provide poster images for videos
+<video
+  autoPlay
+  loop
+  muted
+  playsInline
+  poster="/hero-poster.jpg"
+  aria-hidden="true"
+>
+  <source src="/hero-video.mp4" type="video/mp4" />
+</video>
 ```
 
 ## Deployment

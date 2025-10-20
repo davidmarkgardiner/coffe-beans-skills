@@ -9,5 +9,47 @@
 
   body {
     @apply font-sans text-grey-700 antialiased m-0;
+    background-color: theme('colors.cream');
+    color: theme('colors.charcoal');
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.38) 0, transparent 70%),
+      radial-gradient(circle at 80% 0%, rgba(255, 255, 255, 0.25) 0, transparent 70%);
   }
+}
+
+body.custom-cursor-enabled {
+  cursor: none;
+}
+
+body.custom-cursor-enabled *,
+body.custom-cursor-enabled *::before,
+body.custom-cursor-enabled *::after {
+  cursor: none !important;
+}
+
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 48px;
+  height: 48px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.9);
+  transition: transform 0.18s ease, opacity 0.3s ease;
+  z-index: 9999;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  filter: drop-shadow(0 8px 18px rgba(47, 39, 33, 0.25));
+  will-change: transform, opacity;
+}
+
+.custom-cursor.is-active {
+  opacity: 1;
+}
+
+.custom-cursor.is-hovering {
+  transform: translate(-50%, -50%) scale(1.12);
+  filter: drop-shadow(0 12px 24px rgba(137, 90, 22, 0.35));
 }

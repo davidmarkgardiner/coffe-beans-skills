@@ -607,11 +607,32 @@ function initCustomCursor() {
     }
 
     const isFinePointer = window.matchMedia('(pointer: fine)');
+    const enableCustomCursor = () => {
+        document.body.classList.add('custom-cursor-enabled');
+        cursor.classList.remove('cursor-hover');
+    };
+    const disableCustomCursor = () => {
+        document.body.classList.remove('custom-cursor-enabled');
+        cursor.classList.remove('active', 'cursor-hover');
+    };
 
     if (!isFinePointer.matches) {
-        cursor.remove();
+        disableCustomCursor();
+        cursor.style.display = 'none';
         return;
     }
+
+    cursor.style.display = 'block';
+    enableCustomCursor();
+    isFinePointer.addEventListener('change', (event) => {
+        if (!event.matches) {
+            disableCustomCursor();
+            cursor.style.display = 'none';
+        } else {
+            cursor.style.display = 'block';
+            enableCustomCursor();
+        }
+    });
 
     const moveCursor = (event) => {
         cursor.style.left = `${event.clientX}px`;
@@ -624,6 +645,7 @@ function initCustomCursor() {
 
     const handleMouseLeave = () => {
         cursor.classList.remove('active');
+        cursor.classList.remove('cursor-hover');
     };
 
     const interactiveSelector = 'a, button, .btn, .card-link, .product-card, input, textarea';
