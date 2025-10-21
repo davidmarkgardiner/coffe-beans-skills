@@ -164,28 +164,76 @@ function ProductList() {
 
 ### User Authentication
 
+**Full Login Modal Implementation:**
+
+Create `src/components/LoginModal.tsx` with complete authentication UI including:
+- Login form with email/password
+- Signup form with display name
+- Password reset functionality
+- Google OAuth integration
+- Animated modal with Framer Motion
+- Error handling and loading states
+
 ```typescript
 import { useAuth } from './contexts/AuthContext'
 
-function LoginForm() {
-  const { login, loginWithGoogle } = useAuth()
+function LoginModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const { login, signup, loginWithGoogle, resetPassword } = useAuth()
+  const [mode, setMode] = useState<'login' | 'signup' | 'reset'>('login')
 
-  const handleLogin = async (email: string, password: string) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
     try {
-      await login(email, password)
-      // Redirect to dashboard
+      if (mode === 'login') {
+        await login(email, password)
+      } else if (mode === 'signup') {
+        await signup(email, password, displayName)
+      } else {
+        await resetPassword(email)
+      }
+      onClose()
     } catch (error) {
-      console.error('Login failed:', error)
+      setError(error.message)
     }
   }
 
   return (
-    <form>
-      {/* Form fields */}
-      <button onClick={() => loginWithGoogle()}>
-        Login with Google
-      </button>
-    </form>
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div>
+          {/* Modal with forms */}
+          <button onClick={loginWithGoogle}>Continue with Google</button>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
+}
+```
+
+**Navigation Integration:**
+
+Add authentication to navigation with user menu:
+
+```typescript
+import { useAuth } from '../contexts/AuthContext'
+import { LoginModal } from './LoginModal'
+
+function Navigation() {
+  const { currentUser, logout } = useAuth()
+  const [loginModalOpen, setLoginModalOpen] = useState(false)
+
+  return (
+    <nav>
+      {currentUser ? (
+        <div className="user-menu">
+          <img src={currentUser.photoURL} alt={currentUser.displayName} />
+          <button onClick={logout}>Sign Out</button>
+        </div>
+      ) : (
+        <button onClick={() => setLoginModalOpen(true)}>Sign In</button>
+      )}
+      <LoginModal isOpen={loginModalOpen} onClose={() => setLoginModalOpen(false)} />
+    </nav>
   )
 }
 ```
@@ -355,9 +403,104 @@ This tests:
 
 See `scripts/test-inventory.ts` for implementation.
 
+## Deployment & Verification
+
+### Complete Deployment Workflow
+
+Follow this workflow for bug-free deployments:
+
+**1. Pre-Deployment Checks**
+```bash
+# Review comprehensive checklist
+cat references/pre-deployment-checklist.md
+
+# Verify configuration
+firebase use
+
+# Build project
+npm run build
+
+# Verify Firebase config embedded in build
+grep -q "$(firebase use | tail -1)" dist/assets/*.js && echo "✓ Config OK" || echo "✗ Config missing!"
+```
+
+**2. Deploy to Firebase**
+```bash
+# Deploy Firestore rules first
+firebase deploy --only firestore:rules
+
+# Deploy hosting
+firebase deploy --only hosting
+
+# Or deploy everything at once
+firebase deploy
+```
+
+**3. Post-Deployment Verification**
+```bash
+# Run comprehensive verification
+bash scripts/verify-firebase-deployment.sh
+
+# Check service status
+bash scripts/firebase-status.sh
+
+# Verify site is live
+curl -I https://$(firebase use | tail -1).web.app
+```
+
+### Quick Verification Commands
+
+**Check if all services are enabled:**
+```bash
+# Authentication
+firebase auth:export /tmp/check.json && echo "✓ Auth enabled" || echo "✗ Auth disabled"
+
+# Firestore
+firebase firestore:databases:list
+
+# Hosting
+firebase hosting:sites:list
+```
+
+**Verify deployment is live:**
+```bash
+PROJECT_ID=$(firebase use | tail -1)
+curl -I https://${PROJECT_ID}.web.app | grep "200 OK" && echo "✓ Live" || echo "✗ Not accessible"
+```
+
+### Verification Scripts
+
+The skill includes automated verification scripts:
+
+- **`scripts/verify-firebase-deployment.sh`** - Comprehensive post-deployment verification
+  - Checks web app exists
+  - Verifies Authentication is enabled
+  - Confirms Firestore databases are created
+  - Validates security rules compile
+  - Tests hosting deployment is live
+  - Verifies Firebase APIs are enabled
+  - Checks build configuration
+
+- **`scripts/firebase-status.sh`** - Service status dashboard
+  - Shows Authentication status and user count
+  - Lists Firestore databases
+  - Displays hosting deployment info
+  - Lists enabled Firebase APIs
+  - Provides quick links to Firebase Console
+
+### CLI Commands Reference
+
+For a complete reference of all useful Firebase CLI commands, see:
+- **`references/cli-commands-reference.md`** - Comprehensive CLI command reference
+
 ## Production Checklist
 
-Before deploying to production:
+Before deploying to production, follow the comprehensive checklist:
+
+**See: `references/pre-deployment-checklist.md`**
+
+**Quick checklist:**
+- [ ] Run `bash references/pre-deployment-checklist.md` review
 - [ ] Update Firestore rules from test mode to production rules
 - [ ] Enable security rules for Storage
 - [ ] Add proper error handling and loading states
@@ -369,6 +512,10 @@ Before deploying to production:
 - [ ] Test all CRUD operations with production data
 - [ ] Run inventory test script (`npm run test:inventory`)
 - [ ] Verify all environment variables are set in hosting platform
+- [ ] **Run post-deployment verification**: `bash scripts/verify-firebase-deployment.sh`
+- [ ] **Check service status**: `bash scripts/firebase-status.sh`
+- [ ] Test critical user flows on live site
+- [ ] Monitor Firebase Console for errors after deployment
 
 ## Advanced Topics
 
@@ -388,9 +535,29 @@ Key benefits:
 For best practices and lessons from real implementations, see:
 - **Lessons Learned**: `LESSONS_LEARNED.md`
 
-Key takeaways:
+Key takeaways from production deployments:
+
+**Setup & Configuration (2025-10-19)**:
 - Use CLI for initial setup (10x faster)
 - Proper TypeScript type imports are critical
 - Test inventory logic before production
 - Deploy security rules immediately
 - Use Firebase emulators for local development
+
+**Deployment & Verification (2025-10-20)**:
+- Always verify services via CLI after setup
+- Build → Verify → Deploy → Verify (two verification steps prevent bugs)
+- Automate verification with scripts (can run in CI/CD)
+- Firebase projects can have multiple Firestore databases
+- Storage bucket must be initialized via Console before CLI rules deployment
+- Check that Firebase config is embedded in production builds
+- Test hosting URL with curl to verify HTTP 200
+
+### Best Practices Summary
+
+1. **CLI-First Approach** - Use Firebase CLI for all configuration tasks
+2. **Automated Verification** - Run verification scripts after every deployment
+3. **Security by Default** - Deploy production rules from day one
+4. **Test Everything** - Use emulators and test scripts before production
+5. **Monitor Continuously** - Set up alerts and check Firebase Console regularly
+6. **Document Everything** - Keep deployment checklists and runbooks updated

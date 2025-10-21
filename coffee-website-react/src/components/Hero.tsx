@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
+import Logo from './Logo'
 
 export function Hero() {
   const [imageUrl, setImageUrl] = useState('')
@@ -36,6 +37,20 @@ export function Hero() {
         transition={{ duration: 0.8, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
         className="relative z-10 text-center text-white px-6"
       >
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.25 }}
+          className="mx-auto mb-8"
+        >
+          <Logo
+            variant="golden"
+            size={160}
+            alt="Stockbridge Coffee bridge and bean logo"
+            className="mx-auto object-contain drop-shadow-[0_18px_38px_rgba(0,0,0,0.45)] w-40 sm:w-48 md:w-56 lg:w-64"
+            priority
+          />
+        </motion.div>
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.9 }}

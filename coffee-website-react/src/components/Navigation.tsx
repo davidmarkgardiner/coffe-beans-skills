@@ -1,21 +1,34 @@
 import { useState, useEffect } from 'react'
-import { ShoppingCart, Menu, X } from 'lucide-react'
+import { ShoppingCart, Menu, X, User, LogOut } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import logoMark from '../assets/stockbridge-logo.png'
+import { useAuth } from '../contexts/AuthContext'
 
 interface NavigationProps {
   itemCount: number
+  onOpenLogin: () => void
 }
 
-export function Navigation({ itemCount }: NavigationProps) {
+export function Navigation({ itemCount, onOpenLogin }: NavigationProps) {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const { currentUser, logout } = useAuth()
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  const handleLogout = async () => {
+    try {
+      await logout()
+      setUserMenuOpen(false)
+    } catch (error) {
+      console.error('Logout failed:', error)
+    }
+  }
 
   return (
     <motion.nav
@@ -28,23 +41,25 @@ export function Navigation({ itemCount }: NavigationProps) {
           : 'bg-gradient-nav-soft backdrop-blur-sm shadow-soft'
       }`}
     >
-      <div className="container mx-auto px-8 py-6">
+      <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between gap-8">
           <a
             href="#home"
-            className="flex items-center gap-6 rounded-3xl bg-white/10 px-4 py-3 text-charcoal transition-all duration-300 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+            className="flex items-center gap-4 transition-all duration-300 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2 rounded-lg"
             aria-label="Stockbridge Coffee"
           >
-            <img
-              src={logoMark}
-              alt="Stockbridge Coffee emblem"
-              className="h-24 w-24 md:h-28 md:w-28 -mb-6 rounded-[52px] border border-white/20 bg-white/10 p-5 object-contain mix-blend-multiply shadow-[0_24px_42px_rgba(26,20,16,0.28)] transition-transform duration-300 group-hover:scale-105"
-            />
-            <span className="hidden sm:flex flex-col uppercase tracking-[0.5em]">
-              <span className="font-display text-lg lg:text-xl leading-tight">
+            <div className="relative">
+              <img
+                src={logoMark}
+                alt="Stockbridge Coffee emblem"
+                className="h-14 w-14 object-contain transition-transform duration-300 group-hover:scale-105"
+              />
+            </div>
+            <span className="hidden sm:flex flex-col uppercase tracking-[0.35em]">
+              <span className="font-display text-base lg:text-lg leading-tight text-charcoal">
                 Stockbridge Coffee
               </span>
-              <span className="font-sans text-[0.7rem] tracking-[0.65em] text-coffee-600 mt-1">
+              <span className="font-sans text-[0.65rem] tracking-[0.4em] text-coffee-600 mt-0.5">
                 Edinburgh
               </span>
             </span>
@@ -78,6 +93,70 @@ export function Navigation({ itemCount }: NavigationProps) {
           </div>
 
           <div className="flex items-center gap-4">
+            {/* User Menu / Login Button */}
+            {currentUser ? (
+              <div className="relative">
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="flex items-center gap-2 p-2 hover:bg-grey-100 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2"
+                  aria-label="User menu"
+                >
+                  {currentUser.photoURL ? (
+                    <img
+                      src={currentUser.photoURL}
+                      alt={currentUser.displayName || 'User'}
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 bg-coffee-700 rounded-full flex items-center justify-center">
+                      <User className="w-4 h-4 text-white" />
+                    </div>
+                  )}
+                  <span className="hidden md:block text-sm font-medium text-grey-700 max-w-[100px] truncate">
+                    {currentUser.displayName || currentUser.email?.split('@')[0]}
+                  </span>
+                </button>
+
+                {/* User Dropdown Menu */}
+                <AnimatePresence>
+                  {userMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-grey-200 py-2 z-50"
+                    >
+                      <div className="px-4 py-2 border-b border-grey-200">
+                        <p className="text-sm font-medium text-grey-900 truncate">
+                          {currentUser.displayName || 'User'}
+                        </p>
+                        <p className="text-xs text-grey-500 truncate">
+                          {currentUser.email}
+                        </p>
+                      </div>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full px-4 py-2 text-left text-sm text-grey-700 hover:bg-grey-50 transition-colors duration-200 flex items-center gap-2"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Sign Out
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <button
+                onClick={onOpenLogin}
+                className="hidden md:flex items-center gap-2 px-4 py-2 bg-coffee-700 text-white rounded-lg hover:bg-coffee-800 transition-colors duration-200 font-medium text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2"
+              >
+                <User className="w-4 h-4" />
+                Sign In
+              </button>
+            )}
+
+            {/* Shopping Cart */}
             <button
               className="relative p-2 hover:bg-grey-100 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2"
               aria-label={`Shopping cart with ${itemCount} items`}
@@ -94,6 +173,7 @@ export function Navigation({ itemCount }: NavigationProps) {
               )}
             </button>
 
+            {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="md:hidden p-2 hover:bg-grey-100 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2"
@@ -119,6 +199,18 @@ export function Navigation({ itemCount }: NavigationProps) {
               className="md:hidden border-t border-grey-200 mt-4"
             >
               <div className="py-4 space-y-4">
+                {!currentUser && (
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false)
+                      onOpenLogin()
+                    }}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-coffee-700 text-white rounded-lg hover:bg-coffee-800 transition-colors duration-200 font-medium text-sm"
+                  >
+                    <User className="w-4 h-4" />
+                    Sign In
+                  </button>
+                )}
                 <a
                   href="#products"
                   onClick={() => setMobileMenuOpen(false)}
@@ -147,6 +239,18 @@ export function Navigation({ itemCount }: NavigationProps) {
                 >
                   Contact
                 </a>
+                {currentUser && (
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false)
+                      handleLogout()
+                    }}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2 text-grey-700 border border-grey-300 rounded-lg hover:bg-grey-50 transition-colors duration-200 font-medium text-sm"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Sign Out
+                  </button>
+                )}
               </div>
             </motion.div>
           )}

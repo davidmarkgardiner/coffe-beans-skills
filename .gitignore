@@ -244,3 +244,10 @@ youtube_credentials.json
 youtube_token.json
 *_credentials.json
 *_token.json
+
+# Firebase
+.firebase/
+**/.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log

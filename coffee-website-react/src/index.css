@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bean-cursor-default: url('data:image/svg+xml;utf8,%3Csvg%20xmlns=%22http:%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width=%2244%22%20height=%2244%22%20viewBox=%220%200%2044%2044%22%3E%3Cdefs%3E%3CradialGradient%20id=%22beanCore%22%20cx=%2221%22%20cy=%2212%22%20r=%2226%22%20gradientUnits=%22userSpaceOnUse%22%3E%3Cstop%20offset=%220%22%20stop-color=%22#f8e1a7%22%2F%3E%3Cstop%20offset=%220.38%22%20stop-color=%22#e5b862%22%2F%3E%3Cstop%20offset=%220.75%22%20stop-color=%22#c7832a%22%2F%3E%3Cstop%20offset=%221%22%20stop-color=%22#8f5518%22%2F%3E%3C%2FradialGradient%3E%3ClinearGradient%20id=%22edgeShade%22%20x1=%2214%22%20y1=%229%22%20x2=%2237%22%20y2=%2238%22%20gradientUnits=%22userSpaceOnUse%22%3E%3Cstop%20offset=%220%22%20stop-color=%22#fceec4%22%20stop-opacity=%220.6%22%2F%3E%3Cstop%20offset=%220.28%22%20stop-color=%22#f9df9b%22%20stop-opacity=%220.25%22%2F%3E%3Cstop%20offset=%220.58%22%20stop-color=%22#b46b1f%22%20stop-opacity=%220%22%2F%3E%3Cstop%20offset=%221%22%20stop-color=%22#3d1c07%22%20stop-opacity=%220.55%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id=%22highlightLine%22%20x1=%2220.5%22%20y1=%226%22%20x2=%2226.5%22%20y2=%2238%22%20gradientUnits=%22userSpaceOnUse%22%3E%3Cstop%20offset=%220%22%20stop-color=%22#fff7d6%22%2F%3E%3Cstop%20offset=%220.45%22%20stop-color=%22#fde7ab%22%2F%3E%3Cstop%20offset=%221%22%20stop-color=%22#f6cf74%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cpath%20d=%22M22%203c-7.9%201.4-13.2%2011.5-13.2%2021S14.1%2043.6%2022%2042c7.9-1.6%2013.2-11.5%2013.2-21S29.9%204.4%2022%203z%22%20fill=%22url(#beanCore)%22%2F%3E%3Cpath%20d=%22M22%203c-7.9%201.4-13.2%2011.5-13.2%2021S14.1%2043.6%2022%2042c7.9-1.6%2013.2-11.5%2013.2-21S29.9%204.4%2022%203z%22%20fill=%22none%22%20stroke=%22#301b0a%22%20stroke-width=%220.7%22%20opacity=%220.28%22%2F%3E%3Cpath%20d=%22M25.7%205.1c4%203%206.9%209.6%206.9%2018.8S29.7%2037.8%2025.7%2040.9c2.2-.7%204-1.8%205.7-3.3%203.9-3.3%207-10.5%207-18.7s-3.1-15.4-7-18.7c-1.7-1.5-3.5-2.6-5.7-3.3z%22%20fill=%22url(#edgeShade)%22%20opacity=%220.95%22%2F%3E%3Cpath%20d=%22M23.4%206.8C18.8%2010%2026.2%2013.4%2020.6%2018.7%2016.2%2022.8%2023%2026%2019.3%2031.1%22%20fill=%22none%22%20stroke=%22url(#highlightLine)%22%20stroke-width=%223.6%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%20opacity=%220.96%22%2F%3E%3Cpath%20d=%22M23.8%208c-4%202.8%203%206-1.8%2011-4.4%204.5%202.7%207.5-1.6%2012.9%22%20fill=%22none%22%20stroke=%22#fffbe6%22%20stroke-width=%221.8%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%20opacity=%220.65%22%2F%3E%3C%2Fsvg%3E') 22 22, auto;
+  --bean-cursor-pointer: url('data:image/svg+xml;utf8,%3Csvg%20xmlns=%22http:%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width=%2252%22%20height=%2252%22%20viewBox=%220%200%2052%2052%22%3E%3Cdefs%3E%3CradialGradient%20id=%22beanCore%22%20cx=%2225%22%20cy=%2214%22%20r=%2231%22%20gradientUnits=%22userSpaceOnUse%22%3E%3Cstop%20offset=%220%22%20stop-color=%22#f8e6b7%22%2F%3E%3Cstop%20offset=%220.35%22%20stop-color=%22#e8c16d%22%2F%3E%3Cstop%20offset=%220.72%22%20stop-color=%22#cc8e34%22%2F%3E%3Cstop%20offset=%221%22%20stop-color=%22#945b1a%22%2F%3E%3C%2FradialGradient%3E%3ClinearGradient%20id=%22edgeShade%22%20x1=%2216%22%20y1=%2210%22%20x2=%2243%22%20y2=%2244%22%20gradientUnits=%22userSpaceOnUse%22%3E%3Cstop%20offset=%220%22%20stop-color=%22#fef3cd%22%20stop-opacity=%220.7%22%2F%3E%3Cstop%20offset=%220.26%22%20stop-color=%22#fbe4a5%22%20stop-opacity=%220.32%22%2F%3E%3Cstop%20offset=%220.56%22%20stop-color=%22#bc7222%22%20stop-opacity=%220.05%22%2F%3E%3Cstop%20offset=%221%22%20stop-color=%22#432006%22%20stop-opacity=%220.6%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id=%22highlightLine%22%20x1=%2223.5%22%20y1=%227%22%20x2=%2230.5%22%20y2=%2245%22%20gradientUnits=%22userSpaceOnUse%22%3E%3Cstop%20offset=%220%22%20stop-color=%22#fff9da%22%2F%3E%3Cstop%20offset=%220.4%22%20stop-color=%22#fee9b4%22%2F%3E%3Cstop%20offset=%221%22%20stop-color=%22#f7d37b%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cpath%20d=%22M26%204c-9.3%201.6-15.5%2013.5-15.5%2024.7S16.7%2051.2%2026%2049c9.3-2.2%2015.5-13.5%2015.5-24.7S35.3%205.6%2026%204z%22%20fill=%22url(#beanCore)%22%2F%3E%3Cpath%20d=%22M26%204c-9.3%201.6-15.5%2013.5-15.5%2024.7S16.7%2051.2%2026%2049c9.3-2.2%2015.5-13.5%2015.5-24.7S35.3%205.6%2026%204z%22%20fill=%22none%22%20stroke=%22#301b0a%22%20stroke-width=%220.9%22%20opacity=%220.3%22%2F%3E%3Cpath%20d=%22M30.2%206.4c4.8%203.4%208.2%2011.1%208.2%2021.8s-3.4%2018.4-8.2%2021.8c2.6-.8%204.9-2.1%206.9-3.9%204.7-3.8%208.4-12%208.4-21.4S41.8%2012.1%2037.1%208.3c-2-1.8-4.3-3.1-6.9-3.9z%22%20fill=%22url(#edgeShade)%22%20opacity=%220.97%22%2F%3E%3Cpath%20d=%22M27.7%207.4C22.2%2011.1%2031.4%2015.1%2025.1%2021.1%2020.3%2025.7%2028.3%2029.4%2023.8%2035.3%22%20fill=%22none%22%20stroke=%22url(#highlightLine)%22%20stroke-width=%224.2%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%20opacity=%220.97%22%2F%3E%3Cpath%20d=%22M28.2%208.9c-4.5%203.1%203.4%206.8-2.1%2012.6-5.1%205.3%203.1%208.6-1.8%2015%22%20fill=%22none%22%20stroke=%22#fffbe6%22%20stroke-width=%222%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%20opacity=%220.7%22%2F%3E%3C%2Fsvg%3E') 26 26, pointer;
+}
+
 @layer base {
   * {
     @apply border-grey-200;
@@ -17,32 +22,46 @@
   }
 }
 
-body.custom-cursor-enabled {
-  cursor: none;
+/* Coffee bean cursor matching the logo - with S-shaped highlight */
+* {
+  cursor: var(--bean-cursor-default) !important;
 }
 
-body.custom-cursor-enabled *,
-body.custom-cursor-enabled *::before,
-body.custom-cursor-enabled *::after {
-  cursor: none !important;
+button, a, [role="button"], input[type="submit"], input[type="button"] {
+  cursor: var(--bean-cursor-pointer) !important;
+}
+
+/* Keep custom cursor for enhanced experience but don't hide default */
+body.custom-cursor-enabled {
+  cursor: var(--bean-cursor-default);
 }
 
 .custom-cursor {
   position: fixed;
   top: 0;
   left: 0;
-  width: 48px;
-  height: 48px;
+  width: 64px;
+  height: 64px;
   pointer-events: none;
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0.9);
-  transition: transform 0.18s ease, opacity 0.3s ease;
-  z-index: 9999;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease;
+  z-index: 99999;
   background-repeat: no-repeat;
   background-position: center;
-  background-size: contain;
-  filter: drop-shadow(0 8px 18px rgba(47, 39, 33, 0.25));
-  will-change: transform, opacity;
+  background-size: 48px 48px;
+  filter:
+    drop-shadow(0 0 0 2px rgba(0, 0, 0, 0.3))
+    drop-shadow(0 0 0 4px rgba(255, 255, 255, 0.8))
+    drop-shadow(0 4px 16px rgba(137, 90, 22, 0.6))
+    brightness(1.2)
+    contrast(1.1);
+  will-change: transform;
+  display: none; /* Hidden by default, only show if enabled */
+}
+
+body.custom-cursor-enabled .custom-cursor {
+  display: block;
 }
 
 .custom-cursor.is-active {
@@ -50,6 +69,29 @@ body.custom-cursor-enabled *::after {
 }
 
 .custom-cursor.is-hovering {
-  transform: translate(-50%, -50%) scale(1.12);
-  filter: drop-shadow(0 12px 24px rgba(137, 90, 22, 0.35));
+  transform: translate(-50%, -50%) scale(1.3);
+  filter:
+    drop-shadow(0 0 0 3px rgba(0, 0, 0, 0.4))
+    drop-shadow(0 0 0 6px rgba(255, 255, 255, 0.9))
+    drop-shadow(0 8px 24px rgba(137, 90, 22, 0.8))
+    brightness(1.3)
+    contrast(1.2);
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    filter:
+      drop-shadow(0 0 0 3px rgba(0, 0, 0, 0.4))
+      drop-shadow(0 0 0 6px rgba(255, 255, 255, 0.9))
+      drop-shadow(0 8px 24px rgba(137, 90, 22, 0.8))
+      brightness(1.3);
+  }
+  50% {
+    filter:
+      drop-shadow(0 0 0 4px rgba(0, 0, 0, 0.5))
+      drop-shadow(0 0 0 8px rgba(255, 255, 255, 1))
+      drop-shadow(0 12px 32px rgba(137, 90, 22, 1))
+      brightness(1.4);
+  }
 }

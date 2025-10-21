@@ -12,11 +12,11 @@ export function CustomCursor() {
       return
     }
 
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const finePointerQuery = window.matchMedia('(pointer: fine)')
+    const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)')
 
     const enableCursor = () => {
       cursor.style.display = 'block'
+      cursor.classList.add('is-active')
       document.body.classList.add('custom-cursor-enabled')
     }
 
@@ -26,7 +26,8 @@ export function CustomCursor() {
       document.body.classList.remove('custom-cursor-enabled')
     }
 
-    if (!finePointerQuery.matches || prefersReducedMotion.matches) {
+    // Only disable on touch devices
+    if (isTouchDevice.matches) {
       disableCursor()
       return
     }
@@ -70,33 +71,12 @@ export function CustomCursor() {
     document.addEventListener('mouseover', handleMouseOver)
     document.addEventListener('mouseout', handleMouseOut)
 
-    const handlePointerChange = (event: MediaQueryListEvent) => {
-      if (event.matches && !prefersReducedMotion.matches) {
-        enableCursor()
-      } else {
-        disableCursor()
-      }
-    }
-
-    const handleMotionChange = (event: MediaQueryListEvent) => {
-      if (event.matches) {
-        disableCursor()
-      } else if (finePointerQuery.matches) {
-        enableCursor()
-      }
-    }
-
-    finePointerQuery.addEventListener('change', handlePointerChange)
-    prefersReducedMotion.addEventListener('change', handleMotionChange)
-
     return () => {
       window.removeEventListener('mousemove', moveCursor)
       window.removeEventListener('mouseenter', handleMouseEnter)
       window.removeEventListener('mouseleave', handleMouseLeave)
       document.removeEventListener('mouseover', handleMouseOver)
       document.removeEventListener('mouseout', handleMouseOut)
-      finePointerQuery.removeEventListener('change', handlePointerChange)
-      prefersReducedMotion.removeEventListener('change', handleMotionChange)
       disableCursor()
     }
   }, [])

@@ -41,6 +41,8 @@
     /* Transitions */
     --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --bean-cursor-default: url('assets/images/golden-bean.svg') 16 16, auto;
+    --bean-cursor-pointer: url('assets/images/golden-bean.svg') 16 16, pointer;
 }
 
 /* ===================================
@@ -65,6 +67,7 @@ body {
     background-color: var(--color-cream);
     background-image: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.35) 0, transparent 70%), radial-gradient(circle at 80% 0, rgba(255, 255, 255, 0.25) 0, transparent 70%);
     overflow-x: hidden;
+    cursor: var(--bean-cursor-default);
 }
 
 body.page-transition {
@@ -89,10 +92,23 @@ img {
 a {
     text-decoration: none;
     color: inherit;
+    cursor: var(--bean-cursor-pointer);
 }
 
 ul {
     list-style: none;
+}
+
+button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+.button,
+.btn,
+.cta-button,
+.primary-button,
+.secondary-button {
+    cursor: var(--bean-cursor-pointer);
 }
 
 /* ===================================

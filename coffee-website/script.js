@@ -681,9 +681,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initLazyImages();
     initRevealAnimations();
 
-    if (!prefersReducedMotion.matches) {
-        initCustomCursor();
-    }
+    initCustomCursor();
 
     // Add fade-in class to images when loaded
     document.querySelectorAll('img').forEach(img => {
@@ -693,11 +691,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-if (!prefersReducedMotion.matches) {
-    window.addEventListener('beforeunload', () => {
-        document.body.classList.add('is-exiting');
-    });
-}
+window.addEventListener('beforeunload', () => {
+    document.body.classList.add('is-exiting');
+});
 
 // ===================================
 // Handle Page Visibility
