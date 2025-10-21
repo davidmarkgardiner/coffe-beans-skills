@@ -7,43 +7,55 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Coffee Brown Palette
+        // Golden Coffee Palette
         coffee: {
-          50: '#faf8f5',
-          100: '#f4f0e8',
-          200: '#e8dfd0',
-          300: '#d6c5a8',
-          400: '#c4ab80',
-          500: '#a88f66',
-          600: '#8b7355',
-          700: '#6B4423', // Primary coffee brown
-          800: '#4b2f18',
-          900: '#3a2412',
-          950: '#2a1a0d',
+          50: '#fbf7ef',
+          100: '#f8f3e8',
+          200: '#f0e5d4',
+          300: '#e4d2b5',
+          400: '#d2ba8f',
+          500: '#c9a26a',
+          600: '#b48846',
+          700: '#C9932C', // Primary golden coffee tone
+          800: '#8a5a16',
+          900: '#5b390e',
+          950: '#3a2408',
         },
-        // Grey Scale
+        // Warm Grey Scale
         grey: {
-          50: '#fafafa',
-          100: '#f5f5f5',
-          200: '#e5e5e5',
-          300: '#d4d4d4',
-          400: '#a3a3a3',
-          500: '#737373',
-          600: '#525252',
-          700: '#404040',
-          800: '#262626',
-          900: '#171717',
+          50: '#f9f6ef',
+          100: '#f1eadb',
+          200: '#e1d3bb',
+          300: '#d3c1a1',
+          400: '#bfa887',
+          500: '#a3896a',
+          600: '#7f6850',
+          700: '#57493b',
+          800: '#3a2f25',
+          900: '#1e1915',
         },
+        charcoal: '#2f2721',
+        cream: '#f7f1e3',
       },
       fontFamily: {
-        display: ['Playfair Display', 'serif'],
+        display: ['Cinzel', 'serif'],
+        serif: ['Playfair Display', 'serif'],
         sans: ['Inter', 'sans-serif'],
       },
       boxShadow: {
-        'soft': '0 2px 4px rgba(0, 0, 0, 0.04)',
-        'medium': '0 4px 12px rgba(0, 0, 0, 0.08)',
-        'large': '0 12px 24px rgba(0, 0, 0, 0.12)',
-        'xl': '0 24px 48px rgba(0, 0, 0, 0.16)',
+        soft: 'inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 1px 2px rgba(47, 39, 33, 0.08)',
+        medium: 'inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 6px 12px rgba(47, 39, 33, 0.12)',
+        large: 'inset 0 2px 0 rgba(255, 255, 255, 0.24), 0 12px 24px rgba(47, 39, 33, 0.18)',
+        xl: 'inset 0 3px 0 rgba(255, 255, 255, 0.28), 0 18px 36px rgba(30, 25, 21, 0.22)',
+      },
+      backgroundImage: {
+        'gradient-cta': 'linear-gradient(135deg, #c9a26a 0%, #C9932C 55%, #8a5a16 100%)',
+        'gradient-cta-hover': 'linear-gradient(135deg, #e4d2b5 0%, #c9a26a 45%, #7f5523 100%)',
+        'gradient-surface': 'linear-gradient(180deg, rgba(248, 243, 232, 0.95) 0%, rgba(229, 206, 165, 0.9) 100%)',
+        'gradient-surface-hover': 'linear-gradient(180deg, rgba(248, 243, 232, 0.98) 0%, rgba(229, 206, 165, 0.95) 100%)',
+        'gradient-nav-strong': 'linear-gradient(180deg, rgba(247, 241, 227, 0.95) 0%, rgba(247, 241, 227, 0.9) 70%, rgba(247, 241, 227, 0.85) 100%)',
+        'gradient-nav-soft': 'linear-gradient(180deg, rgba(247, 241, 227, 0.88) 0%, rgba(247, 241, 227, 0.82) 70%, rgba(247, 241, 227, 0.75) 100%)',
+        'gradient-body': 'radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.38) 0, transparent 70%), radial-gradient(circle at 80% 0%, rgba(255, 255, 255, 0.25) 0, transparent 70%)',
       },
       animation: {
         'fade-in': 'fade-in 0.5s ease-out',

@@ -1,7 +1,15 @@
+import { useState } from 'react'
 import { Navigation } from './components/Navigation'
 import { Hero } from './components/Hero'
 import { ProductGrid } from './components/ProductGrid'
+import { About } from './components/About'
+import { Testimonials } from './components/Testimonials'
+import { Newsletter } from './components/Newsletter'
 import { Footer } from './components/Footer'
+import { BlogHighlights } from './components/BlogHighlights'
+import { CustomCursor } from './components/CustomCursor'
+import { LoginModal } from './components/LoginModal'
+import CoffeeCopilot from './components/CoffeeCopilot'
 import { useCart } from './hooks/useCart'
 import type { Product } from './types/product'
 
@@ -66,13 +74,31 @@ const products: Product[] = [
 
 function App() {
   const { addToCart, itemCount } = useCart()
+  const [loginModalOpen, setLoginModalOpen] = useState(false)
 
   return (
     <>
-      <Navigation itemCount={itemCount} />
+      <CustomCursor />
+      <Navigation
+        itemCount={itemCount}
+        onOpenLogin={() => setLoginModalOpen(true)}
+      />
       <Hero />
+      <About />
       <ProductGrid products={products} onAddToCart={addToCart} />
+      <Testimonials />
+      <BlogHighlights />
+      <Newsletter />
       <Footer />
+
+      {/* Login Modal at App level - covers entire page */}
+      <LoginModal
+        isOpen={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+      />
+
+      {/* Coffee Copilot - AI Assistant */}
+      <CoffeeCopilot />
     </>
   )
 }
