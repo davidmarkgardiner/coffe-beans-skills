@@ -12,7 +12,7 @@ Your coffee website has been fully configured with Firebase using CLI commands!
 ### 2. Environment Variables Configured
 ✅ `.env.local` created with actual Firebase credentials:
 ```env
-VITE_FIREBASE_API_KEY=AIzaSyCHdLayVX9VBYHNTzLDfuquI3ag_8KBv3g
+VITE_FIREBASE_API_KEY=<your-api-key>
 VITE_FIREBASE_AUTH_DOMAIN=coffee-65c46.firebaseapp.com
 VITE_FIREBASE_PROJECT_ID=coffee-65c46
 VITE_FIREBASE_STORAGE_BUCKET=coffee-65c46.firebasestorage.app
@@ -20,6 +20,8 @@ VITE_FIREBASE_MESSAGING_SENDER_ID=607433247301
 VITE_FIREBASE_APP_ID=1:607433247301:web:115973512fd32baea4b12c
 VITE_FIREBASE_MEASUREMENT_ID=G-DDTY8Y35MC
 ```
+
+**Note**: Actual API keys are stored in `.env.local` (not committed to git)
 
 ### 3. Firebase Configuration Files Created
 ✅ `.firebaserc` - Project configuration
