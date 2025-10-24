@@ -14,6 +14,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const [imageError, setImageError] = useState(false)
   const { currentUser, logout } = useAuth()
 
   useEffect(() => {
@@ -21,6 +22,11 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  // Reset image error when user changes
+  useEffect(() => {
+    setImageError(false)
+  }, [currentUser?.photoURL])
 
   const handleLogout = async () => {
     try {
@@ -102,15 +108,16 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                   className="flex items-center gap-2 p-2 hover:bg-grey-100 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2"
                   aria-label="User menu"
                 >
-                  {currentUser.photoURL ? (
+                  {currentUser.photoURL && !imageError ? (
                     <img
                       src={currentUser.photoURL}
                       alt={currentUser.displayName || 'User'}
-                      className="w-8 h-8 rounded-full object-cover"
+                      className="w-10 h-10 rounded-full object-cover border-2 border-grey-200"
+                      onError={() => setImageError(true)}
                     />
                   ) : (
-                    <div className="w-8 h-8 bg-coffee-700 rounded-full flex items-center justify-center">
-                      <User className="w-4 h-4 text-white" />
+                    <div className="w-10 h-10 bg-gradient-to-br from-coffee-600 to-coffee-800 rounded-full flex items-center justify-center shadow-sm border-2 border-grey-200">
+                      <User className="w-5 h-5 text-white" />
                     </div>
                   )}
                   <span className="hidden md:block text-sm font-medium text-grey-700 max-w-[100px] truncate">
