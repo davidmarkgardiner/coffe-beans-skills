@@ -15,6 +15,12 @@ concurrency:
   group: preview-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
+# Required permissions for Firebase action
+permissions:
+  checks: write
+  contents: read
+  pull-requests: write
+
 jobs:
   deploy-preview:
     # Only deploy preview if PR is open (not when closing)
