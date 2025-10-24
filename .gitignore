@@ -10,8 +10,11 @@ dist/
 downloads/
 eggs/
 .eggs/
+# Python lib directories
 lib/
 lib64/
+# But allow source code lib directories
+!**/src/lib/
 parts/
 sdist/
 var/
