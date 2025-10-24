@@ -7,16 +7,6 @@ npm-debug.log
 .env.local
 .env.*.local
 
-# TypeScript source (we only need compiled JS)
-*.ts
-!dist/**/*.js
-
-# Development files
-tsconfig.json
-src/
-.eslintrc*
-.prettierrc*
-
 # Git
 .git/
 .gitignore
@@ -46,11 +36,12 @@ test/
 # Documentation
 *.md
 docs/
-
-# Build artifacts (except dist)
-dist/
-!dist/**
+README*
 
 # Temporary files
 tmp/
 temp/
+
+# Don't ignore TypeScript files - we need them for the build stage
+# Don't ignore src/ - we need it for the build stage
+# Don't ignore tsconfig.json - TypeScript needs it to compile
