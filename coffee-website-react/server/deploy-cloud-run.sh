@@ -71,7 +71,7 @@ gcloud run deploy "${SERVICE_NAME}" \
     --memory "${MEMORY}" \
     --cpu "${CPU}" \
     --timeout "${TIMEOUT}" \
-    --set-env-vars "NODE_ENV=production,PORT=8080" \
+    --set-env-vars "NODE_ENV=production" \
     --set-secrets "OPENAI_API_KEY=openai-api-key:latest,GEMINI_API_KEY=gemini-api-key:latest,STRIPE_SECRET_KEY=stripe-secret-key:latest" \
     --port 8080
 
