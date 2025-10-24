@@ -37,22 +37,17 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h1 className="font-display text-6xl md:text-8xl font-bold text-white mb-6 tracking-tight leading-[0.95] drop-shadow-[0_8px_16px_rgba(0,0,0,0.4)]">
+          <h1 className="font-display text-6xl md:text-8xl font-bold text-cream mb-6 tracking-tight leading-[0.95] drop-shadow-[0_8px_16px_rgba(0,0,0,0.4)]">
             STOCKBRIDGE COFFEE
             <br />
             EDINBURGH
           </h1>
-          <p className="text-xl md:text-2xl text-grey-200 mb-8 font-light tracking-wide drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)]">
-            Premium Single-Origin Beans
+          <p className="font-serif text-sm md:text-base text-grey-200 mb-4 tracking-widest uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)]">
+            Est. 2025 · Stockbridge
           </p>
-          <motion.a
-            href="#products"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="inline-block bg-white text-grey-900 px-8 py-4 rounded-sm font-semibold text-lg hover:bg-grey-100 transition-colors shadow-xl hover:shadow-2xl"
-          >
-            Explore Our Collection
-          </motion.a>
+          <p className="font-sans text-base md:text-lg text-grey-100 max-w-2xl mx-auto font-light leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)]">
+            Independent roastery rooted in the cobbled lanes of Stockbridge. Seasonal beans, heritage blends, and warm community spirit in every cup.
+          </p>
         </motion.div>
       </div>
     </section>
