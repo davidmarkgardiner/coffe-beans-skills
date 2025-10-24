@@ -3,6 +3,9 @@
 
 set -e  # Exit on error
 
+# Change to script directory
+cd "$(dirname "$0")"
+
 # Configuration
 PROJECT_ID="${GCP_PROJECT_ID:-coffee-65c46}"
 SERVICE_NAME="coffee-copilot-backend"
@@ -69,7 +72,7 @@ gcloud run deploy "${SERVICE_NAME}" \
     --cpu "${CPU}" \
     --timeout "${TIMEOUT}" \
     --set-env-vars "NODE_ENV=production,PORT=8080" \
-    --set-secrets "OPENAI_API_KEY=OPENAI_API_KEY:latest,GEMINI_API_KEY=GEMINI_API_KEY:latest,STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest" \
+    --set-secrets "OPENAI_API_KEY=openai-api-key:latest,GEMINI_API_KEY=gemini-api-key:latest,STRIPE_SECRET_KEY=stripe-secret-key:latest" \
     --port 8080
 
 # Get the service URL

@@ -79,7 +79,7 @@ jobs:
             --cpu 1 \
             --timeout 300 \
             --set-env-vars "NODE_ENV=production,PORT=8080" \
-            --update-secrets "OPENAI_API_KEY=OPENAI_API_KEY:latest,GEMINI_API_KEY=GEMINI_API_KEY:latest,STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest" \
+            --update-secrets "OPENAI_API_KEY=openai-api-key:latest,GEMINI_API_KEY=gemini-api-key:latest,STRIPE_SECRET_KEY=stripe-secret-key:latest" \
             --port 8080
 
       - name: Get service URL
