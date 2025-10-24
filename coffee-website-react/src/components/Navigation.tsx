@@ -55,10 +55,10 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
             aria-label="Stockbridge Coffee"
           >
             <span className="flex flex-col uppercase tracking-[0.35em]">
-              <span className="font-display text-base lg:text-lg leading-tight text-charcoal">
+              <span className="font-display text-base lg:text-lg leading-tight text-background">
                 Stockbridge Coffee
               </span>
-              <span className="font-sans text-[0.65rem] tracking-[0.4em] text-coffee-600 mt-0.5">
+              <span className="font-sans text-[0.65rem] tracking-[0.4em] text-accent mt-0.5">
                 Edinburgh
               </span>
             </span>
@@ -67,25 +67,25 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
           <div className="hidden md:flex items-center gap-10">
             <a
               href="#products"
-              className="text-base font-medium text-grey-700 hover:text-coffee-700 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2 rounded"
+              className="text-base font-medium text-surface hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
             >
               Shop
             </a>
             <a
               href="#blog"
-              className="text-base font-medium text-grey-700 hover:text-coffee-700 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2 rounded"
+              className="text-base font-medium text-surface hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
             >
               Blog
             </a>
             <a
               href="#about"
-              className="text-base font-medium text-grey-700 hover:text-coffee-700 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2 rounded"
+              className="text-base font-medium text-surface hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
             >
               About
             </a>
             <a
               href="#contact"
-              className="text-base font-medium text-grey-700 hover:text-coffee-700 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2 rounded"
+              className="text-base font-medium text-surface hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
             >
               Contact
             </a>
@@ -97,22 +97,22 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
               <div className="relative">
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="flex items-center gap-2 p-2 hover:bg-grey-100 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2"
+                  className="flex items-center gap-2 p-2 hover:bg-heading/10 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                   aria-label="User menu"
                 >
                   {currentUser.photoURL && !imageError ? (
                     <img
                       src={currentUser.photoURL}
                       alt={currentUser.displayName || 'User'}
-                      className="w-10 h-10 rounded-full object-cover border-2 border-grey-200"
+                      className="w-10 h-10 rounded-full object-cover border-2 border-accent-light"
                       onError={() => setImageError(true)}
                     />
                   ) : (
-                    <div className="w-10 h-10 bg-gradient-to-br from-coffee-600 to-coffee-800 rounded-full flex items-center justify-center shadow-sm border-2 border-grey-200">
+                    <div className="w-10 h-10 bg-gradient-to-br from-accent to-accent-dark rounded-full flex items-center justify-center shadow-sm border-2 border-accent-light">
                       <User className="w-5 h-5 text-white" />
                     </div>
                   )}
-                  <span className="hidden md:block text-sm font-medium text-grey-700 max-w-[100px] truncate">
+                  <span className="hidden md:block text-sm font-medium text-surface max-w-[100px] truncate">
                     {currentUser.displayName || currentUser.email?.split('@')[0]}
                   </span>
                 </button>
@@ -149,7 +149,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
             ) : (
               <button
                 onClick={onOpenLogin}
-                className="hidden md:flex items-center gap-2 px-4 py-2 bg-coffee-700 text-white rounded-lg hover:bg-coffee-800 transition-colors duration-200 font-medium text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2"
+                className="hidden md:flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-hover transition-colors duration-200 font-medium text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
               >
                 <User className="w-4 h-4" />
                 Sign In
@@ -159,15 +159,15 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
             {/* Shopping Cart */}
             <button
               onClick={onOpenCart}
-              className="relative p-2 hover:bg-grey-100 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2"
+              className="relative p-2 hover:bg-heading/10 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
               aria-label={`Shopping cart with ${itemCount} items`}
             >
-              <ShoppingCart className="w-5 h-5 text-grey-700" />
+              <ShoppingCart className="w-5 h-5 text-surface" />
               {itemCount > 0 && (
                 <motion.span
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="absolute -top-1 -right-1 w-5 h-5 bg-coffee-700 text-white text-xs rounded-full flex items-center justify-center font-medium"
+                  className="absolute -top-1 -right-1 w-5 h-5 bg-accent text-white text-xs rounded-full flex items-center justify-center font-medium"
                 >
                   {itemCount}
                 </motion.span>
@@ -177,13 +177,13 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 hover:bg-grey-100 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2"
+              className="md:hidden p-2 hover:bg-heading/10 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
               aria-label="Toggle mobile menu"
             >
               {mobileMenuOpen ? (
-                <X className="w-5 h-5 text-grey-700" />
+                <X className="w-5 h-5 text-surface" />
               ) : (
-                <Menu className="w-5 h-5 text-grey-700" />
+                <Menu className="w-5 h-5 text-surface" />
               )}
             </button>
           </div>
@@ -206,7 +206,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                       setMobileMenuOpen(false)
                       onOpenLogin()
                     }}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-coffee-700 text-white rounded-lg hover:bg-coffee-800 transition-colors duration-200 font-medium text-sm"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-hover transition-colors duration-200 font-medium text-sm"
                   >
                     <User className="w-4 h-4" />
                     Sign In
@@ -215,28 +215,28 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                 <a
                   href="#products"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-sm font-medium text-grey-700 hover:text-coffee-700 transition-colors duration-200 py-2"
+                  className="block text-sm font-medium text-surface hover:text-accent transition-colors duration-200 py-2"
                 >
                   Shop
                 </a>
                 <a
                   href="#blog"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-sm font-medium text-grey-700 hover:text-coffee-700 transition-colors duration-200 py-2"
+                  className="block text-sm font-medium text-surface hover:text-accent transition-colors duration-200 py-2"
                 >
                   Blog
                 </a>
                 <a
                   href="#about"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-sm font-medium text-grey-700 hover:text-coffee-700 transition-colors duration-200 py-2"
+                  className="block text-sm font-medium text-surface hover:text-accent transition-colors duration-200 py-2"
                 >
                   About
                 </a>
                 <a
                   href="#contact"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-sm font-medium text-grey-700 hover:text-coffee-700 transition-colors duration-200 py-2"
+                  className="block text-sm font-medium text-surface hover:text-accent transition-colors duration-200 py-2"
                 >
                   Contact
                 </a>
@@ -246,7 +246,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                       setMobileMenuOpen(false)
                       handleLogout()
                     }}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2 text-grey-700 border border-grey-300 rounded-lg hover:bg-grey-50 transition-colors duration-200 font-medium text-sm"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2 text-surface border border-accent-light rounded-lg hover:bg-heading/10 transition-colors duration-200 font-medium text-sm"
                   >
                     <LogOut className="w-4 h-4" />
                     Sign Out

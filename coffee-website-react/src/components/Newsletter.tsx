@@ -16,7 +16,7 @@ export function Newsletter() {
   }
 
   return (
-    <section className="py-24 bg-gradient-to-b from-coffee-900 to-coffee-800 text-white">
+    <section className="py-24 bg-gradient-to-b from-heading to-accent-dark text-white">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -25,7 +25,7 @@ export function Newsletter() {
           transition={{ duration: 0.6 }}
           className="max-w-3xl mx-auto text-center"
         >
-          <p className="text-sm font-semibold tracking-widest uppercase text-coffee-200 mb-4">
+          <p className="text-sm font-semibold tracking-widest uppercase text-accent-light mb-4">
             Newsletter
           </p>
           <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight mb-4">
@@ -50,7 +50,7 @@ export function Newsletter() {
               type="submit"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
-              className="px-8 py-3 rounded-full bg-white text-coffee-900 font-semibold text-sm tracking-wide uppercase shadow-large transition-all duration-200 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-coffee-900"
+              className="px-8 py-3 rounded-full bg-white text-heading font-semibold text-sm tracking-wide uppercase shadow-large transition-all duration-200 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-heading"
             >
               {submitted ? '✓ Subscribed!' : 'Subscribe'}
             </motion.button>

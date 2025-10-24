@@ -44,7 +44,7 @@ const card = {
 
 export function BlogHighlights() {
   return (
-    <section className="py-20 bg-white" id="blog">
+    <section className="py-20 bg-background" id="blog">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -53,13 +53,13 @@ export function BlogHighlights() {
           transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
           className="text-center mb-16"
         >
-          <p className="text-sm font-semibold tracking-widest uppercase text-coffee-700 mb-4">
+          <p className="text-sm font-semibold tracking-widest uppercase text-accent mb-4">
             Stockbridge Stories
           </p>
-          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-grey-900 mb-6">
+          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-heading mb-6">
             From Our Blog
           </h2>
-          <p className="text-lg text-grey-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg text-text max-w-2xl mx-auto leading-relaxed">
             Brew notes, neighbourhood spotlights, and behind-the-scenes reflections from the team
             crafting the Stockbridge Coffee experience.
           </p>
@@ -78,16 +78,16 @@ export function BlogHighlights() {
               variants={card}
               className="relative h-full rounded-2xl bg-gradient-surface p-8 shadow-medium transition-all duration-300 hover:bg-gradient-surface-hover hover:shadow-large"
             >
-              <p className="text-xs font-semibold tracking-widest uppercase text-grey-500 mb-4">
+              <p className="text-xs font-semibold tracking-widest uppercase text-accent mb-4">
                 {post.date} · {post.readTime}
               </p>
-              <h3 className="font-display text-2xl font-semibold tracking-tight text-grey-900 mb-3">
+              <h3 className="font-display text-2xl font-semibold tracking-tight text-heading mb-3">
                 {post.title}
               </h3>
-              <p className="text-sm text-grey-600 leading-relaxed mb-6">{post.excerpt}</p>
+              <p className="text-sm text-text leading-relaxed mb-6">{post.excerpt}</p>
               <a
                 href={`/blog/${post.id}`}
-                className="inline-flex items-center text-sm font-semibold text-coffee-700 hover:text-coffee-600 transition-colors duration-200"
+                className="inline-flex items-center text-sm font-semibold text-accent hover:text-accent-hover transition-colors duration-200"
               >
                 Read Story
                 <span aria-hidden className="ml-2 text-base">

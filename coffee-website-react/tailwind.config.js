@@ -7,35 +7,46 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Golden Coffee Palette
+        // Sophisticated Color Palette
+        background: '#F7F4ED', // Light cream - main background
+        surface: '#E9E1D7', // Soft beige - cards, sections
+        accent: {
+          DEFAULT: '#B8A690', // Taupe brown - buttons, borders, highlights
+          hover: '#A69582', // Darkened by 10% for hover states
+          light: '#C9B5A4', // Lighter shade for subtle elements
+          dark: '#A08976', // Darker shade for borders/dividers
+        },
+        text: '#5B5245', // Deep mocha - primary text
+        heading: '#3A3530', // Espresso brown - headings, footer, nav
+
+        // Legacy color mappings for backward compatibility
         coffee: {
-          50: '#fbf7ef',
-          100: '#f8f3e8',
-          200: '#f0e5d4',
-          300: '#e4d2b5',
-          400: '#d2ba8f',
-          500: '#c9a26a',
-          600: '#b48846',
-          700: '#C9932C', // Primary golden coffee tone
-          800: '#8a5a16',
-          900: '#5b390e',
-          950: '#3a2408',
+          50: '#F7F4ED',
+          100: '#F7F4ED',
+          200: '#E9E1D7',
+          300: '#E9E1D7',
+          400: '#C9B5A4',
+          500: '#B8A690',
+          600: '#B8A690',
+          700: '#B8A690',
+          800: '#A08976',
+          900: '#5B5245',
+          950: '#3A3530',
         },
-        // Warm Grey Scale
         grey: {
-          50: '#f9f6ef',
-          100: '#f1eadb',
-          200: '#e1d3bb',
-          300: '#d3c1a1',
-          400: '#bfa887',
-          500: '#a3896a',
-          600: '#7f6850',
-          700: '#57493b',
-          800: '#3a2f25',
-          900: '#1e1915',
+          50: '#F7F4ED',
+          100: '#E9E1D7',
+          200: '#E9E1D7',
+          300: '#C9B5A4',
+          400: '#B8A690',
+          500: '#A08976',
+          600: '#7A6F63',
+          700: '#5B5245',
+          800: '#4A453F',
+          900: '#3A3530',
         },
-        charcoal: '#2f2721',
-        cream: '#f7f1e3',
+        charcoal: '#3A3530',
+        cream: '#F7F4ED',
       },
       fontFamily: {
         display: ['Cinzel', 'serif'],
@@ -49,12 +60,12 @@ export default {
         xl: 'inset 0 3px 0 rgba(255, 255, 255, 0.28), 0 18px 36px rgba(30, 25, 21, 0.22)',
       },
       backgroundImage: {
-        'gradient-cta': 'linear-gradient(135deg, #c9a26a 0%, #C9932C 55%, #8a5a16 100%)',
-        'gradient-cta-hover': 'linear-gradient(135deg, #e4d2b5 0%, #c9a26a 45%, #7f5523 100%)',
-        'gradient-surface': 'linear-gradient(180deg, rgba(248, 243, 232, 0.95) 0%, rgba(229, 206, 165, 0.9) 100%)',
-        'gradient-surface-hover': 'linear-gradient(180deg, rgba(248, 243, 232, 0.98) 0%, rgba(229, 206, 165, 0.95) 100%)',
-        'gradient-nav-strong': 'linear-gradient(180deg, rgba(247, 241, 227, 0.95) 0%, rgba(247, 241, 227, 0.9) 70%, rgba(247, 241, 227, 0.85) 100%)',
-        'gradient-nav-soft': 'linear-gradient(180deg, rgba(247, 241, 227, 0.88) 0%, rgba(247, 241, 227, 0.82) 70%, rgba(247, 241, 227, 0.75) 100%)',
+        'gradient-cta': 'linear-gradient(135deg, #B8A690 0%, #A08976 55%, #7A6F63 100%)',
+        'gradient-cta-hover': 'linear-gradient(135deg, #C9B5A4 0%, #B8A690 45%, #A69582 100%)',
+        'gradient-surface': 'linear-gradient(180deg, rgba(247, 244, 237, 0.95) 0%, rgba(233, 225, 215, 0.9) 100%)',
+        'gradient-surface-hover': 'linear-gradient(180deg, rgba(247, 244, 237, 0.98) 0%, rgba(233, 225, 215, 0.95) 100%)',
+        'gradient-nav-strong': 'linear-gradient(180deg, rgba(58, 53, 48, 0.95) 0%, rgba(58, 53, 48, 0.9) 70%, rgba(58, 53, 48, 0.85) 100%)',
+        'gradient-nav-soft': 'linear-gradient(180deg, rgba(58, 53, 48, 0.88) 0%, rgba(58, 53, 48, 0.82) 70%, rgba(58, 53, 48, 0.75) 100%)',
         'gradient-body': 'radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.38) 0, transparent 70%), radial-gradient(circle at 80% 0%, rgba(255, 255, 255, 0.25) 0, transparent 70%)',
       },
       animation: {
