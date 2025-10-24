@@ -29,6 +29,9 @@ Invoke this skill when:
 6. Optimizing logo performance (file size, loading priority)
 7. Ensuring logo accessibility and proper contrast
 8. Working with transparent logos that adapt to any background
+9. **Redesigning hero sections for maximum logo visibility and impact**
+10. **Creating bright/high-contrast logo variants for dark backgrounds**
+11. **Fixing logo spelling errors or color issues in existing variants**
 
 ## Quick Start Workflow
 
@@ -427,6 +430,108 @@ export default function SeasonalLogo() {
 }
 ```
 
+### Pattern 5: Massive Logo Hero (Maximum Visual Impact)
+```tsx
+import brightLogo from '../assets/logo-variants/logo-bright.png'
+import { motion } from 'framer-motion'
+
+export default function Hero() {
+  return (
+    <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      {/* Background with subtle blur */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center scale-105 blur-[2px]"
+          style={{ backgroundImage: `url(${bgImage})` }}
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.12)_0,transparent_60%)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-grey-900/60 via-grey-900/70 to-grey-900/80" />
+      </div>
+
+      {/* Massive Centered Logo */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1, delay: 0.2 }}
+        className="relative z-10 flex items-center justify-center px-4 w-full"
+      >
+        <img
+          src={brightLogo}
+          alt="Company Name Location - Logo"
+          className="object-contain drop-shadow-[0_30px_60px_rgba(0,0,0,0.65)]
+                     w-[95vw] sm:w-[90vw] md:w-[85vw] lg:w-[82vw] xl:w-[78vw] 2xl:w-[72vw]
+                     max-w-[1680px]"
+          style={{
+            imageRendering: 'crisp-edges',
+            filter: 'drop-shadow(0 0 40px rgba(255, 255, 255, 0.15))'
+          }}
+          loading="eager"
+        />
+      </motion.div>
+    </section>
+  );
+}
+```
+
+**When to use:** Hero section where logo should be the dominant visual element (60-95% of viewport width) on dark backgrounds. Perfect for minimal, elegant, artisan aesthetics.
+
+**See:** `references/hero-redesign-patterns.md` for complete implementation guide.
+
+## Advanced: Creating Bright Logo Variants
+
+### When You Need a Bright Variant
+
+Common scenarios:
+- Logo appears too dark on dark backgrounds (e.g., coffee beans, dark imagery)
+- Need high-contrast variant for hero sections
+- Existing logo variants have wrong spelling or colors
+- Want off-white/light gold coloring for premium feel
+
+### Creating Bright Variants with Python
+
+Use the `scripts/create_bright_variant.py` script:
+
+```bash
+python scripts/create_bright_variant.py input-logo.png output-bright.png
+```
+
+**What it does:**
+1. Converts logo background to transparent
+2. Brightens logo colors to off-white/light gold (RGB: 250, 240, 210)
+3. Preserves edge detail while maximizing visibility
+4. Enhances contrast (1.3x) and sharpness (1.5x)
+5. Makes logo 85-95% brightness depending on pixel darkness
+
+**Use cases:**
+- Logo has correct spelling but dark colors
+- Need to brighten existing golden/grey variants
+- Want warm, elegant tone for hero sections
+
+**Common issue:** Logo has wrong spelling (e.g., "COEEEE" instead of "COFFEE")
+- **Solution:** Find logo variant with correct spelling first (may be in different file)
+- Use webapp-testing skill to verify spelling before processing
+- Then run through bright variant script
+
+### Troubleshooting Bright Variants
+
+**Logo still too dark:**
+```python
+# Edit create_bright_variant.py
+bright_r = 255  # Increase from 250
+bright_g = 250  # Increase from 240
+bright_b = 220  # Increase from 210
+```
+
+**Logo appears blurry:**
+- Use higher resolution source (1024x1024 min)
+- Increase sharpness: `logo = sharpness_enhancer.enhance(2.0)`
+- Add `imageRendering: 'crisp-edges'` in CSS
+
+**Logo not transparent:**
+- Check background_threshold value (default: 200)
+- Verify source logo has no embedded background
+- Try increasing threshold to 220 for stubborn backgrounds
+
 ## Resources
 
 ### assets/
@@ -436,10 +541,12 @@ export default function SeasonalLogo() {
 ### references/
 - **logo-usage-guidelines.md** - Comprehensive guidelines on variant selection, sizing, accessibility, and best practices
 - **implementation-guide.md** - Ready-to-use code examples for Express, React, Next.js, and HTML implementations
+- **hero-redesign-patterns.md** - Complete guide for creating massive logo hero sections with maximum visual impact
 
 ### scripts/
 - **extract_logos.py** - Python script for extracting individual transparent logo variants from composite images
 - **export_logo_assets.py** - Python script for generating optimized logo assets in various formats and sizes
+- **create_bright_variant.py** - Python script for creating bright off-white/light gold logo variants for dark backgrounds
 
 ## Workflow Decision Tree
 
@@ -484,6 +591,7 @@ START: Need to add/update a logo?
 
 ## Best Practices
 
+### General Logo Management
 1. **Transparency first:** Always use transparent PNG logos so they work on any background
 2. **Consistency:** Use the same variant throughout a page section for visual coherence
 3. **Contrast:** Always test logo visibility against actual backgrounds, not just in isolation
@@ -496,3 +604,27 @@ START: Need to add/update a logo?
 10. **Asset organization:** Keep logo variants in `src/assets/logo-variants/` for easy management
 11. **Version control:** Cache-bust logo files when updating to ensure users see changes
 12. **Extraction workflow:** Use `extract_logos.py` when receiving composite images from designers
+
+### Creating Bright/High-Visibility Variants
+13. **Verify spelling first:** Always check logo spelling using webapp-testing skill before processing
+14. **Start with correct source:** Use logo file with correct spelling, even if wrong color
+15. **Test on actual website:** View generated logo on the actual dark background, not just the PNG
+16. **Brightness balance:** Aim for 85-95% brightness to stand out while preserving detail
+17. **Color temperature:** Use warm tones (golden/off-white) for premium, elegant feel
+18. **Enhance sharpness:** Apply 1.3-1.5x contrast and sharpness for crisp text edges
+19. **High resolution source:** Use 1024x1024 or larger for best results
+
+### Hero Section Redesign
+20. **Logo-first approach:** When logo is the brand (icon + text), make it the hero centerpiece
+21. **Remove duplicates:** Eliminate separate h1 headings that repeat logo text
+22. **Progressive sizing:** Use viewport-based sizing (95vw mobile → 72vw desktop)
+23. **Background treatment:** Add subtle blur (2px) and dark overlay (60-80% opacity) to make logo pop
+24. **Shadow for depth:** Use heavy drop shadow (30-60px) for dramatic depth effect
+25. **Test across devices:** Verify logo fills appropriate space on mobile, tablet, and desktop
+26. **Keep it clean:** Remove CTAs, scroll indicators, and extraneous text from hero
+
+### Lessons Learned
+27. **File vs rendered state:** File may show old code, but webapp serves correct version - always test in browser
+28. **Spelling errors common:** Designer-provided logo variants often have typos - check each variant
+29. **Git doesn't lie:** Use webapp-testing skill to verify actual rendered state, not just file reads
+30. **Brightness matters:** What looks "bright enough" as a PNG may be too dark on actual dark background

@@ -251,3 +251,5 @@ youtube_token.json
 firebase-debug.log
 firestore-debug.log
 ui-debug.log
+.env.firbase
+service-account.json

@@ -1,0 +1,143 @@
+name: Firebase Preview Channel Deployment
+
+# Triggers:
+# - When a PR is opened, reopened, or synchronized (new commits)
+# - When a PR is closed (to clean up the preview channel)
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+
+# Ensure only one workflow runs per PR at a time
+concurrency:
+  group: preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  deploy-preview:
+    # Only deploy preview if PR is open (not when closing)
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+        continue-on-error: false  # Fail deployment if tests fail
+
+      - name: Build application
+        run: npm run build
+        env:
+          # Add environment variables for preview builds
+          VITE_ENV: preview
+          VITE_API_URL: ${{ secrets.PREVIEW_API_URL }}
+
+      - name: Deploy to Preview Channel
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          projectId: ${{ secrets.FIREBASE_PROJECT_ID }}
+          channelId: pr-${{ github.event.pull_request.number }}
+          expires: 7d
+        env:
+          FIREBASE_CLI_EXPERIMENTS: webframeworks
+
+      - name: Comment PR with Preview URL
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const projectId = '${{ secrets.FIREBASE_PROJECT_ID }}';
+            const channelId = `pr-${prNumber}`;
+
+            // Construct preview URL (actual URL comes from deploy step output)
+            const previewUrl = `https://${projectId}--${channelId}-*.web.app`;
+
+            const comment = `## 🚀 Preview Deployment
+
+            Your preview deployment is ready!
+
+            **Preview Channel:** \`pr-${prNumber}\`
+            **Expires:** 7 days from now
+
+            Once the deployment completes, the preview URL will be available in the deploy step output above.
+
+            ### Pre-deployment Checklist
+            - ✅ Tests passed
+            - ✅ Build succeeded
+            - ✅ Deployed to preview channel
+
+            ### Testing Checklist
+            Please verify the following before merging:
+            - [ ] All pages load correctly
+            - [ ] Authentication works
+            - [ ] Forms submit properly
+            - [ ] API calls succeed
+            - [ ] No console errors
+            - [ ] Mobile responsive
+            - [ ] Accessibility check
+
+            ---
+            *Deployed from commit ${context.sha.substring(0, 7)}*
+            `;
+
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: comment
+            });
+
+  cleanup-preview:
+    # Clean up preview channel when PR is closed
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Delete Preview Channel
+        run: |
+          firebase hosting:channel:delete pr-${{ github.event.pull_request.number }} --force
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = context.payload.pull_request.number;
+
+            const comment = `## 🧹 Preview Channel Cleaned Up
+
+            The preview channel \`pr-${prNumber}\` has been deleted.
+            `;
+
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: comment
+            });
