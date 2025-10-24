@@ -107,7 +107,7 @@ async function createGithubIssue(params: {
       throw new Error(`GitHub API error: ${response.status} - ${error}`);
     }
 
-    const issue = await response.json();
+    const issue = await response.json() as { number: number; html_url: string };
     return {
       issueNumber: issue.number,
       url: issue.html_url,
