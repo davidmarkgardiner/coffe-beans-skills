@@ -358,3 +358,23 @@ Free to use for personal and commercial projects.
 **Built with the Premium Coffee Website Skill**
 
 Enjoy your premium coffee website! ☕
+
+## Firebase Deployment
+
+This application is automatically deployed to Firebase Hosting:
+
+- **Production**: Deployed on push to `main` branch
+- **Preview**: Deployed on PR creation with unique preview URL
+
+See [FIREBASE_DEPLOYMENT.md](./FIREBASE_DEPLOYMENT.md) for complete deployment guide.
+
+### Quick Deploy Commands
+
+```bash
+# Deploy to production
+npm run build
+firebase deploy --only hosting
+
+# Deploy to preview channel
+firebase hosting:channel:deploy preview --expires 7d
+```
