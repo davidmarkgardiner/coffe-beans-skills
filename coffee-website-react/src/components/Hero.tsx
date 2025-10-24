@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
-import stockbridgeLogoBright from '../assets/logo-variants/logo-stockbridge-bright.png'
 
 export function Hero() {
   const [imageUrl, setImageUrl] = useState('')
@@ -31,24 +30,31 @@ export function Hero() {
         <div className="absolute inset-0 bg-gradient-to-b from-grey-900/60 via-grey-900/70 to-grey-900/80" />
       </div>
 
-      {/* Content - Massive Centered Logo Fills Hero */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
-        className="relative z-10 flex items-center justify-center px-4 w-full"
-      >
-        <img
-          src={stockbridgeLogoBright}
-          alt="Stockbridge Coffee Edinburgh - Bridge and Bean Logo"
-          className="object-contain drop-shadow-[0_30px_60px_rgba(0,0,0,0.65)] w-[95vw] sm:w-[90vw] md:w-[85vw] lg:w-[82vw] xl:w-[78vw] 2xl:w-[72vw] max-w-[1680px]"
-          style={{
-            imageRendering: 'crisp-edges',
-            filter: 'drop-shadow(0 0 40px rgba(255, 255, 255, 0.15))'
-          }}
-          loading="eager"
-        />
-      </motion.div>
+      {/* Content */}
+      <div className="relative z-10 text-center px-4 max-w-6xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <h1 className="font-display text-6xl md:text-8xl font-bold text-white mb-6 tracking-tight leading-[0.95] drop-shadow-[0_8px_16px_rgba(0,0,0,0.4)]">
+            STOCKBRIDGE COFFEE
+            <br />
+            EDINBURGH
+          </h1>
+          <p className="text-xl md:text-2xl text-grey-200 mb-8 font-light tracking-wide drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)]">
+            Premium Single-Origin Beans
+          </p>
+          <motion.a
+            href="#products"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="inline-block bg-white text-grey-900 px-8 py-4 rounded-sm font-semibold text-lg hover:bg-grey-100 transition-colors shadow-xl hover:shadow-2xl"
+          >
+            Explore Our Collection
+          </motion.a>
+        </motion.div>
+      </div>
     </section>
   )
 }

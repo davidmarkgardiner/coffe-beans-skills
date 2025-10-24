@@ -526,6 +526,34 @@ Implement these security measures:
 - **Lazy load widget**: Only load when user interacts
 - **Compress responses**: Enable gzip compression
 
+## Production Deployment
+
+### Quick Start
+
+**`QUICK-DEPLOY.md`** - Fast deployment checklist (~20 minutes total):
+- ✅ Condensed step-by-step commands
+- ✅ Copy-paste ready for quick deployment
+- ✅ Common issues with quick fixes
+- ✅ Verification steps
+- ✅ Cost estimates
+
+Use this when you know what you're doing and just need the commands.
+
+### Complete Guide
+
+**`references/production-deployment.md`** - Comprehensive deployment guide with detailed explanations:
+- ✅ Google Cloud Run deployment (backend)
+- ✅ Firebase Hosting configuration (frontend)
+- ✅ Secret management with Google Secret Manager
+- ✅ CORS configuration and troubleshooting
+- ✅ GitHub Actions CI/CD setup
+- ✅ All common issues and solutions documented
+- ✅ Step-by-step deployment checklist
+- ✅ Cost optimization strategies
+- ✅ Architecture explanations
+
+This guide documents real production deployment experience, including every error encountered and how it was fixed. Essential for understanding the complete deployment process and troubleshooting issues.
+
 ## Resources
 
 ### Scripts (`scripts/`)
@@ -574,6 +602,17 @@ Implement these security measures:
 - Monitoring and observability setup
 - Post-deployment tasks
 - Rollback procedures
+
+**production-deployment.md**
+- Complete Google Cloud Run deployment guide with real production experience
+- Docker multi-stage build setup and common pitfalls
+- Google Secret Manager configuration and service account permissions
+- CORS configuration for Firebase Hosting integration
+- GitHub Actions CI/CD workflow setup
+- All errors encountered and their solutions
+- Step-by-step deployment process
+- Cost optimization strategies
+- Comprehensive troubleshooting guide
 
 ### Assets (`assets/`)
 

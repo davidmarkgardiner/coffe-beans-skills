@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { ShoppingCart, Menu, X, User, LogOut } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import logoMark from '../assets/stockbridge-logo.png'
 import { useAuth } from '../contexts/AuthContext'
 
 interface NavigationProps {
@@ -55,14 +54,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
             className="flex items-center gap-4 transition-all duration-300 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2 rounded-lg"
             aria-label="Stockbridge Coffee"
           >
-            <div className="relative">
-              <img
-                src={logoMark}
-                alt="Stockbridge Coffee emblem"
-                className="h-14 w-14 object-contain transition-transform duration-300 group-hover:scale-105"
-              />
-            </div>
-            <span className="hidden sm:flex flex-col uppercase tracking-[0.35em]">
+            <span className="flex flex-col uppercase tracking-[0.35em]">
               <span className="font-display text-base lg:text-lg leading-tight text-charcoal">
                 Stockbridge Coffee
               </span>

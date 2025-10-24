@@ -12,7 +12,8 @@ app.use(cors({
   origin: process.env.ALLOWED_ORIGINS?.split(',') || [
     'http://localhost:5173',
     'https://coffee-65c46.web.app',
-    'https://coffee-65c46.firebaseapp.com'
+    'https://coffee-65c46.firebaseapp.com',
+    'https://stockbridgecoffee.co.uk'
   ]
 }));
 app.use(express.json());
