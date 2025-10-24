@@ -7,9 +7,10 @@ import { useAuth } from '../contexts/AuthContext'
 interface NavigationProps {
   itemCount: number
   onOpenLogin: () => void
+  onOpenCart: () => void
 }
 
-export function Navigation({ itemCount, onOpenLogin }: NavigationProps) {
+export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationProps) {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
@@ -158,6 +159,7 @@ export function Navigation({ itemCount, onOpenLogin }: NavigationProps) {
 
             {/* Shopping Cart */}
             <button
+              onClick={onOpenCart}
               className="relative p-2 hover:bg-grey-100 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2"
               aria-label={`Shopping cart with ${itemCount} items`}
             >

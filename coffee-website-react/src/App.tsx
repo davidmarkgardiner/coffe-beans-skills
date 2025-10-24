@@ -9,6 +9,7 @@ import { Footer } from './components/Footer'
 import { BlogHighlights } from './components/BlogHighlights'
 import { CustomCursor } from './components/CustomCursor'
 import { LoginModal } from './components/LoginModal'
+import CartDrawer from './components/CartDrawer'
 import CoffeeCopilot from './components/CoffeeCopilot'
 import { useCart } from './hooks/useCart'
 import type { Product } from './types/product'
@@ -73,8 +74,9 @@ const products: Product[] = [
 ]
 
 function App() {
-  const { addToCart, itemCount } = useCart()
+  const { cart, addToCart, removeFromCart, updateQuantity, total, itemCount } = useCart()
   const [loginModalOpen, setLoginModalOpen] = useState(false)
+  const [cartDrawerOpen, setCartDrawerOpen] = useState(false)
 
   return (
     <>
@@ -82,6 +84,7 @@ function App() {
       <Navigation
         itemCount={itemCount}
         onOpenLogin={() => setLoginModalOpen(true)}
+        onOpenCart={() => setCartDrawerOpen(true)}
       />
       <Hero />
       <About />
@@ -95,6 +98,16 @@ function App() {
       <LoginModal
         isOpen={loginModalOpen}
         onClose={() => setLoginModalOpen(false)}
+      />
+
+      {/* Shopping Cart Drawer */}
+      <CartDrawer
+        isOpen={cartDrawerOpen}
+        onClose={() => setCartDrawerOpen(false)}
+        cart={cart}
+        total={total}
+        updateQuantity={updateQuantity}
+        removeFromCart={removeFromCart}
       />
 
       {/* Coffee Copilot - AI Assistant */}

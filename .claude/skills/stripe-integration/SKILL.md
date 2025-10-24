@@ -26,25 +26,56 @@ Invoke this skill when:
 
 Start by setting up environment variables for Stripe API keys:
 
-```bash
-# Generate .env template with Stripe configuration
-python scripts/setup_stripe.py env > .env.example
+**CRITICAL: Environment Variable Location**
+- For **Vite/React** apps: `.env` must be in the project root (e.g., `coffee-website-react/.env`)
+- For **Next.js** apps: `.env.local` in the project root
+- Frontend keys need the framework prefix: `VITE_STRIPE_PUBLISHABLE_KEY` or `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
+- Backend keys (secret key) should be in the parent `.env` or loaded separately
+
+**Get Your Keys from Stripe:**
+1. Go to https://dashboard.stripe.com/test/apikeys
+2. Switch to **Test Mode** (toggle in top right)
+3. Copy both keys:
+   - **Secret Key**: `sk_test_...` (for backend only)
+   - **Publishable Key**: `pk_test_...` (for frontend - safe to expose)
+
+**Setup `.env` file:**
+```env
+# Backend (server-side)
+STRIPE_SECRET_KEY=sk_test_YOUR_SECRET_KEY
+
+# Frontend (Vite/React)
+VITE_STRIPE_PUBLISHABLE_KEY=pk_test_YOUR_PUBLISHABLE_KEY
+
+# Frontend (Next.js)
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_YOUR_PUBLISHABLE_KEY
 ```
 
-Edit `.env.example` and add actual API keys from Stripe Dashboard:
-- Test keys: `sk_test_...` and `pk_test_...` (for development)
-- Live keys: `sk_live_...` and `pk_live_...` (for production)
-
-Copy `.env.example` to `.env` and ensure `.env` is in `.gitignore`.
+**⚠️ Common Mistake:** Don't confuse the keys! Secret key (`sk_test_`) and Publishable key (`pk_test_`) are different. Mixing them up will cause "export not found" errors.
 
 ### 2. Install Required Dependencies
 
 ```bash
-# Server-side (Node.js/Next.js)
-npm install stripe
+# All Stripe dependencies
+npm install stripe @stripe/stripe-js @stripe/react-stripe-js
 
-# Client-side (React with Stripe Elements)
-npm install @stripe/stripe-js @stripe/react-stripe-js
+# For Vite/React backend API
+npm install express cors dotenv
+npm install --save-dev @types/express @types/cors
+
+# For automated testing (optional)
+# Playwright is recommended for end-to-end testing
+```
+
+**TypeScript Import Fix:** When using TypeScript, import Stripe types correctly to avoid module errors:
+
+```typescript
+// ✅ Correct way
+import { loadStripe } from '@stripe/stripe-js';
+import type { Stripe, StripePaymentElementOptions } from '@stripe/stripe-js';
+
+// ❌ Wrong way (causes "export not found" errors)
+import { loadStripe, Stripe } from '@stripe/stripe-js';
 ```
 
 ### 3. Create Payment Endpoint
@@ -152,10 +183,41 @@ stripe trigger payment_intent.succeeded
 stripe trigger payment_intent.payment_failed
 ```
 
-### Automated Testing
+### Automated Testing with Playwright
 
-Create automated tests using test card numbers:
+**Recommended:** Use Playwright for end-to-end testing of the complete payment flow. This tests the actual user experience including Stripe Elements loading and interaction.
 
+**Test Script Example:**
+```python
+#!/usr/bin/env python3
+from playwright.sync_api import sync_playwright
+
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=True)
+    page = browser.new_page()
+
+    # Navigate and wait for page load
+    page.goto('http://localhost:5174')
+    page.wait_for_load_state('networkidle')
+
+    # Click Buy Now button
+    page.locator('button:has-text("Buy Now")').first.click()
+    page.wait_for_timeout(2000)
+
+    # Wait for Stripe iframe to load
+    page.wait_for_selector('iframe[name^="__privateStripeFrame"]', timeout=15000)
+
+    # Verify payment button exists
+    pay_button = page.locator('button:has-text("Pay")')
+    assert pay_button.count() > 0
+
+    # Take screenshots for verification
+    page.screenshot(path='/tmp/checkout_test.png')
+
+    browser.close()
+```
+
+**Unit Test Example:**
 ```javascript
 // Example test for payment processing
 test('processes successful payment', async () => {
@@ -172,6 +234,17 @@ test('processes successful payment', async () => {
   expect(clientSecret).toBeDefined();
   expect(clientSecret).toMatch(/^pi_.*_secret_.*/);
 });
+```
+
+**NPM Test Script:**
+Add to `package.json`:
+```json
+{
+  "scripts": {
+    "test:stripe": "tsx scripts/test-stripe.ts",
+    "test:e2e": "python3 test_stripe_checkout.py"
+  }
+}
 ```
 
 ## Switching to Production
@@ -416,11 +489,48 @@ Copy and customize this component for:
 
 ## Troubleshooting
 
+### "Stripe publishable key is not set" Error
+**Cause:** Environment variable not loaded or in wrong location
+**Solutions:**
+1. **Vite/React:** Ensure `.env` file is in the project root (e.g., `coffee-website-react/.env`)
+2. **Restart dev server:** Vite only loads `.env` on startup - restart required after changes
+3. **Check prefix:** Use `VITE_` prefix (not `REACT_APP_` or `NEXT_PUBLIC_`)
+4. **Verify value:** Run `echo $VITE_STRIPE_PUBLISHABLE_KEY` in terminal (won't work, only at build time)
+
+```bash
+# Kill and restart Vite dev server to pick up new .env
+npm run dev
+```
+
+### "The requested module does not provide an export named 'Stripe'" Error
+**Cause:** TypeScript type imports used as runtime imports
+**Solution:** Use `import type` for types:
+
+```typescript
+// ✅ Correct
+import { loadStripe } from '@stripe/stripe-js';
+import type { Stripe, StripePaymentElementOptions, Appearance } from '@stripe/stripe-js';
+
+// ❌ Wrong
+import { loadStripe, Stripe } from '@stripe/stripe-js';
+```
+
 ### Payment Intent Creation Fails
 - Verify API key is correct (test vs live)
 - Check amount is positive integer (cents)
 - Ensure currency code is valid (3-letter ISO)
 - Review Stripe Dashboard logs for detailed error
+
+### Stripe iframe not loading / Payment form blank
+**Causes:**
+1. **Wrong key type:** Using secret key (`sk_test_`) instead of publishable key (`pk_test_`)
+2. **Missing environment variable:** Publishable key not set or not loaded
+3. **CORS issues:** Backend not allowing requests from frontend origin
+
+**Solutions:**
+1. Verify correct publishable key in `.env`
+2. Check browser console for errors
+3. Ensure backend has CORS enabled for frontend URL
 
 ### Webhook Events Not Received
 - Verify webhook URL is publicly accessible (use ngrok for local testing)
@@ -432,6 +542,23 @@ Copy and customize this component for:
 - Use official Stripe test card numbers (see Testing section)
 - Ensure using test API keys (not live keys)
 - Check card details format (future expiry, any CVC)
+
+### Vite Config Issues
+If API calls fail with 404, ensure Vite proxy is configured:
+
+```typescript
+// vite.config.ts
+export default defineConfig({
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+      },
+    },
+  },
+});
+```
 
 ### Production Payment Fails
 - Verify switched to live API keys

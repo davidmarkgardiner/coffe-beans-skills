@@ -1,9 +1,8 @@
 // scripts/test-inventory.ts
 // Test script to verify inventory management functionality
 
-import { collection, addDoc, Timestamp, doc, getDoc } from 'firebase/firestore'
-import { db } from '../src/config/firebase'
-import { productOperations } from '../src/hooks/useFirestore'
+import { collection, addDoc, Timestamp, doc, getDoc, updateDoc } from 'firebase/firestore'
+import { db } from './firebase-config'
 
 interface TestProduct {
   id?: string
@@ -15,6 +14,43 @@ interface TestProduct {
   category: string
   createdAt: any
   updatedAt: any
+}
+
+// Product operations (copied from useFirestore.ts for Node.js usage)
+const productOperations = {
+  async updateStock(productId: string, quantity: number) {
+    const productRef = doc(db, 'products', productId)
+    const productSnap = await getDoc(productRef)
+
+    if (!productSnap.exists()) {
+      throw new Error('Product not found')
+    }
+
+    const currentStock = productSnap.data().stock
+    const newStock = currentStock + quantity
+
+    if (newStock < 0) {
+      throw new Error('Insufficient stock')
+    }
+
+    await updateDoc(productRef, {
+      stock: newStock,
+      updatedAt: Timestamp.now(),
+    })
+
+    // Log inventory change
+    await addDoc(collection(db, 'inventory_logs'), {
+      productId,
+      productName: productSnap.data().name,
+      previousStock: currentStock,
+      newStock,
+      change: quantity,
+      reason: quantity > 0 ? 'restock' : 'sale',
+      timestamp: Timestamp.now(),
+    })
+
+    return newStock
+  },
 }
 
 async function createTestProduct(): Promise<string> {

@@ -1,0 +1,75 @@
+# Teller Configuration
+# Secure secrets management for local development
+# This file defines how secrets are fetched from Google Cloud Secret Manager
+
+project: 240676728422
+
+# Default configuration for all environments
+defaults:
+  confirm: false
+  carry_env: true
+
+providers:
+  google_secretmanager:
+    kind: google_secretmanager
+    maps:
+      - id: secrets
+        path: projects/240676728422
+        keys:
+          # AI API Keys
+          openai-api-key: OPENAI_API_KEY
+          anthropic-api-key: ANTHROPIC_API_KEY
+          groq-api-key: GROQ_API_KEY
+          gemini-api-key: GEMINI_API_KEY
+          deepseek-api-key: DEEPSEEK_API_KEY
+          elevenlabs-api-key: ELEVENLABS_API_KEY
+
+          # Other API Keys
+          newsapi-key: NEWSAPI_KEY
+          kie-api-key: KIE_API_KEY
+          brave-api-key: BRAVE_API_KEY
+          firecrawl-api: FIRECRAWL_API_KEY
+          unsplash-access-key: UNSPLASH_ACCESS_KEY
+          unsplash-secret-key: UNSPLASH_SECRET_KEY
+
+          # Anthropic Auth (Z.ai)
+          anthropic-auth-token: ANTHROPIC_AUTH_TOKEN
+          anthropic-base-url: ANTHROPIC_BASE_URL
+
+          # Azure
+          azure-client-id-contributor: AZURE_CLIENT_ID_CONTRIBUTOR
+          azure-client-secret-contributor: AZURE_CLIENT_SECRET_CONTRIBUTOR
+          azure-subscription-id: AZURE_SUBSCRIPTION_ID
+          azure-tenant-id: AZURE_TENANT_ID
+
+          # Docker
+          docker-registry-password: DOCKER_PASSWORD
+          docker-registry-username: DOCKER_USERNAME
+
+          # GitHub
+          github-token-shadcn: GITHUB_TOKEN_SHADCN
+
+          # Stripe
+          stripe-publishable-key: STRIPE_PUBLISHABLE_KEY
+          stripe-secret-key: STRIPE_SECRET_KEY
+
+          # Supabase
+          public-supabase-anon-key: PUBLIC_SUPABASE_ANON_KEY
+          supabase-access-token: SUPABASE_ACCESS_TOKEN
+          supabase-service-role-key: SUPABASE_SERVICE_ROLE_KEY
+          supabase-yoga-db-password: SUPABASE_YOGA_DB_PASSWORD
+          supabase-yoga-project-ref: SUPABASE_YOGA_PROJECT_REF
+          supabase-yoga-public-url: SUPABASE_YOGA_PUBLIC_URL
+          supabase-yoga-publishable-key: SUPABASE_YOGA_PUBLISHABLE_KEY
+          supabase-yoga-secret-key: SUPABASE_YOGA_SECRET_KEY
+
+          # Engineer Configuration
+          engineer-name: ENGINEER_NAME
+          agent-working-directory: AGENT_WORKING_DIRECTORY
+
+# Template mappings for MCP configuration
+mappings:
+  - from: google_secretmanager:secrets
+    to:
+      path: .mcp.json
+      template_path: templates/mcp.json.tpl
