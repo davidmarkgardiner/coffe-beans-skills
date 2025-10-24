@@ -26,7 +26,7 @@ const testimonials = [
 
 export function Testimonials() {
   return (
-    <section className="py-24 bg-gradient-to-b from-white to-grey-50">
+    <section className="py-24 bg-gradient-to-b from-background to-surface">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -35,13 +35,13 @@ export function Testimonials() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <p className="text-sm font-semibold tracking-widest uppercase text-coffee-700 mb-4">
+          <p className="text-sm font-semibold tracking-widest uppercase text-accent mb-4">
             Testimonials
           </p>
-          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-grey-900 mb-4">
+          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-heading mb-4">
             What Our Customers Say
           </h2>
-          <p className="text-lg text-grey-600 max-w-2xl mx-auto">
+          <p className="text-lg text-text max-w-2xl mx-auto">
             Join thousands of satisfied coffee lovers who trust Stockbridge for their daily brew
           </p>
         </motion.div>
@@ -54,7 +54,7 @@ export function Testimonials() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-white rounded-2xl p-8 shadow-medium hover:shadow-large transition-shadow duration-300"
+              className="bg-surface rounded-2xl p-8 shadow-medium hover:shadow-large transition-shadow duration-300 border border-border/60"
             >
               <div className="flex items-center mb-6">
                 <img
@@ -64,11 +64,11 @@ export function Testimonials() {
                   className="w-12 h-12 rounded-full object-cover mr-4"
                 />
                 <div>
-                  <h4 className="font-semibold text-grey-900">{testimonial.name}</h4>
-                  <p className="text-sm text-grey-600">{testimonial.role}</p>
+                  <h4 className="font-semibold text-heading">{testimonial.name}</h4>
+                  <p className="text-sm text-text">{testimonial.role}</p>
                 </div>
               </div>
-              <p className="text-grey-700 leading-relaxed italic">"{testimonial.content}"</p>
+              <p className="text-text leading-relaxed italic">"{testimonial.content}"</p>
             </motion.div>
           ))}
         </div>

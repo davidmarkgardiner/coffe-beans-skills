@@ -28,13 +28,13 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
       transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
       className="group"
     >
-      <div className="relative rounded-2xl overflow-hidden bg-gradient-surface shadow-medium transition-all duration-300 hover:bg-gradient-surface-hover hover:shadow-large before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-white/70 before:content-['']">
+      <div className="relative rounded-2xl overflow-hidden bg-gradient-surface shadow-medium transition-all duration-300 hover:bg-gradient-surface-hover hover:shadow-large before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-contrast/60 before:content-['']">
         {/* Image */}
-        <div className="relative h-64 overflow-hidden bg-grey-100">
+        <div className="relative h-64 overflow-hidden bg-surface">
           {/* Skeleton loader */}
           {!imageLoaded && (
-            <div className="absolute inset-0 animate-pulse bg-grey-200">
-              <div className="w-full h-full bg-gradient-to-r from-grey-200 via-grey-300 to-grey-200" />
+            <div className="absolute inset-0 animate-pulse bg-surface/60">
+              <div className="w-full h-full bg-gradient-to-r from-surface via-contrast-alt to-surface" />
             </div>
           )}
           <motion.img
@@ -51,7 +51,7 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
           />
 
           {product.badge && (
-            <div className="absolute top-4 right-4 px-3 py-1 bg-coffee-700 text-white text-xs font-semibold tracking-wider uppercase rounded-full">
+            <div className="absolute top-4 right-4 px-3 py-1 bg-accent text-heading text-xs font-semibold tracking-wider uppercase rounded-full">
               {product.badge}
             </div>
           )}
@@ -60,17 +60,17 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
           <motion.div
             initial={{ opacity: 0 }}
             whileHover={{ opacity: 1 }}
-            className="absolute inset-0 bg-black/60 flex items-center justify-center"
+            className="absolute inset-0 bg-heading/70 flex items-center justify-center"
           >
             <motion.button
               onClick={handleAddToCart}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
               aria-label={`Add ${product.name} to cart`}
-              className={`px-6 py-2 rounded-full font-semibold text-sm tracking-wide uppercase shadow-soft transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2 ${
+              className={`px-6 py-2 rounded-full font-semibold text-sm tracking-wide uppercase shadow-soft transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
                 added
-                  ? 'bg-green-500 text-white'
-                  : 'bg-gradient-surface text-coffee-700 hover:bg-gradient-surface-hover hover:shadow-medium'
+                  ? 'bg-heading text-contrast'
+                  : 'bg-gradient-surface text-heading hover:bg-gradient-surface-hover hover:shadow-medium'
               }`}
             >
               {added ? (
@@ -99,21 +99,21 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
 
         {/* Content */}
         <div className="p-6">
-          <p className="text-xs font-semibold tracking-widest uppercase text-grey-500 mb-2">
+          <p className="text-xs font-semibold tracking-widest uppercase text-muted mb-2">
             {product.category}
           </p>
 
-          <h3 className="font-display text-2xl font-semibold tracking-tight text-grey-900 mb-2">
+          <h3 className="font-display text-2xl font-semibold tracking-tight text-heading mb-2">
             {product.name}
           </h3>
 
-          <p className="text-sm text-grey-600 leading-relaxed mb-4">{product.description}</p>
+          <p className="text-sm text-text leading-relaxed mb-4">{product.description}</p>
 
-          <div className="flex items-center justify-between pt-4 border-t border-grey-200">
-            <span className="font-display text-3xl font-bold tracking-tight text-coffee-700">
+          <div className="flex items-center justify-between pt-4 border-t border-border">
+            <span className="font-display text-3xl font-bold tracking-tight text-heading">
               ${product.price.toFixed(2)}
             </span>
-            <span className="text-sm text-grey-500">{product.weight}</span>
+            <span className="text-sm text-muted">{product.weight}</span>
           </div>
 
           {/* Buy Now Button */}
@@ -121,7 +121,7 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
             onClick={() => setShowCheckout(true)}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full mt-4 px-6 py-3 bg-coffee-700 text-white rounded-lg font-semibold hover:bg-coffee-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2"
+            className="w-full mt-4 px-6 py-3 bg-accent text-heading rounded-lg font-semibold hover:bg-accent-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
           >
             Buy Now
           </motion.button>

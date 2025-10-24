@@ -26,8 +26,8 @@ export function Hero() {
             backgroundImage: `url(${imageUrl})`,
           }}
         />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.12)_0,transparent_60%)]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-grey-900/60 via-grey-900/70 to-grey-900/80" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(233,225,215,0.18)_0,transparent_60%)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-heading/85 via-heading/88 to-heading/92" />
       </div>
 
       {/* Content */}
@@ -37,15 +37,15 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h1 className="font-display text-6xl md:text-8xl font-bold text-cream mb-6 tracking-tight leading-[0.95] drop-shadow-[0_8px_16px_rgba(0,0,0,0.4)]">
+          <h1 className="font-display text-6xl md:text-8xl font-bold text-contrast mb-6 tracking-tight leading-[0.95] drop-shadow-[0_8px_16px_rgba(0,0,0,0.4)]">
             STOCKBRIDGE COFFEE
             <br />
             EDINBURGH
           </h1>
-          <p className="font-serif text-sm md:text-base text-grey-200 mb-4 tracking-widest uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)]">
+          <p className="font-serif text-sm md:text-base text-contrast/80 mb-4 tracking-widest uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]">
             Est. 2025 · Stockbridge
           </p>
-          <p className="font-sans text-base md:text-lg text-grey-100 max-w-2xl mx-auto font-light leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)]">
+          <p className="font-sans text-base md:text-lg text-contrast max-w-2xl mx-auto font-light leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)]">
             Independent roastery rooted in the cobbled lanes of Stockbridge. Seasonal beans, heritage blends, and warm community spirit in every cup.
           </p>
         </motion.div>

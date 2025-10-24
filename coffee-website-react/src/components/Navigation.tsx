@@ -51,14 +51,14 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
         <div className="flex items-center justify-between gap-8">
           <a
             href="#home"
-            className="flex items-center gap-4 transition-all duration-300 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2 rounded-lg"
+            className="flex items-center gap-4 transition-all duration-300 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-heading rounded-lg"
             aria-label="Stockbridge Coffee"
           >
             <span className="flex flex-col uppercase tracking-[0.35em]">
-              <span className="font-display text-base lg:text-lg leading-tight text-charcoal">
+              <span className="font-display text-base lg:text-lg leading-tight text-contrast">
                 Stockbridge Coffee
               </span>
-              <span className="font-sans text-[0.65rem] tracking-[0.4em] text-coffee-600 mt-0.5">
+              <span className="font-sans text-[0.65rem] tracking-[0.4em] text-accent mt-0.5">
                 Edinburgh
               </span>
             </span>
@@ -67,25 +67,25 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
           <div className="hidden md:flex items-center gap-10">
             <a
               href="#products"
-              className="text-base font-medium text-grey-700 hover:text-coffee-700 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2 rounded"
+              className="text-base font-medium text-contrast hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-heading rounded"
             >
               Shop
             </a>
             <a
               href="#blog"
-              className="text-base font-medium text-grey-700 hover:text-coffee-700 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2 rounded"
+              className="text-base font-medium text-contrast hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-heading rounded"
             >
               Blog
             </a>
             <a
               href="#about"
-              className="text-base font-medium text-grey-700 hover:text-coffee-700 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2 rounded"
+              className="text-base font-medium text-contrast hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-heading rounded"
             >
               About
             </a>
             <a
               href="#contact"
-              className="text-base font-medium text-grey-700 hover:text-coffee-700 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2 rounded"
+              className="text-base font-medium text-contrast hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-heading rounded"
             >
               Contact
             </a>
@@ -97,22 +97,22 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
               <div className="relative">
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="flex items-center gap-2 p-2 hover:bg-grey-100 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2"
+                  className="flex items-center gap-2 p-2 hover:bg-contrast/10 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-heading"
                   aria-label="User menu"
                 >
                   {currentUser.photoURL && !imageError ? (
                     <img
                       src={currentUser.photoURL}
                       alt={currentUser.displayName || 'User'}
-                      className="w-10 h-10 rounded-full object-cover border-2 border-grey-200"
+                      className="w-10 h-10 rounded-full object-cover border-2 border-border"
                       onError={() => setImageError(true)}
                     />
                   ) : (
-                    <div className="w-10 h-10 bg-gradient-to-br from-coffee-600 to-coffee-800 rounded-full flex items-center justify-center shadow-sm border-2 border-grey-200">
-                      <User className="w-5 h-5 text-white" />
+                    <div className="w-10 h-10 bg-heading rounded-full flex items-center justify-center shadow-sm border-2 border-border text-contrast">
+                      <User className="w-5 h-5 text-contrast" />
                     </div>
                   )}
-                  <span className="hidden md:block text-sm font-medium text-grey-700 max-w-[100px] truncate">
+                  <span className="hidden md:block text-sm font-medium text-contrast max-w-[100px] truncate">
                     {currentUser.displayName || currentUser.email?.split('@')[0]}
                   </span>
                 </button>
@@ -125,19 +125,19 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-grey-200 py-2 z-50"
+                      className="absolute right-0 mt-2 w-48 bg-surface rounded-lg shadow-lg border border-border py-2 z-50"
                     >
-                      <div className="px-4 py-2 border-b border-grey-200">
-                        <p className="text-sm font-medium text-grey-900 truncate">
+                      <div className="px-4 py-2 border-b border-border">
+                        <p className="text-sm font-medium text-heading truncate">
                           {currentUser.displayName || 'User'}
                         </p>
-                        <p className="text-xs text-grey-500 truncate">
+                        <p className="text-xs text-muted truncate">
                           {currentUser.email}
                         </p>
                       </div>
                       <button
                         onClick={handleLogout}
-                        className="w-full px-4 py-2 text-left text-sm text-grey-700 hover:bg-grey-50 transition-colors duration-200 flex items-center gap-2"
+                        className="w-full px-4 py-2 text-left text-sm text-text hover:bg-surface transition-colors duration-200 flex items-center gap-2"
                       >
                         <LogOut className="w-4 h-4" />
                         Sign Out
@@ -149,7 +149,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
             ) : (
               <button
                 onClick={onOpenLogin}
-                className="hidden md:flex items-center gap-2 px-4 py-2 bg-coffee-700 text-white rounded-lg hover:bg-coffee-800 transition-colors duration-200 font-medium text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2"
+                className="hidden md:flex items-center gap-2 px-4 py-2 bg-accent text-heading rounded-lg hover:bg-accent-hover transition-colors duration-200 font-medium text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-heading"
               >
                 <User className="w-4 h-4" />
                 Sign In
@@ -159,15 +159,15 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
             {/* Shopping Cart */}
             <button
               onClick={onOpenCart}
-              className="relative p-2 hover:bg-grey-100 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2"
+              className="relative p-2 hover:bg-contrast/10 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-heading"
               aria-label={`Shopping cart with ${itemCount} items`}
             >
-              <ShoppingCart className="w-5 h-5 text-grey-700" />
+              <ShoppingCart className="w-5 h-5 text-contrast" />
               {itemCount > 0 && (
                 <motion.span
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="absolute -top-1 -right-1 w-5 h-5 bg-coffee-700 text-white text-xs rounded-full flex items-center justify-center font-medium"
+                  className="absolute -top-1 -right-1 w-5 h-5 bg-accent text-heading text-xs rounded-full flex items-center justify-center font-medium"
                 >
                   {itemCount}
                 </motion.span>
@@ -177,13 +177,13 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 hover:bg-grey-100 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2"
+              className="md:hidden p-2 hover:bg-contrast/10 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-heading"
               aria-label="Toggle mobile menu"
             >
               {mobileMenuOpen ? (
-                <X className="w-5 h-5 text-grey-700" />
+                <X className="w-5 h-5 text-contrast" />
               ) : (
-                <Menu className="w-5 h-5 text-grey-700" />
+                <Menu className="w-5 h-5 text-contrast" />
               )}
             </button>
           </div>
@@ -197,7 +197,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="md:hidden border-t border-grey-200 mt-4"
+              className="md:hidden border-t border-border/80 mt-4"
             >
               <div className="py-4 space-y-4">
                 {!currentUser && (
@@ -206,7 +206,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                       setMobileMenuOpen(false)
                       onOpenLogin()
                     }}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-coffee-700 text-white rounded-lg hover:bg-coffee-800 transition-colors duration-200 font-medium text-sm"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-accent text-heading rounded-lg hover:bg-accent-hover transition-colors duration-200 font-medium text-sm"
                   >
                     <User className="w-4 h-4" />
                     Sign In
@@ -215,28 +215,28 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                 <a
                   href="#products"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-sm font-medium text-grey-700 hover:text-coffee-700 transition-colors duration-200 py-2"
+                  className="block text-sm font-medium text-contrast hover:text-accent transition-colors duration-200 py-2"
                 >
                   Shop
                 </a>
                 <a
                   href="#blog"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-sm font-medium text-grey-700 hover:text-coffee-700 transition-colors duration-200 py-2"
+                  className="block text-sm font-medium text-contrast hover:text-accent transition-colors duration-200 py-2"
                 >
                   Blog
                 </a>
                 <a
                   href="#about"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-sm font-medium text-grey-700 hover:text-coffee-700 transition-colors duration-200 py-2"
+                  className="block text-sm font-medium text-contrast hover:text-accent transition-colors duration-200 py-2"
                 >
                   About
                 </a>
                 <a
                   href="#contact"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-sm font-medium text-grey-700 hover:text-coffee-700 transition-colors duration-200 py-2"
+                  className="block text-sm font-medium text-contrast hover:text-accent transition-colors duration-200 py-2"
                 >
                   Contact
                 </a>
@@ -246,7 +246,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                       setMobileMenuOpen(false)
                       handleLogout()
                     }}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2 text-grey-700 border border-grey-300 rounded-lg hover:bg-grey-50 transition-colors duration-200 font-medium text-sm"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2 text-text border border-border rounded-lg hover:bg-surface transition-colors duration-200 font-medium text-sm"
                   >
                     <LogOut className="w-4 h-4" />
                     Sign Out

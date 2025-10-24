@@ -37,9 +37,9 @@ export default function Checkout({ amount, productName, productId, onClose, onSu
   const appearance: Appearance = {
     theme: 'stripe',
     variables: {
-      colorPrimary: '#78350f',
-      colorBackground: '#ffffff',
-      colorText: '#1f2937',
+      colorPrimary: '#B8A690',
+      colorBackground: '#F7F4ED',
+      colorText: '#5B5245',
       colorDanger: '#dc2626',
       fontFamily: 'system-ui, sans-serif',
       spacingUnit: '4px',
@@ -53,21 +53,21 @@ export default function Checkout({ amount, productName, productId, onClose, onSu
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 relative">
+    <div className="fixed inset-0 bg-heading/70 flex items-center justify-center z-50 p-4">
+      <div className="bg-surface rounded-lg shadow-xl max-w-md w-full p-6 relative border border-border">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+          className="absolute top-4 right-4 text-text hover:text-heading transition-colors"
         >
           <X size={24} />
         </button>
 
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Checkout</h2>
-        <p className="text-gray-600 mb-6">{productName}</p>
+        <h2 className="text-2xl font-bold text-heading mb-2">Checkout</h2>
+        <p className="text-text mb-6">{productName}</p>
 
         {isLoading && (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-900"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
           </div>
         )}
 
@@ -91,8 +91,8 @@ export default function Checkout({ amount, productName, productId, onClose, onSu
           </Elements>
         )}
 
-        <div className="mt-6 pt-6 border-t border-gray-200">
-          <div className="flex justify-between text-sm text-gray-600 mb-2">
+        <div className="mt-6 pt-6 border-t border-border">
+          <div className="flex justify-between text-sm text-text mb-2">
             <span>Test Mode</span>
             <span>Use card: 4242 4242 4242 4242</span>
           </div>

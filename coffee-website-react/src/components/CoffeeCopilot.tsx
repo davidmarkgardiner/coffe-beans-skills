@@ -100,7 +100,7 @@ export default function CoffeeCopilot() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-4 right-4 w-14 h-14 rounded-full bg-gray-900 text-white shadow-lg hover:bg-gray-800 transition-colors flex items-center justify-center text-2xl z-50"
+          className="fixed bottom-4 right-4 w-14 h-14 rounded-full bg-heading text-contrast shadow-lg hover:bg-heading/90 transition-colors flex items-center justify-center text-2xl z-50"
           aria-label="Open Coffee Copilot chat"
         >
           ☕️
@@ -110,13 +110,13 @@ export default function CoffeeCopilot() {
       {/* Chat widget */}
       {isOpen && (
         <div
-          className="fixed bottom-4 right-4 w-96 max-w-[95vw] rounded-2xl shadow-xl border bg-white flex flex-col z-50"
+          className="fixed bottom-4 right-4 w-96 max-w-[95vw] rounded-2xl shadow-xl border border-border bg-surface flex flex-col z-50"
           role="dialog"
           aria-label="Coffee Copilot Chat"
           aria-modal="true"
         >
           {/* Header */}
-          <div className="px-4 py-3 border-b font-semibold bg-gray-50 rounded-t-2xl">
+          <div className="px-4 py-3 border-b border-border font-semibold bg-surface rounded-t-2xl">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">☕️</span>
@@ -124,7 +124,7 @@ export default function CoffeeCopilot() {
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-gray-500 hover:text-gray-700 text-2xl leading-none"
+                className="text-text hover:text-heading text-2xl leading-none transition-colors"
                 aria-label="Close chat"
               >
                 ×
@@ -137,8 +137,8 @@ export default function CoffeeCopilot() {
                 onClick={() => setBugReportMode(false)}
                 className={`flex-1 py-1.5 px-3 rounded-lg transition-colors ${
                   !bugReportMode
-                    ? 'bg-gray-900 text-white'
-                    : 'bg-white text-gray-600 hover:bg-gray-100'
+                    ? 'bg-heading text-contrast'
+                    : 'bg-surface text-text hover:bg-contrast-alt'
                 }`}
               >
                 💬 Chat
@@ -147,8 +147,8 @@ export default function CoffeeCopilot() {
                 onClick={() => setBugReportMode(true)}
                 className={`flex-1 py-1.5 px-3 rounded-lg transition-colors ${
                   bugReportMode
-                    ? 'bg-gray-900 text-white'
-                    : 'bg-white text-gray-600 hover:bg-gray-100'
+                    ? 'bg-heading text-contrast'
+                    : 'bg-surface text-text hover:bg-contrast-alt'
                 }`}
               >
                 🐛 Report Issue
@@ -173,15 +173,15 @@ export default function CoffeeCopilot() {
                 <div
                   className={`inline-block px-4 py-2 rounded-2xl max-w-[80%] break-words ${
                     msg.role === 'user'
-                      ? 'bg-gray-900 text-white'
-                      : 'bg-gray-100 text-gray-900'
+                      ? 'bg-heading text-contrast'
+                      : 'bg-contrast-alt text-heading'
                   }`}
                 >
                   <div>{msg.content}</div>
                   {msg.timestamp && (
                     <div
                       className={`text-xs mt-1 ${
-                        msg.role === 'user' ? 'text-gray-300' : 'text-gray-500'
+                        msg.role === 'user' ? 'text-contrast/70' : 'text-muted'
                       }`}
                     >
                       {msg.timestamp.toLocaleTimeString([], {
@@ -197,15 +197,15 @@ export default function CoffeeCopilot() {
             {/* Loading indicator */}
             {isLoading && (
               <div className="text-left">
-                <div className="inline-block px-4 py-2 rounded-2xl bg-gray-100">
+                <div className="inline-block px-4 py-2 rounded-2xl bg-contrast-alt/60">
                   <div className="flex space-x-2">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
+                    <div className="w-2 h-2 bg-muted rounded-full animate-bounce" />
                     <div
-                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                      className="w-2 h-2 bg-muted rounded-full animate-bounce"
                       style={{ animationDelay: '0.1s' }}
                     />
                     <div
-                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                      className="w-2 h-2 bg-muted rounded-full animate-bounce"
                       style={{ animationDelay: '0.2s' }}
                     />
                   </div>
@@ -217,7 +217,7 @@ export default function CoffeeCopilot() {
           </div>
 
           {/* Input */}
-          <div className="p-3 border-t" role="form">
+          <div className="p-3 border-t border-border" role="form">
             {bugReportMode && (
               <div className="mb-2 text-xs text-orange-600 bg-orange-50 px-3 py-2 rounded-lg">
                 🐛 Bug Report Mode: Describe the issue you're experiencing
@@ -230,7 +230,7 @@ export default function CoffeeCopilot() {
               <input
                 id="chat-input"
                 type="text"
-                className="flex-1 border rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900 disabled:opacity-50 disabled:bg-gray-50"
+                className="flex-1 border border-border rounded-xl px-3 py-2 bg-background text-text placeholder-muted/70 focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 disabled:bg-surface"
                 placeholder={bugReportMode ? "Describe the bug or feature request..." : "Ask about beans, brewing, or coffee..."}
                 value={input}
                 onChange={e => setInput(e.target.value)}
@@ -239,7 +239,7 @@ export default function CoffeeCopilot() {
                 aria-label="Message input"
               />
               <button
-                className="px-4 py-2 rounded-xl bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-4 py-2 rounded-xl bg-accent text-heading hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 onClick={sendMessage}
                 disabled={isLoading || !input.trim()}
                 aria-label="Send message"

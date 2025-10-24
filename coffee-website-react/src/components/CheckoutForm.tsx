@@ -63,12 +63,12 @@ export default function CheckoutForm({ amount, onSuccess, onError }: CheckoutFor
       <button
         disabled={isLoading || !stripe || !elements}
         id="submit"
-        className="w-full bg-amber-900 text-white py-3 px-6 rounded-lg hover:bg-amber-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-semibold"
+        className="w-full bg-accent text-heading py-3 px-6 rounded-lg hover:bg-accent-hover transition-colors disabled:bg-border disabled:text-muted disabled:cursor-not-allowed font-semibold"
       >
         <span id="button-text">
           {isLoading ? (
             <div className="flex items-center justify-center">
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-heading"></div>
             </div>
           ) : (
             `Pay $${amount.toFixed(2)}`
@@ -81,7 +81,7 @@ export default function CheckoutForm({ amount, onSuccess, onError }: CheckoutFor
           id="payment-message"
           className={`text-center p-3 rounded ${
             message.includes('successful')
-              ? 'bg-green-100 text-green-800'
+              ? 'bg-contrast-alt text-heading'
               : 'bg-red-100 text-red-800'
           }`}
         >
