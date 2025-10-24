@@ -2,6 +2,7 @@ import React from 'react';
 import stockbridgeLogoTeal from '../assets/logo-variants/logo-stockbridge-teal.png';
 import stockbridgeLogoGolden from '../assets/logo-variants/logo-stockbridge-golden.png';
 import stockbridgeLogoGrey from '../assets/logo-variants/logo-stockbridge-grey.png';
+import stockbridgeLogoCorrect from '../assets/stockbridge-logo.png';
 
 /**
  * Logo component for Stockbridge Coffee
