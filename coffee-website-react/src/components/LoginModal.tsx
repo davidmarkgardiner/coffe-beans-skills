@@ -100,22 +100,22 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
               style={{ marginTop: 'auto', marginBottom: 'auto' }}
             >
               {/* Header */}
-              <div className="bg-gradient-to-br from-coffee-50 to-coffee-100 px-6 py-5 border-b border-coffee-200">
+              <div className="bg-gradient-to-br from-surface to-accent-light/30 px-6 py-5 border-b border-accent-light">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-display font-bold text-charcoal">
+                  <h2 className="text-2xl font-display font-bold text-heading">
                     {mode === 'login' && 'Welcome Back'}
                     {mode === 'signup' && 'Create Account'}
                     {mode === 'reset' && 'Reset Password'}
                   </h2>
                   <button
                     onClick={onClose}
-                    className="p-2 hover:bg-coffee-200 rounded-full transition-colors duration-200"
+                    className="p-2 hover:bg-accent-light/50 rounded-full transition-colors duration-200"
                     aria-label="Close modal"
                   >
-                    <X className="w-5 h-5 text-grey-700" />
+                    <X className="w-5 h-5 text-text" />
                   </button>
                 </div>
-                <p className="text-sm text-grey-600 mt-1">
+                <p className="text-sm text-text mt-1">
                   {mode === 'login' && 'Sign in to your account'}
                   {mode === 'signup' && 'Join our coffee community'}
                   {mode === 'reset' && 'Enter your email to receive a reset link'}
@@ -129,15 +129,15 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <Mail className="w-8 h-8 text-green-600" />
                     </div>
-                    <h3 className="text-lg font-semibold text-charcoal mb-2">
+                    <h3 className="text-lg font-semibold text-heading mb-2">
                       Check your email
                     </h3>
-                    <p className="text-grey-600 mb-6">
+                    <p className="text-text mb-6">
                       We've sent a password reset link to {email}
                     </p>
                     <button
                       onClick={() => switchMode('login')}
-                      className="text-coffee-700 hover:text-coffee-800 font-medium"
+                      className="text-accent hover:text-accent-hover font-medium"
                     >
                       Back to login
                     </button>
@@ -150,7 +150,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         <button
                           onClick={handleGoogleLogin}
                           disabled={loading}
-                          className="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-grey-300 rounded-lg hover:bg-grey-50 transition-colors duration-200 font-medium text-grey-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-accent-light rounded-lg hover:bg-surface transition-colors duration-200 font-medium text-text disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           <svg className="w-5 h-5" viewBox="0 0 24 24">
                             <path
@@ -174,9 +174,9 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         </button>
 
                         <div className="flex items-center gap-4 my-6">
-                          <div className="flex-1 h-px bg-grey-300" />
-                          <span className="text-sm text-grey-500">or</span>
-                          <div className="flex-1 h-px bg-grey-300" />
+                          <div className="flex-1 h-px bg-accent-light" />
+                          <span className="text-sm text-text/70">or</span>
+                          <div className="flex-1 h-px bg-accent-light" />
                         </div>
                       </>
                     )}
@@ -199,19 +199,19 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         <div>
                           <label
                             htmlFor="displayName"
-                            className="block text-sm font-medium text-grey-700 mb-2"
+                            className="block text-sm font-medium text-text mb-2"
                           >
                             Full Name
                           </label>
                           <div className="relative">
-                            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-grey-400" />
+                            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text/50" />
                             <input
                               id="displayName"
                               type="text"
                               value={displayName}
                               onChange={(e) => setDisplayName(e.target.value)}
                               required
-                              className="w-full pl-11 pr-4 py-3 border border-grey-300 rounded-lg focus:ring-2 focus:ring-coffee-500 focus:border-transparent outline-none transition-all"
+                              className="w-full pl-11 pr-4 py-3 border border-accent-light rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all"
                               placeholder="John Doe"
                             />
                           </div>
@@ -221,19 +221,19 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                       <div>
                         <label
                           htmlFor="email"
-                          className="block text-sm font-medium text-grey-700 mb-2"
+                          className="block text-sm font-medium text-text mb-2"
                         >
                           Email
                         </label>
                         <div className="relative">
-                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-grey-400" />
+                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text/50" />
                           <input
                             id="email"
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
-                            className="w-full pl-11 pr-4 py-3 border border-grey-300 rounded-lg focus:ring-2 focus:ring-coffee-500 focus:border-transparent outline-none transition-all"
+                            className="w-full pl-11 pr-4 py-3 border border-accent-light rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all"
                             placeholder="you@example.com"
                           />
                         </div>
@@ -243,12 +243,12 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         <div>
                           <label
                             htmlFor="password"
-                            className="block text-sm font-medium text-grey-700 mb-2"
+                            className="block text-sm font-medium text-text mb-2"
                           >
                             Password
                           </label>
                           <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-grey-400" />
+                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text/50" />
                             <input
                               id="password"
                               type="password"
@@ -256,7 +256,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                               onChange={(e) => setPassword(e.target.value)}
                               required
                               minLength={6}
-                              className="w-full pl-11 pr-4 py-3 border border-grey-300 rounded-lg focus:ring-2 focus:ring-coffee-500 focus:border-transparent outline-none transition-all"
+                              className="w-full pl-11 pr-4 py-3 border border-accent-light rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all"
                               placeholder="••••••••"
                             />
                           </div>
@@ -268,7 +268,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                           <button
                             type="button"
                             onClick={() => switchMode('reset')}
-                            className="text-sm text-coffee-700 hover:text-coffee-800 font-medium"
+                            className="text-sm text-accent hover:text-accent-hover font-medium"
                           >
                             Forgot password?
                           </button>
@@ -278,7 +278,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                       <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-coffee-700 text-white py-3 rounded-lg hover:bg-coffee-800 transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full bg-accent text-white py-3 rounded-lg hover:bg-accent-hover transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {loading ? (
                           <span className="flex items-center justify-center gap-2">
@@ -296,13 +296,13 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     </form>
 
                     {/* Toggle Mode */}
-                    <div className="mt-6 text-center text-sm text-grey-600">
+                    <div className="mt-6 text-center text-sm text-text">
                       {mode === 'login' ? (
                         <>
                           Don't have an account?{' '}
                           <button
                             onClick={() => switchMode('signup')}
-                            className="text-coffee-700 hover:text-coffee-800 font-medium"
+                            className="text-accent hover:text-accent-hover font-medium"
                           >
                             Sign up
                           </button>
@@ -312,7 +312,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                           Already have an account?{' '}
                           <button
                             onClick={() => switchMode('login')}
-                            className="text-coffee-700 hover:text-coffee-800 font-medium"
+                            className="text-accent hover:text-accent-hover font-medium"
                           >
                             Sign in
                           </button>
@@ -322,7 +322,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                           Remember your password?{' '}
                           <button
                             onClick={() => switchMode('login')}
-                            className="text-coffee-700 hover:text-coffee-800 font-medium"
+                            className="text-accent hover:text-accent-hover font-medium"
                           >
                             Sign in
                           </button>

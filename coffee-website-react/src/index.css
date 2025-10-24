@@ -13,9 +13,9 @@
   }
 
   body {
-    @apply font-sans text-grey-700 antialiased m-0;
-    background-color: theme('colors.cream');
-    color: theme('colors.charcoal');
+    @apply font-sans antialiased m-0;
+    background-color: theme('colors.background');
+    color: theme('colors.text');
     background-image:
       radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.38) 0, transparent 70%),
       radial-gradient(circle at 80% 0%, rgba(255, 255, 255, 0.25) 0, transparent 70%);

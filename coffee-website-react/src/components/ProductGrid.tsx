@@ -61,7 +61,7 @@ export function ProductGrid({ products, onAddToCart }: ProductGridProps) {
   }, [products, searchTerm, selectedCategory, sortBy])
 
   return (
-    <section className="py-20 bg-white" id="products">
+    <section className="py-20 bg-surface" id="products">
       <div className="container mx-auto px-6">
         {/* Header */}
         <motion.div
@@ -71,13 +71,13 @@ export function ProductGrid({ products, onAddToCart }: ProductGridProps) {
           transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
           className="text-center mb-16"
         >
-          <p className="text-sm font-semibold tracking-widest uppercase text-coffee-700 mb-4">
+          <p className="text-sm font-semibold tracking-widest uppercase text-accent mb-4">
             Our Collection
           </p>
-          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-grey-900 mb-6">
+          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-heading mb-6">
             Stockbridge Coffee Beans
           </h2>
-          <p className="text-lg text-grey-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg text-text max-w-2xl mx-auto leading-relaxed">
             Each blend is carefully crafted to deliver a unique and memorable coffee experience.
           </p>
         </motion.div>
@@ -94,7 +94,7 @@ export function ProductGrid({ products, onAddToCart }: ProductGridProps) {
 
         {/* Results count */}
         {filteredAndSortedProducts.length > 0 && (
-          <p className="text-grey-600 mb-6">
+          <p className="text-text mb-6">
             Showing {filteredAndSortedProducts.length} {filteredAndSortedProducts.length === 1 ? 'product' : 'products'}
           </p>
         )}
@@ -114,14 +114,14 @@ export function ProductGrid({ products, onAddToCart }: ProductGridProps) {
           </motion.div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-grey-600 text-lg">No products found matching your criteria.</p>
+            <p className="text-text text-lg">No products found matching your criteria.</p>
             <button
               onClick={() => {
                 setSearchTerm('')
                 setSelectedCategory('All')
                 setSortBy('default')
               }}
-              className="mt-4 px-6 py-2 rounded-full bg-coffee-700 text-white font-semibold hover:bg-coffee-800 transition-colors duration-200"
+              className="mt-4 px-6 py-2 rounded-full bg-accent text-white font-semibold hover:bg-accent-hover transition-colors duration-200"
             >
               Clear Filters
             </button>
