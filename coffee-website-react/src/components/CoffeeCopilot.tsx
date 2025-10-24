@@ -42,7 +42,8 @@ export default function CoffeeCopilot() {
 
     try {
       // Connect to Coffee Copilot backend server
-      const response = await fetch('http://localhost:3001/api/chat', {
+      const apiUrl = import.meta.env.VITE_COPILOT_API_URL || 'http://localhost:3001/api/chat';
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
