@@ -1,0 +1,56 @@
+# Node modules
+node_modules/
+npm-debug.log
+
+# Environment files (will be provided by Cloud Run)
+.env
+.env.local
+.env.*.local
+
+# TypeScript source (we only need compiled JS)
+*.ts
+!dist/**/*.js
+
+# Development files
+tsconfig.json
+src/
+.eslintrc*
+.prettierrc*
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Testing
+coverage/
+.nyc_output/
+test/
+*.test.js
+*.spec.js
+
+# Documentation
+*.md
+docs/
+
+# Build artifacts (except dist)
+dist/
+!dist/**
+
+# Temporary files
+tmp/
+temp/
