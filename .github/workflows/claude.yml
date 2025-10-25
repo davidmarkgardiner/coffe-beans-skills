@@ -12,9 +12,10 @@ on:
 
 jobs:
   claude:
-    # Only trigger on @claude mentions from real users, not bots
+    # Only trigger on @claude mentions from real users or the claude bot (for automated reviews)
+    # Block other bots like github-actions[bot] and dependabot[bot] to prevent loops
     if: |
-      github.event.sender.type != 'Bot' && (
+      (github.event.sender.type != 'Bot' || github.event.sender.login == 'claude[bot]') && (
         (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
         (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
         (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
@@ -38,6 +39,9 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+
+          # Use fast, cost-effective model for automated implementations
+          claude_args: '--model claude-haiku-4-5'
 
           # This is an optional setting that allows Claude to read CI results on PRs
           additional_permissions: |
