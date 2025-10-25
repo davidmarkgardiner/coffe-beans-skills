@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Navigation } from './components/Navigation'
 import { Hero } from './components/Hero'
 import { ProductGrid } from './components/ProductGrid'
@@ -12,9 +12,10 @@ import { LoginModal } from './components/LoginModal'
 import CartDrawer from './components/CartDrawer'
 import CoffeeCopilot from './components/CoffeeCopilot'
 import { useCart } from './hooks/useCart'
+import { useProductImages } from './hooks/useProductImages'
 import type { Product } from './types/product'
 
-const products: Product[] = [
+const baseProducts: Omit<Product, 'image'>[] = [
   {
     id: '1',
     name: 'Ethiopian Yirgacheffe',
@@ -22,7 +23,6 @@ const products: Product[] = [
     price: 24.99,
     weight: '250g',
     category: 'Single Origin',
-    image: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=800&q=80',
     badge: 'Best Seller',
   },
   {
@@ -32,7 +32,6 @@ const products: Product[] = [
     price: 22.99,
     weight: '250g',
     category: 'Single Origin',
-    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=800&q=80',
     badge: 'New',
   },
   {
@@ -42,7 +41,6 @@ const products: Product[] = [
     price: 19.99,
     weight: '250g',
     category: 'Signature Blend',
-    image: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=800&q=80',
   },
   {
     id: '4',
@@ -51,7 +49,6 @@ const products: Product[] = [
     price: 26.99,
     weight: '250g',
     category: 'Espresso',
-    image: 'https://images.unsplash.com/photo-1610889556528-9a770e32642f?w=800&q=80',
   },
   {
     id: '5',
@@ -60,7 +57,6 @@ const products: Product[] = [
     price: 27.99,
     weight: '250g',
     category: 'Single Origin',
-    image: 'https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=800&q=80',
   },
   {
     id: '6',
@@ -69,7 +65,6 @@ const products: Product[] = [
     price: 23.99,
     weight: '250g',
     category: 'Decaffeinated',
-    image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&q=80',
   },
 ]
 
@@ -77,6 +72,17 @@ function App() {
   const { cart, addToCart, removeFromCart, updateQuantity, total, itemCount } = useCart()
   const [loginModalOpen, setLoginModalOpen] = useState(false)
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false)
+
+  // Get rotating product images from AI-generated content
+  const { productImages } = useProductImages(baseProducts.length)
+
+  // Combine base products with rotating images
+  const products = useMemo(() => {
+    return baseProducts.map((product, index) => ({
+      ...product,
+      image: productImages[index],
+    }))
+  }, [productImages])
 
   return (
     <>

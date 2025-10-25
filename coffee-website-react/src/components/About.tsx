@@ -1,6 +1,17 @@
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useContentRotation } from '../hooks/useContentRotation'
 
 export function About() {
+  const { currentContent } = useContentRotation({
+    contentType: 'photo',
+    rotationInterval: 30000, // 30 seconds
+    preloadNext: true,
+  })
+
+  // Fallback to Unsplash if no content available
+  const fallbackImage = 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80'
+  const displayImage = currentContent?.url || fallbackImage
+
   return (
     <section id="about" className="py-24 bg-background">
       <div className="container mx-auto px-6">
@@ -51,12 +62,19 @@ export function About() {
             className="relative"
           >
             <div className="rounded-2xl overflow-hidden shadow-large">
-              <img
-                src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80"
-                alt="Coffee roasting process"
-                loading="lazy"
-                className="w-full h-[500px] object-cover"
-              />
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={displayImage}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 1 }}
+                  src={displayImage}
+                  alt="Coffee roasting process"
+                  loading="lazy"
+                  className="w-full h-[500px] object-cover"
+                />
+              </AnimatePresence>
             </div>
             <div className="absolute -bottom-8 -left-8 bg-accent text-white p-8 rounded-2xl shadow-xl max-w-xs">
               <p className="font-display text-3xl font-bold mb-2">Artisan Roasted</p>
