@@ -280,7 +280,7 @@ This repository uses an automated development, testing, and review cycle powered
    - Implements solution
    - Creates pull request
 3. **Three parallel workflows execute** (~3-4 minutes total):
-   - `fast-pre-checks.yml` - Type check, lint, build, unit tests
+   - `playwright.yml` (Fast Pre-checks) - Type check, lint, build, unit tests
    - `firebase-preview.yml` - Deploy preview + Playwright E2E tests
    - `claude-code-review-fast.yml` - Fast AI code review with scoring
 4. **Automated quality check** scores code (0-100) including test results
