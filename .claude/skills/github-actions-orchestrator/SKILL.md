@@ -1074,6 +1074,232 @@ Remove `model` parameter from all claude-code-action uses. The action determines
 **Conclusion:**
 The automated workflow system is **production-ready** for PR validation. The claude.yml automation for issue-to-PR flow requires additional permission configuration to be fully hands-off, but this is acceptable for safety reasons.
 
+## Lessons Learned from Workflow Fixes (Post PR #15)
+
+### Key Insights
+
+**1. Invalid `model` Parameter in claude-code-action**
+
+**Problem:**
+Multiple workflows were using `model: claude-haiku-4-5` as a direct parameter to the claude-code-action, which is not a valid input.
+
+**Error message:**
+```
+Unexpected input(s) 'model', valid inputs are ['trigger_phrase', 'assignee_trigger', ...]
+```
+
+**Impact:**
+- Caused warnings in every workflow run
+- Made logs harder to read
+- Did NOT break functionality (action continued to work)
+- Used default model instead of specified model
+
+**Solution:**
+Use `claude_args` to pass the model parameter:
+
+```yaml
+# ❌ WRONG - Invalid parameter
+- uses: anthropics/claude-code-action@v1
+  with:
+    claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+    model: claude-haiku-4-5  # Invalid!
+
+# ✅ CORRECT - Use claude_args
+- uses: anthropics/claude-code-action@v1
+  with:
+    claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+    claude_args: '--model claude-haiku-4-5'
+```
+
+**Files affected:**
+- `.github/workflows/claude-code-review-fast.yml` ✅ Fixed
+- `.github/workflows/claude.yml` ✅ Fixed
+- Other workflows didn't use claude-code-action
+
+**Validation:**
+- Run workflow and check logs for `grep -i "unexpected\|warning"`
+- Verify `INPUT_ACTION_INPUTS_PRESENT` shows `"model":false`
+- Confirm `Custom Claude arguments: --model claude-haiku-4-5` in logs
+
+**2. claude.yml Not Triggering from @claude Tags**
+
+**Problem:**
+The automated feedback loop was broken. When code reviews posted @claude tags (score < 85), the claude.yml workflow would trigger but immediately skip with status "skipped".
+
+**Root cause:**
+```yaml
+if: |
+  github.event.sender.type != 'Bot' && (
+    contains(github.event.comment.body, '@claude')
+  )
+```
+
+This condition blocked ALL bots, including `claude[bot]` which posts the review comments with @claude tags.
+
+**Investigation process:**
+1. Checked PR comments - saw @claude tags from `claude[bot]`
+2. Searched workflow runs: `gh run list --event issue_comment`
+3. Found runs with `conclusion: skipped`
+4. Checked workflow logs - saw condition evaluated to false
+5. Identified `github.event.sender.login == 'claude'` or `'claude[bot]'`
+
+**Solution:**
+Allow `claude[bot]` specifically while still blocking other bots:
+
+```yaml
+# ❌ WRONG - Blocks all bots including claude[bot]
+if: |
+  github.event.sender.type != 'Bot' && (
+    contains(github.event.comment.body, '@claude')
+  )
+
+# ✅ CORRECT - Allow claude[bot], block others
+if: |
+  (github.event.sender.type != 'Bot' || github.event.sender.login == 'claude[bot]') && (
+    (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+    (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
+    (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
+    (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
+  )
+```
+
+**Why this works:**
+- Human users: `sender.type != 'Bot'` is true → workflow runs
+- claude[bot]: `sender.type == 'Bot'` but `login == 'claude[bot]'` → workflow runs
+- Other bots (github-actions, dependabot): Both conditions false → workflow skips
+
+**Validation:**
+```bash
+# Before fix: Shows "skipped" for claude[bot] comments
+gh run list --event issue_comment --limit 10
+
+# Test the fix
+gh pr comment <pr-number> --body "@claude test trigger"
+
+# After fix: Shows "in_progress" or "completed"
+gh run list --event issue_comment --limit 5
+```
+
+**Result:**
+- ✅ claude.yml triggered in 27 seconds
+- ✅ No errors or warnings
+- ✅ Model correctly set to claude-haiku-4-5
+- ✅ Complete automation cycle now functional
+
+**3. Complete Automation Cycle Now Working**
+
+**Before fixes:**
+```
+Review (score < 85) → @claude tag → ❌ SKIPPED → Manual intervention required
+```
+
+**After fixes:**
+```
+1. PR created
+   ↓
+2. Three parallel workflows execute (~2 min)
+   - playwright.yml (Fast Pre-checks): 59s
+   - firebase-preview.yml (Deploy + E2E): 96s
+   - claude-code-review-fast.yml (AI review): 109s
+   ↓
+3. Fast review scores code (e.g., 82/100)
+   ↓
+4. Review posts @claude tag with specific fixes
+   ↓
+5. ✅ claude.yml triggers automatically (27s)
+   ↓
+6. Implements fixes and pushes updates
+   ↓
+7. Workflows re-run (all 3 in parallel again)
+   ↓
+8. Cycle repeats until score ≥ 85 (max 3 iterations)
+```
+
+**Performance validated:**
+| Component | Time | Status |
+|-----------|------|--------|
+| Parallel workflows | 1m49s | ✅ Success |
+| claude.yml (fixes) | 27s | ✅ Success |
+| Full iteration cycle | ~2m15s | ✅ Success |
+| Total (3 iterations max) | ~7 minutes | ✅ Acceptable |
+
+**4. Best Practices for GitHub Actions with claude-code-action**
+
+**Model Selection:**
+```yaml
+# Fast, cost-effective (recommended for automation)
+claude_args: '--model claude-haiku-4-5'
+
+# Higher quality (for critical reviews)
+claude_args: '--model claude-sonnet-4-5'
+
+# Multiple args
+claude_args: '--model claude-haiku-4-5 --allowed-tools Bash'
+```
+
+**Bot Filtering:**
+```yaml
+# Allow specific bot, block others
+if: |
+  (github.event.sender.type != 'Bot' || github.event.sender.login == 'allowed-bot[bot]')
+
+# Block all bots
+if: github.event.sender.type != 'Bot'
+
+# Allow all (dangerous - can cause loops!)
+if: contains(github.event.comment.body, '@trigger')
+```
+
+**Preventing Infinite Loops:**
+1. ✅ Block github-actions[bot] (prevents action → comment → action loops)
+2. ✅ Block dependabot[bot] (prevents automated PR → action loops)
+3. ✅ Allow specific trusted bots (claude[bot] for reviews)
+4. ✅ Use max iteration limits in prompts (e.g., "max 3 times")
+5. ✅ Monitor workflow costs and set budget alerts
+
+**Debugging Workflow Triggers:**
+```bash
+# Check recent workflow runs
+gh run list --limit 20
+
+# Filter by event type
+gh run list --event issue_comment --limit 10
+
+# Check specific run status
+gh run view <run-id> --json status,conclusion
+
+# See why workflow was skipped
+gh run view <run-id> --log | grep -i "skip\|condition"
+
+# Check who triggered it
+gh api repos/:owner/:repo/actions/runs/<run-id> --jq '.triggering_actor.login'
+```
+
+**5. Workflow File Synchronization**
+
+**Important:** When modifying workflow files in a PR branch, the workflow must exist on the default branch (main) FIRST.
+
+**Issue encountered:**
+- Modified `claude-code-review-fast.yml` in PR branch
+- Workflow failed with: "workflow file must exist and have identical content to the version on the repository's default branch"
+
+**Solution:**
+1. Commit workflow changes to main branch first
+2. Then trigger the workflow from PR branch
+3. Or use `workflow_dispatch` for manual testing
+
+**Workflow:**
+```bash
+# 1. Fix on main
+git checkout main
+# edit .github/workflows/xxx.yml
+git commit -m "fix: workflow configuration"
+git push
+
+# 2. Then re-run PR workflow
+gh run rerun <run-id> --failed
+```
+
 ## Your Mission
 
 Run the complete end-to-end workflow, fix any issues encountered, and ensure we achieve:
