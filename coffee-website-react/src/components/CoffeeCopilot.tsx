@@ -5,6 +5,7 @@ type Message = {
   role: 'user' | 'assistant';
   content: string;
   timestamp?: Date;
+  imageUrl?: string;
 };
 
 export default function CoffeeCopilot() {
@@ -19,61 +20,121 @@ export default function CoffeeCopilot() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [bugReportMode, setBugReportMode] = useState(false);
+  const [screenshot, setScreenshot] = useState<File | null>(null);
+  const [screenshotPreview, setScreenshotPreview] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Handle screenshot upload
+  const handleScreenshotChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      setScreenshot(file);
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setScreenshotPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Remove screenshot
+  const removeScreenshot = () => {
+    setScreenshot(null);
+    setScreenshotPreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
 
-    const userMessage: Message = {
-      role: 'user',
-      content: input,
-      timestamp: new Date()
-    };
-
-    const updatedMessages = [...messages, userMessage];
-    setMessages(updatedMessages);
-    setInput('');
     setIsLoading(true);
 
     try {
-      // Connect to Coffee Copilot backend server
-      const apiUrl = import.meta.env.VITE_COPILOT_API_URL || 'http://localhost:3001/api/chat';
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          messages: updatedMessages.map(m => ({
-            role: m.role,
-            content: m.content
-          })),
-          user: {
-            id: 'user-123' // TODO: Replace with actual authenticated user ID
+      // SIMPLIFIED FEEDBACK FLOW: Direct GitHub issue creation
+      if (bugReportMode) {
+        const apiUrl = import.meta.env.VITE_COPILOT_API_URL || 'http://localhost:3001';
+        const formData = new FormData();
+        formData.append('description', input);
+        if (screenshot) {
+          formData.append('screenshot', screenshot);
+        }
+
+        const response = await fetch(`${apiUrl}/api/feedback`, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Show success message
+        const successMessage: Message = {
+          role: 'assistant',
+          content: `✅ Feedback submitted successfully! Issue #${data.issueNumber || 'created'} has been created. Thank you for helping us improve!`,
+          timestamp: new Date()
+        };
+        setMessages([...messages, successMessage]);
+
+        // Clear form
+        setInput('');
+        removeScreenshot();
+      } else {
+        // NORMAL CHAT MODE: Use existing chat flow
+        const userMessage: Message = {
+          role: 'user',
+          content: input,
+          timestamp: new Date()
+        };
+
+        const updatedMessages = [...messages, userMessage];
+        setMessages(updatedMessages);
+        setInput('');
+
+        const apiUrl = import.meta.env.VITE_COPILOT_API_URL || 'http://localhost:3001/api/chat';
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
           },
-          allowGithubIssues: bugReportMode
-        })
-      });
+          body: JSON.stringify({
+            messages: updatedMessages.map(m => ({
+              role: m.role,
+              content: m.content
+            })),
+            user: {
+              id: 'user-123' // TODO: Replace with actual authenticated user ID
+            },
+            allowGithubIssues: false
+          })
+        });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const assistantMessage: Message = {
+          role: 'assistant',
+          content: data.reply?.content || '[No response]',
+          timestamp: new Date()
+        };
+
+        setMessages([...updatedMessages, assistantMessage]);
       }
-
-      const data = await response.json();
-      const assistantMessage: Message = {
-        role: 'assistant',
-        content: data.reply?.content || '[No response]',
-        timestamp: new Date()
-      };
-
-      setMessages([...updatedMessages, assistantMessage]);
     } catch (error) {
-      console.error('Chat error:', error);
+      console.error('Error:', error);
 
       const errorMessage: Message = {
         role: 'assistant',
@@ -81,7 +142,7 @@ export default function CoffeeCopilot() {
         timestamp: new Date()
       };
 
-      setMessages([...updatedMessages, errorMessage]);
+      setMessages([...messages, errorMessage]);
     } finally {
       setIsLoading(false);
     }
@@ -220,10 +281,46 @@ export default function CoffeeCopilot() {
           <div className="p-3 border-t" role="form">
             {bugReportMode && (
               <div className="mb-2 text-xs text-orange-600 bg-orange-50 px-3 py-2 rounded-lg">
-                🐛 Bug Report Mode: Describe the issue you're experiencing
+                🐛 Bug Report Mode: Add a screenshot and description (submit creates GitHub issue directly)
               </div>
             )}
+
+            {/* Screenshot Preview */}
+            {bugReportMode && screenshotPreview && (
+              <div className="mb-2 relative">
+                <img
+                  src={screenshotPreview}
+                  alt="Screenshot preview"
+                  className="w-full rounded-lg border border-gray-300"
+                />
+                <button
+                  onClick={removeScreenshot}
+                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
+                  aria-label="Remove screenshot"
+                >
+                  ×
+                </button>
+              </div>
+            )}
+
             <div className="flex gap-2">
+              {/* Screenshot Upload Button (only in bug report mode) */}
+              {bugReportMode && (
+                <label className="cursor-pointer">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleScreenshotChange}
+                    disabled={isLoading}
+                  />
+                  <div className="px-3 py-2 rounded-xl bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50 transition-colors flex items-center justify-center">
+                    📷
+                  </div>
+                </label>
+              )}
+
               <label htmlFor="chat-input" className="sr-only">
                 Type your message
               </label>
@@ -244,7 +341,7 @@ export default function CoffeeCopilot() {
                 disabled={isLoading || !input.trim()}
                 aria-label="Send message"
               >
-                Send
+                {bugReportMode ? 'Submit' : 'Send'}
               </button>
             </div>
           </div>
