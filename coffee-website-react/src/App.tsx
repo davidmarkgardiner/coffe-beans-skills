@@ -1,4 +1,3 @@
-// Testing end-to-end workflow validation (Issue #14)
 import { useState } from 'react'
 import { Navigation } from './components/Navigation'
 import { Hero } from './components/Hero'
