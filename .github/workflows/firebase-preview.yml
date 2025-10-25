@@ -110,7 +110,7 @@ jobs:
             const e2eResult = '${{ steps.e2e_tests.outcome }}';
 
             const testStatus = e2eResult === 'success' ? '✅ All E2E tests passed' :
-                              e2eResult === 'failure' ? '❌ Some E2E tests failed - @claude please review and fix' :
+                              e2eResult === 'failure' ? '❌ Some E2E tests failed' :
                               '⚠️ E2E tests not configured yet';
 
             const comment = `## 🚀 Preview Deployment & E2E Test Results
@@ -138,10 +138,12 @@ jobs:
 
             ${e2eResult === 'failure' ? `
             ### ⚠️ Action Required
-            @claude The E2E tests found issues in the preview deployment. Please:
+            E2E tests found issues in the preview deployment. Please:
             1. Review the test failures in the Playwright report
             2. Fix the issues in the code
             3. Push updates to trigger re-test
+
+            To request automated fixes, add a comment with @claude and describe the specific issues to fix.
             ` : ''}
 
             ### Manual Testing Checklist
