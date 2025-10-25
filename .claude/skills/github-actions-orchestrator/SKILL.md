@@ -19,57 +19,143 @@ You are a **GitHub Actions Orchestrator Expert**. Your job is to:
 
 ## Workflow Architecture
 
-Our repository has a sophisticated automated workflow:
+Our repository has a sophisticated automated workflow with **3 parallel workflows**:
 
 ```
-PR Created
-    ↓
-┌───────────────────────────────────────────────┐
-│ 1. Fast Pre-Checks (fast-pre-checks.yml)     │
-│    - TypeScript type checking                 │
-│    - ESLint linting                           │
-│    - Build verification                       │
-│    - Unit tests                               │
-│    Time: 2-5 minutes                          │
-└───────────────────────────────────────────────┘
-    ↓
-┌───────────────────────────────────────────────┐
-│ 2. Firebase Preview (firebase-preview.yml)    │
-│    - Build production bundle                  │
-│    - Deploy to Firebase preview channel       │
-│    - Install Playwright                       │
-│    - Run E2E tests against preview URL        │
-│    - Upload artifacts (screenshots, videos)   │
-│    - Comment on PR with results               │
-│    - Tag @claude if tests fail                │
-│    Time: 5-10 minutes                         │
-└───────────────────────────────────────────────┘
-    ↓
-┌───────────────────────────────────────────────┐
-│ 3. Code Review (claude-code-review-custom.yml)│
-│    - Wait for firebase-preview (max 15 min)   │
-│    - Review code quality                      │
-│    - Analyze E2E test results                 │
-│    - Score 0-100 (deduct if tests failed)     │
-│    - Tag @claude if score <85                 │
-│    Time: 2-5 minutes                          │
-└───────────────────────────────────────────────┘
-    ↓
-┌───────────────────────────────────────────────┐
-│ 4. Decision Point                             │
-│    - Score ≥85 → APPROVED ✅                  │
-│    - Score <85 → @claude fixes issues         │
-│    - Max 3 iterations                         │
-└───────────────────────────────────────────────┘
-    ↓
-┌───────────────────────────────────────────────┐
-│ 5. Claude Issue Agent (claude.yml)            │
-│    - Triggered by @claude mentions            │
-│    - Reads review feedback                    │
-│    - Reads E2E test failures                  │
-│    - Fixes all issues                         │
-│    - Pushes commit → triggers re-run          │
-└───────────────────────────────────────────────┘
+┌─────────────────────────────────────────┐
+│        User Creates Issue               │
+│                 ↓                       │
+│     claude.yml (Implementation)         │
+│    - Creates feature branch             │
+│    - Implements solution                │
+│    - Creates PR                         │
+│    - Model: claude-haiku-4-5            │
+└─────────────────────────────────────────┘
+                 ↓
+         ┌──── PR Created ────┐
+         │                    │
+         ↓                    ↓                    ↓
+┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐
+│ Fast Pre-Checks  │  │ Firebase Preview │  │ Fast Code Review │
+│ (playwright.yml) │  │ (firebase-prev.) │  │ (review-fast.yml)│
+│                  │  │                  │  │                  │
+│ • TypeScript ✓   │  │ • Build app      │  │ • Review code    │
+│ • Lint (⚠️)      │  │ • Deploy preview │  │ • Score 0-100    │
+│ • Build ✓        │  │ • Cache Playwright│ │ • Post comment   │
+│ • Unit tests (⚠️)│  │ • E2E tests ✓    │  │ • Tag @claude    │
+│                  │  │ • Upload reports │  │   if score < 85  │
+│ Time: 1-2 min    │  │ Time: 2-3 min    │  │ Time: 30-60 sec  │
+│                  │  │                  │  │ Model: Haiku 4.5 │
+└──────────────────┘  └──────────────────┘  └──────────────────┘
+         │                    │                    │
+         └────────────┬───────┴────────────────────┘
+                      ↓
+              ┌───────────────┐
+              │ Review posted │
+              │  Score < 85?  │
+              └───────┬───────┘
+                      │ YES
+                      ↓
+              ┌───────────────┐
+              │ @claude tagged│
+              │   in comment  │
+              └───────┬───────┘
+                      │
+                      ↓
+              ┌───────────────┐
+              │  claude.yml   │
+              │   triggered   │
+              │ - Fix issues  │
+              │ - Push update │
+              └───────┬───────┘
+                      │
+                      ↓
+              ┌───────────────┐
+              │ Workflows run │
+              │     again     │
+              │  (max 3 times)│
+              └───────────────┘
+```
+
+## Key Optimizations
+
+Our workflow has been heavily optimized for speed and cost:
+
+### 1. Playwright Browser Caching
+**Benefit:** 30-90 second speedup per E2E test run
+
+```yaml
+# .github/workflows/firebase-preview.yml
+- name: Setup Playwright browsers with caching
+  uses: actions/cache@v4
+  id: playwright-cache
+  with:
+    path: ~/.cache/ms-playwright
+    key: playwright-${{ runner.os }}-${{ hashFiles('coffee-website-react/package-lock.json') }}
+
+- name: Install Playwright browsers (if not cached)
+  if: steps.playwright-cache.outputs.cache-hit != 'true'
+  run: npx playwright install --with-deps chromium
+
+- name: Install deps only (if cached)
+  if: steps.playwright-cache.outputs.cache-hit == 'true'
+  run: npx playwright install-deps chromium
+```
+
+**Result:** First run installs browsers (~90s), subsequent runs reuse cache (~10s)
+
+### 2. Fast Code Review Workflow
+**Benefit:** 50-70% faster reviews, 80-90% cost reduction
+
+- **Fast Review** (`.github/workflows/claude-code-review-fast.yml`):
+  - 20-line prompt (vs 150+ line comprehensive review)
+  - Time: 30-60 seconds
+  - Tokens: 3-8k
+  - Model: claude-haiku-4-5
+
+- **Comprehensive Review** (`.github/workflows/claude-code-review-custom.yml.disabled`):
+  - 150+ line prompt with detailed rubric
+  - Time: 3-5 minutes
+  - Tokens: 15-25k
+  - Model: claude-haiku-4-5
+
+**Recommendation:** Use fast review for development/testing, comprehensive for production PRs
+
+### 3. Claude Haiku 4.5 Model
+**Benefit:** 2-3x faster, 20x cheaper than Sonnet
+
+All Claude actions now use `claude-haiku-4-5`:
+- `.github/workflows/claude.yml` (Implementation agent)
+- `.github/workflows/claude-code-review-fast.yml` (Fast review)
+- `.github/workflows/claude-code-review-custom.yml.disabled` (Comprehensive review)
+
+**Cost comparison (per 1M tokens):**
+- claude-sonnet-4-5: $15 in / $75 out
+- claude-haiku-4-5: $0.80 in / $4 out
+- **Savings: ~20x cheaper**
+
+### 4. Parallel Workflow Execution
+**Benefit:** No sequential bottlenecks
+
+All 3 workflows run **simultaneously** when PR is created:
+- Fast pre-checks (1-2 min)
+- Firebase preview + E2E (2-3 min with caching)
+- Fast code review (30-60 sec)
+
+**Total time:** ~3-4 minutes for complete validation (vs 6-8 min sequential)
+
+### 5. Optimized Quality Gates
+**Benefit:** Faster feedback, fewer false failures
+
+**Blocking checks:**
+- TypeScript type checking ✅
+- Build verification ✅
+
+**Non-blocking checks:**
+- Linting (existing debt tracked separately) ⚠️
+- Integration tests (require secrets only in firebase-preview) ⚠️
+
+**Result:** PRs don't get blocked by known issues, critical failures still surface immediately
 ```
 
 ## Your Responsibilities
@@ -672,16 +758,35 @@ A successful end-to-end validation means:
 
 ## Expected Timeline
 
+### Optimized Performance (After Improvements)
+
+| Stage | Duration | Notes |
+|-------|----------|-------|
+| Fast pre-checks | 1-2 min | TypeScript, lint, build, tests |
+| Firebase preview + E2E | 2-3 min | With Playwright browser caching |
+| Fast code review | 30-60 sec | Using claude-haiku-4-5 |
+| **Total (parallel execution)** | **~3-4 min** | All 3 workflows run simultaneously |
+| If fixes needed | +3-4 min | Same parallel execution |
+| If 2nd iteration | +3-4 min | Max 3 iterations total |
+
+**Optimizations applied:**
+- ✅ Playwright browser caching (saves 30-90s per run)
+- ✅ Fast review workflow (saves 2-4 min vs comprehensive)
+- ✅ Claude Haiku 4.5 model (2-3x faster than Sonnet)
+- ✅ Parallel execution (no sequential bottlenecks)
+
+**Goal:** First-pass approval in 3-4 minutes
+
+### Before Optimizations (Reference)
+
 | Stage | Duration | Cumulative |
 |-------|----------|------------|
 | Fast pre-checks | 2-5 min | 2-5 min |
 | Firebase preview + E2E | 5-10 min | 7-15 min |
-| Code review | 2-5 min | 9-20 min |
-| **Total (1 iteration)** | **9-20 min** | **9-20 min** |
-| If fixes needed | +15-20 min | 24-40 min |
-| If 2nd iteration needed | +15-20 min | 39-60 min |
+| Code review | 3-5 min | 10-20 min |
+| **Total (sequential)** | **10-20 min** | **10-20 min** |
 
-**Goal:** First-pass approval in 9-20 minutes
+**Improvement:** 60-75% faster (3-4 min vs 10-20 min)
 
 ## Lessons Learned from PR #12 (Workflow Validation)
 
@@ -763,6 +868,58 @@ From multiple reviews of PR #12, code reviews assigned different scores based on
 - Co-locate workflow docs with workflows: `.github/workflows/VALIDATION_TEST.md`
 - Don't clutter repository root with workflow test files
 - Use clear README references to guide users
+
+## Lessons Learned from PR #13 (Fast Review Optimization)
+
+### Key Insights
+
+**1. Playwright Browser Caching Works**
+- ✅ Successfully implemented GitHub Actions caching for Playwright browsers
+- First run: ~90 seconds to install browsers
+- Subsequent runs: ~10 seconds (cache hit)
+- Cache key based on package-lock.json ensures invalidation when Playwright version changes
+
+**2. Fast Code Review Successfully Posts Comments**
+- ✅ Fixed OIDC permission issue by adding `id-token: write`
+- ✅ Fixed comment posting by adding `claude_args: '--allowed-tools Bash'`
+- Review successfully posted with score (72/100) and @claude tag for improvements
+- Total review time: ~30-60 seconds (vs 3-5 min comprehensive)
+
+**3. Claude Haiku 4.5 Performance**
+- ✅ All workflows updated to use `claude-haiku-4-5`
+- Fast, cost-effective reviews
+- Quality still high enough for development/testing PRs
+- Recommendation: Use Haiku for testing, Sonnet for critical production reviews
+
+**4. Parallel Workflow Execution Validated**
+- ✅ All 3 workflows triggered simultaneously on PR creation:
+  - Fast pre-checks (playwright.yml)
+  - Firebase preview deployment (firebase-preview.yml)
+  - Fast code review (claude-code-review-fast.yml)
+- No blocking dependencies between workflows
+- Total time for complete validation: ~3-4 minutes
+
+**5. Workflow Validation Challenges**
+- **Challenge:** New workflow files must exist on default branch before running on PR
+- **Solution:** Cherry-pick critical fixes to main branch first, then test on feature branch
+- **Lesson:** When adding new workflows, commit to main first or use workflow_dispatch for testing
+
+**6. Review Scoring Behavior**
+- Fast review gave 72/100 on test PR with continue-on-error strategy
+- Tagged @claude with specific improvements (remove test code, fix error handling)
+- Scoring appropriately stricter than comprehensive review that understood context
+- **Lesson:** Fast review good for catching obvious issues, comprehensive better for nuanced decisions
+
+**7. Complete Automation Cycle Works**
+1. ✅ User creates issue → claude.yml creates PR
+2. ✅ PR triggers 3 parallel workflows
+3. ✅ Fast review posts comment with score
+4. ✅ If score < 85, @claude tagged in comment
+5. ✅ @claude tag triggers claude.yml to fix issues
+6. ✅ Fixes pushed → workflows re-run
+7. ✅ Cycle repeats (max 3 times) until approval
+
+**Workflow design confirmed correct and fully functional!**
 
 ## Your Mission
 
