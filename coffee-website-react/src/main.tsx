@@ -11,4 +11,3 @@ createRoot(document.getElementById('root')!).render(
     </AuthProvider>
   </StrictMode>,
 )
-// Workflow validation test - Sat Oct 25 11:52:18 BST 2025
