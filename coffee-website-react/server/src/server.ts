@@ -397,7 +397,7 @@ app.post('/api/feedback', upload.single('screenshot'), async (req, res) => {
       : description;
 
     // Create the issue body
-    let issueBody = `**User Feedback**\n\n${description}\n\n`;
+    const issueBody = `**User Feedback**\n\n${description}\n\n`;
 
     // Create the GitHub issue first
     const issueResult = await createGithubIssue({

@@ -1,0 +1,51 @@
+name: Claude Code Review (Fast)
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+
+jobs:
+  claude-review:
+    if: |
+      github.event.pull_request.draft == false &&
+      github.event.pull_request.user.login != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Claude Code Review
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          track_progress: false  # Disable for speed
+          prompt: |
+            Review this PR and provide a score from 0-100.
+
+            **Quick Review Checklist:**
+            1. Does it work correctly?
+            2. Any security issues?
+            3. Is the code maintainable?
+            4. Are there tests?
+
+            **Scoring:**
+            - 85-100: APPROVE ✅
+            - 70-84: REQUEST_CHANGES with @claude tag
+            - 0-69: BLOCK ❌
+
+            Format your response:
+            ```
+            ## Review Score: XX/100
+
+            **Quick Assessment:**
+            [Brief summary of strengths and issues]
+
+            **Decision:** [APPROVE ✅ | REQUEST_CHANGES ⚠️ | BLOCK ❌]
+            ```
+
+            If score < 85, tag @claude with specific fixes needed.

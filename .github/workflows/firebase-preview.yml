@@ -3,16 +3,18 @@ name: Firebase Preview Channel Deployment
 # Triggers:
 # - When a PR is opened, reopened, or synchronized (new commits)
 # - When a PR is closed (to clean up the preview channel)
+# - Manual workflow dispatch for testing
 on:
   pull_request:
     types: [opened, reopened, synchronize, closed]
     paths:
       - 'coffee-website-react/**'
       - '.github/workflows/firebase-preview.yml'
+  workflow_dispatch:  # Allow manual triggering for testing
 
 # Ensure only one workflow runs per PR at a time
 concurrency:
-  group: preview-${{ github.event.pull_request.number }}
+  group: preview-${{ github.event.pull_request.number || 'manual' }}
   cancel-in-progress: true
 
 # Required permissions for Firebase action
@@ -70,11 +72,23 @@ jobs:
         env:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
 
-      - name: Install Playwright
+      - name: Setup Playwright browsers with caching
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('coffee-website-react/package-lock.json') }}
+
+      - name: Install Playwright browsers (if not cached)
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         working-directory: coffee-website-react
-        run: |
-          npm install --save-dev @playwright/test
-          npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright browsers deps only (if cached)
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        working-directory: coffee-website-react
+        run: npx playwright install-deps chromium
 
       - name: Run E2E tests against preview deployment
         id: e2e_tests
