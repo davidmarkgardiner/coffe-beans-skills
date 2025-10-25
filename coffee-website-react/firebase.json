@@ -12,6 +12,13 @@
     ],
     "rewrites": [
       {
+        "source": "/api/**",
+        "run": {
+          "serviceId": "coffee-copilot-backend",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
