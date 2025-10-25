@@ -158,7 +158,7 @@ ipython_config.py
 
 # Package managers
 pnpm-lock.yaml
-package-lock.json
+# package-lock.json - needed for Docker builds with npm ci
 yarn.lock
 
 # Temporary files
