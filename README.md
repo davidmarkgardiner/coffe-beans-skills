@@ -270,22 +270,44 @@ This project is powered by cutting-edge AI technologies:
 
 ## Automated Claude Workflows
 
-This repository uses an automated development, testing, and review cycle powered by Claude Code:
+This repository uses an automated development, testing, and review cycle powered by Claude Code with **complete end-to-end workflow validation**.
 
-### 🔄 How It Works
+### 🔄 Complete Automated Flow
 
 1. **Create an issue** with `@claude` mention
-2. **Claude implements** the feature automatically
-3. **Automated tests run** (lint, build, Playwright)
-4. **Automated review** scores the code (0-100) including test results
-5. **Iterative improvement** until quality threshold met (85+)
-6. **Auto-approval** when ready to merge
+2. **Claude implements** the feature automatically (claude.yml workflow)
+   - Creates feature branch
+   - Implements solution
+   - Creates pull request
+3. **Three parallel workflows execute** (~3-4 minutes total):
+   - `fast-pre-checks.yml` - Type check, lint, build, unit tests
+   - `firebase-preview.yml` - Deploy preview + Playwright E2E tests
+   - `claude-code-review-fast.yml` - Fast AI code review with scoring
+4. **Automated quality check** scores code (0-100) including test results
+5. **Iterative improvement** if score < 85 (Claude auto-tagged to fix)
+6. **Auto-approval** when quality threshold met (≥85)
 
-### 📊 Review Scoring
+### ⚡ Parallel Workflow Execution
+
+All validation runs in parallel for maximum speed:
+- **Fast Pre-checks**: Catches syntax/type errors immediately
+- **Firebase Preview + E2E**: Validates functionality with real browser tests
+- **AI Code Review**: Analyzes code quality, patterns, and best practices
+
+Combined execution time: **~3-4 minutes** (vs 10+ minutes sequential)
+
+### 📊 Review Scoring & Iteration
 
 - **85-100**: ✅ Approved - Ready to merge
 - **70-84**: ⚠️ Changes requested - Claude auto-fixes (up to 3 iterations)
 - **0-69**: ❌ Human review required
+
+When the score is below 85, Claude:
+1. Analyzes the review feedback and test failures
+2. Makes targeted improvements
+3. Pushes updates to the same PR
+4. Triggers workflows again automatically
+5. Repeats until score ≥ 85 or max iterations reached
 
 ### 📚 Documentation
 
