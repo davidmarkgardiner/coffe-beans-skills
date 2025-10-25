@@ -566,6 +566,386 @@ export default defineConfig({
 - Review payment declined reason in Dashboard
 - Ensure webhook endpoint updated for production URL
 
+## Production Deployment
+
+### Deploying Backend with Stripe to Cloud Run (Firebase Projects)
+
+When deploying a Stripe-enabled backend for Firebase Hosting projects, follow this proven architecture:
+
+**Architecture:**
+- **Frontend**: Firebase Hosting (static site)
+- **Backend**: Google Cloud Run (Express server with Stripe)
+- **Connection**: Firebase rewrites proxy `/api/*` to Cloud Run
+
+**Step 1: Create Unified Backend Server**
+
+Merge Stripe endpoints into your existing backend (or create new):
+
+```typescript
+// server/src/server.ts
+import express from 'express';
+import Stripe from 'stripe';
+
+const app = express();
+const port = process.env.PORT || 8080; // Cloud Run uses PORT 8080
+
+// Initialize Stripe
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2025-09-30.clover', // Use latest stable version
+});
+
+// Create payment intent endpoint
+app.post('/api/create-payment-intent', async (req, res) => {
+  try {
+    const { amount, currency = 'usd', metadata = {} } = req.body;
+
+    if (!amount || amount <= 0) {
+      return res.status(400).json({ error: 'Invalid amount' });
+    }
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(amount),
+      currency,
+      metadata: {
+        ...metadata,
+        created_at: new Date().toISOString(),
+      },
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+
+    res.json({
+      clientSecret: paymentIntent.client_secret,
+      paymentIntentId: paymentIntent.id,
+    });
+  } catch (error) {
+    console.error('Error creating payment intent:', error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : 'Internal server error',
+    });
+  }
+});
+
+// Webhook handler
+app.post('/api/stripe-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  try {
+    const event = stripe.webhooks.constructEvent(req.body, sig as string, webhookSecret!);
+
+    // Handle events
+    switch (event.type) {
+      case 'payment_intent.succeeded':
+        console.log('Payment succeeded:', event.data.object.id);
+        break;
+      case 'payment_intent.payment_failed':
+        console.log('Payment failed:', event.data.object.id);
+        break;
+    }
+
+    res.json({ received: true });
+  } catch (error) {
+    console.error('Webhook error:', error);
+    res.status(400).send(`Webhook Error: ${error instanceof Error ? error.message : 'Unknown'}`);
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
+```
+
+**Step 2: Configure Cloud Run Deployment**
+
+Create Dockerfile:
+
+```dockerfile
+# server/Dockerfile
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+RUN npm ci --only=production
+
+# Copy source and build
+COPY . .
+RUN npm run build
+
+# Cloud Run expects PORT 8080
+ENV PORT=8080
+ENV NODE_ENV=production
+
+EXPOSE 8080
+
+CMD ["npm", "start"]
+```
+
+Update `package.json`:
+
+```json
+{
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "dependencies": {
+    "stripe": "^19.1.0",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
+  }
+}
+```
+
+**Step 3: Set Up GitHub Actions Deployment**
+
+Create `.github/workflows/deploy-backend.yml`:
+
+```yaml
+name: Deploy Backend to Cloud Run
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'server/**'
+      - '.github/workflows/deploy-backend.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Build and Push Docker Image
+        run: |
+          cd server
+          gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/backend
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy backend \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/backend \
+            --region us-central1 \
+            --platform managed \
+            --allow-unauthenticated \
+            --set-env-vars "NODE_ENV=production" \
+            --update-secrets "STRIPE_SECRET_KEY=stripe-secret-key:latest" \
+            --port 8080
+```
+
+**Step 4: Grant Required GCP Permissions**
+
+The GitHub Actions service account needs these roles:
+
+```bash
+# Get service account email from GitHub secrets
+SERVICE_ACCOUNT="github-actions-sa@YOUR-PROJECT.iam.gserviceaccount.com"
+PROJECT_ID="YOUR-PROJECT-ID"
+
+# Grant required permissions
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:$SERVICE_ACCOUNT" \
+  --role="roles/artifactregistry.writer"
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:$SERVICE_ACCOUNT" \
+  --role="roles/run.admin"
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:$SERVICE_ACCOUNT" \
+  --role="roles/iam.serviceAccountUser"
+```
+
+**Common Permission Error:**
+```
+denied: Permission "artifactregistry.repositories.uploadArtifacts" denied
+```
+**Solution:** Grant `roles/artifactregistry.writer` as shown above.
+
+**Step 5: Configure Firebase Hosting Rewrites**
+
+Update `firebase.json` to proxy API requests to Cloud Run:
+
+```json
+{
+  "hosting": {
+    "public": "dist",
+    "rewrites": [
+      {
+        "source": "/api/**",
+        "run": {
+          "serviceId": "backend",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
+```
+
+**CRITICAL:** The rewrite for `/api/**` must come **before** the catch-all `**` rewrite, otherwise all API requests will go to `index.html`.
+
+**Step 6: Store Stripe Secrets in Google Secret Manager**
+
+```bash
+# Create secret for Stripe secret key
+echo -n "sk_live_YOUR_SECRET_KEY" | gcloud secrets create stripe-secret-key \
+  --data-file=- \
+  --replication-policy="automatic"
+
+# Grant Cloud Run service access to secret
+gcloud secrets add-iam-policy-binding stripe-secret-key \
+  --member="serviceAccount:SERVICE_ACCOUNT_EMAIL" \
+  --role="roles/secretmanager.secretAccessor"
+```
+
+**Step 7: Deploy and Test**
+
+```bash
+# Deploy backend (triggers automatically via GitHub Actions)
+git add .
+git commit -m "feat: deploy Stripe backend to Cloud Run"
+git push origin main
+
+# After deployment, test the endpoint
+curl https://YOUR-DOMAIN.com/api/health
+
+# Test payment intent creation
+curl -X POST https://YOUR-DOMAIN.com/api/create-payment-intent \
+  -H "Content-Type: application/json" \
+  -d '{"amount": 2999, "currency": "usd"}'
+```
+
+### Common Production Issues and Solutions
+
+**Issue 1: "Stripe API version mismatch" Error**
+
+```
+error TS2322: Type '"2024-12-18.acacia"' is not assignable to type '"2025-09-30.clover"'
+```
+
+**Cause:** Installed Stripe SDK version has different API version than specified in code.
+
+**Solution:** Update to match installed SDK version:
+```typescript
+const stripe = new Stripe(secretKey, {
+  apiVersion: '2025-09-30.clover', // Check node_modules/stripe for correct version
+});
+```
+
+**Issue 2: Frontend Gets HTML Instead of JSON from API**
+
+**Error in browser console:**
+```
+SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+```
+
+**Cause:** Firebase Hosting returns 404 HTML page when backend isn't configured.
+
+**Solution:** Verify Firebase rewrite is correctly configured (see Step 5) and backend is deployed.
+
+**Issue 3: Payment Form Shows "Please select a payment method"**
+
+**This is NORMAL!** This is Stripe's validation message before the user fills in card details.
+
+**What happens:**
+1. User clicks "Buy Now" → Modal opens
+2. Stripe PaymentElement loads → Shows empty form
+3. User sees "Please select a payment method" → **Expected behavior**
+4. User enters card details → Message disappears
+5. User clicks "Pay" → Payment processes
+
+**This is not an error** - it's proper validation ensuring users enter payment details before submitting.
+
+**Issue 4: Docker Build Fails with Package Lock Mismatch**
+
+```
+npm error Missing: stripe@19.1.0 from lock file
+```
+
+**Cause:** Added dependency to `package.json` but didn't update `package-lock.json`.
+
+**Solution:**
+```bash
+cd server
+npm install  # Updates package-lock.json
+git add package-lock.json
+git commit -m "fix: update package-lock with Stripe dependency"
+```
+
+**Issue 5: Cloud Run Health Check Fails**
+
+```
+curl: (22) The requested URL returned error: 404
+```
+
+**Cause:** Workflow checks `/api/health` but endpoint is at `/health`.
+
+**Solution:** Ensure health endpoint path matches workflow expectation, or update workflow:
+```yaml
+- name: Test health endpoint
+  run: curl -f ${{ steps.service.outputs.url }}/health || exit 1
+```
+
+### Production Checklist
+
+Before going live with Stripe payments:
+
+- [ ] **Switch to live API keys** in Google Secret Manager
+- [ ] **Update webhook endpoint** in Stripe Dashboard to production URL
+- [ ] **Test small live payment** with real card
+- [ ] **Verify webhook events** are received on production
+- [ ] **Enable Stripe Radar** for fraud protection
+- [ ] **Set up email alerts** for failed payments in Stripe Dashboard
+- [ ] **Configure proper CORS** origins for production domain
+- [ ] **Test payment flow** end-to-end on production URL
+- [ ] **Monitor Cloud Run logs** for errors
+- [ ] **Set up Cloud Run budget alerts** to prevent runaway costs
+
+### Monitoring and Debugging
+
+**View Cloud Run Logs:**
+```bash
+gcloud run services logs read backend --region us-central1 --limit 50
+```
+
+**Check Stripe Dashboard:**
+- Payments → View recent transactions
+- Developers → Webhooks → Check delivery status
+- Logs → See all API requests
+
+**Test Production API Directly:**
+```bash
+# Test from Cloud Run URL
+curl https://backend-xxx.run.app/health
+
+# Test through Firebase Hosting
+curl https://yourdomain.com/api/health
+```
+
 ## Additional Resources
 
 For more detailed information, refer to:
@@ -573,3 +953,5 @@ For more detailed information, refer to:
 - [Stripe Official Documentation](https://stripe.com/docs)
 - [Stripe API Reference](https://stripe.com/docs/api)
 - [Stripe Testing Guide](https://stripe.com/docs/testing)
+- [Google Cloud Run Documentation](https://cloud.google.com/run/docs)
+- [Firebase Hosting Rewrites](https://firebase.google.com/docs/hosting/cloud-run)
