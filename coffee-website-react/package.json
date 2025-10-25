@@ -11,10 +11,15 @@
     "test:inventory": "tsx scripts/test-inventory.ts",
     "test:checkout": "tsx scripts/test-checkout.ts",
     "test:stripe": "tsx scripts/test-stripe.ts",
+    "test:content": "tsx scripts/test-content-generation.ts",
+    "test:video": "tsx scripts/test-video-generation.ts",
+    "upload:content": "tsx scripts/upload-content-to-firebase.ts",
+    "generate:weekly": "tsx scripts/generate-weekly-content.ts",
     "server": "tsx server/index.ts",
     "dev:all": "npm run server & npm run dev"
   },
   "dependencies": {
+    "@google/genai": "^1.27.0",
     "@stripe/react-stripe-js": "^5.2.0",
     "@stripe/stripe-js": "^8.1.0",
     "cors": "^2.8.5",

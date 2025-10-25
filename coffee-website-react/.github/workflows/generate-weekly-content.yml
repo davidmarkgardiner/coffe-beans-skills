@@ -1,0 +1,137 @@
+name: Generate Weekly Content
+
+# Runs every Sunday at 3:00 AM UTC
+# Can also be triggered manually via GitHub UI or CLI
+on:
+  schedule:
+    - cron: '0 3 * * 0' # Every Sunday at 3:00 AM UTC
+  workflow_dispatch: # Allow manual triggering
+    inputs:
+      season:
+        description: 'Force specific season (leave empty for auto-detect)'
+        required: false
+        type: choice
+        options:
+          - ''
+          - winter
+          - spring
+          - summer
+          - autumn
+      holiday:
+        description: 'Force specific holiday (leave empty for auto-detect)'
+        required: false
+        type: string
+      video_count:
+        description: 'Number of videos to generate'
+        required: false
+        default: '1'
+        type: string
+      photo_count:
+        description: 'Number of photos to generate'
+        required: false
+        default: '2'
+        type: string
+
+jobs:
+  generate-content:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30 # Veo video generation can take 10-15 minutes
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install dependencies
+        run: |
+          cd coffee-website-react
+          npm ci
+
+      - name: Install Firebase Admin SDK
+        run: |
+          npm install -g firebase-tools
+          npm install firebase-admin
+
+      - name: Set up Firebase credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          echo "$FIREBASE_SERVICE_ACCOUNT" > $HOME/firebase-service-account.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/firebase-service-account.json" >> $GITHUB_ENV
+
+      - name: Generate weekly content
+        id: generate
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
+          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
+          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+        run: |
+          cd coffee-website-react
+
+          # Run weekly content generation
+          npm run generate:weekly -- \
+            --season="${{ github.event.inputs.season }}" \
+            --videos="${{ github.event.inputs.video_count || '1' }}" \
+            --photos="${{ github.event.inputs.photo_count || '2' }}"
+
+      - name: Clean up temporary files
+        if: always()
+        run: |
+          rm -f $HOME/firebase-service-account.json
+
+      - name: Report generation summary
+        if: success()
+        run: |
+          echo "✅ Weekly content generation completed successfully!"
+          echo "Videos generated: ${{ github.event.inputs.video_count || '1' }}"
+          echo "Photos generated: ${{ github.event.inputs.photo_count || '2' }}"
+
+      - name: Send notification (optional)
+        if: success()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        run: |
+          # Uncomment if you want Slack notifications
+          # curl -X POST "$SLACK_WEBHOOK" \
+          #   -H 'Content-Type: application/json' \
+          #   -d '{
+          #     "text": "✅ Weekly AI content generated successfully!",
+          #     "blocks": [{
+          #       "type": "section",
+          #       "text": {
+          #         "type": "mrkdwn",
+          #         "text": "*Weekly Content Generation*\n• Season: ${{ steps.detect-season.outputs.season }}\n• Holiday: ${{ steps.detect-season.outputs.holiday }}\n• Videos: ${{ github.event.inputs.video_count || 1 }}\n• Photos: ${{ github.event.inputs.photo_count || 2 }}"
+          #       }
+          #     }]
+          #   }'
+          echo "Notification step (currently disabled)"
+
+      - name: Handle failure
+        if: failure()
+        run: |
+          echo "❌ Content generation failed!"
+          echo "Check the logs above for error details."
+          # Optionally send failure notification
+          # curl -X POST "$SLACK_WEBHOOK" \
+          #   -H 'Content-Type: application/json' \
+          #   -d '{"text": "❌ Weekly content generation failed! Check GitHub Actions logs."}'
+
+      - name: Upload artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: generation-logs
+          path: |
+            ./generated-content/**/*.log
+            ./generated-content/manifest.json
+          retention-days: 7

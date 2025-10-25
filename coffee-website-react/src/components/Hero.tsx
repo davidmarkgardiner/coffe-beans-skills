@@ -1,31 +1,51 @@
-import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useContentRotation } from '../hooks/useContentRotation'
 
 export function Hero() {
-  const [imageUrl, setImageUrl] = useState('')
+  const { currentContent } = useContentRotation({
+    contentType: 'video', // Hero section uses videos
+    rotationInterval: 30000, // 30 seconds
+    preloadNext: true,
+  })
 
-  useEffect(() => {
-    const updateImageUrl = () => {
-      const width = window.innerWidth
-      const imageWidth = width < 768 ? 800 : width < 1200 ? 1200 : 1600
-      setImageUrl(`https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=${imageWidth}&q=80`)
-    }
-
-    updateImageUrl()
-    window.addEventListener('resize', updateImageUrl)
-    return () => window.removeEventListener('resize', updateImageUrl)
-  }, [])
+  // Fallback to Unsplash image if no video content available
+  const fallbackImage = 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=1600&q=80'
 
   return (
     <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden mt-20 pb-24">
       {/* Background with soft overlay and blur */}
       <div className="absolute inset-0 overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center scale-105 blur-[2px]"
-          style={{
-            backgroundImage: `url(${imageUrl})`,
-          }}
-        />
+        <AnimatePresence mode="wait">
+          {currentContent?.type === 'video' ? (
+            // Video background
+            <motion.video
+              key={currentContent.id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1 }}
+              className="absolute inset-0 w-full h-full object-cover scale-105 blur-[2px]"
+              src={currentContent.url}
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
+          ) : (
+            // Fallback image
+            <motion.div
+              key="fallback"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1 }}
+              className="absolute inset-0 bg-cover bg-center scale-105 blur-[2px]"
+              style={{
+                backgroundImage: `url(${fallbackImage})`,
+              }}
+            />
+          )}
+        </AnimatePresence>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.12)_0,transparent_60%)]" />
         <div className="absolute inset-0 bg-gradient-to-b from-grey-900/60 via-grey-900/70 to-grey-900/80" />
       </div>
