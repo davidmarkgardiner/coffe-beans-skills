@@ -37,7 +37,7 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h1 className="font-display text-6xl md:text-8xl font-bold text-cream mb-6 tracking-tight leading-[0.95] drop-shadow-[0_8px_16px_rgba(0,0,0,0.4)]">
+          <h1 className="font-display text-6xl md:text-8xl font-bold text-red-600 mb-6 tracking-tight leading-[0.95] drop-shadow-[0_8px_16px_rgba(0,0,0,0.4)]">
             STOCKBRIDGE COFFEE
             <br />
             EDINBURGH
