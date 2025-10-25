@@ -344,6 +344,16 @@ weeklyPhotos: 2                  # Provides variety
 - **Fix**: Simplified to use existing npm scripts in orchestration script
 - **Result**: Much easier to maintain and test
 
+❌ **Veo Video Generation Response Structure**
+- **Issue**: Video generation completes but "No download link in response"
+- **Problem**: `operation.response?.generatedVideos?.[0]?.video?.uri` is undefined
+- **SDK Version**: @google/genai v1.27.0
+- **Model**: veo-3.1-fast-generate-preview
+- **Temporary Fix**: Made video generation optional in workflow - continues with photos if video fails
+- **Debugging**: Added full response logging to identify actual structure
+- **Status**: Investigating correct response path in @google/genai v1.27.0
+- **Workaround**: Photos still work perfectly, so workflow is partially functional
+
 ### Setup Instructions
 
 **Local Testing:**
