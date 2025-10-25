@@ -72,11 +72,23 @@ jobs:
         env:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
 
-      - name: Install Playwright
+      - name: Setup Playwright browsers with caching
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('coffee-website-react/package-lock.json') }}
+
+      - name: Install Playwright browsers (if not cached)
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         working-directory: coffee-website-react
-        run: |
-          npm install --save-dev @playwright/test
-          npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright browsers deps only (if cached)
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        working-directory: coffee-website-react
+        run: npx playwright install-deps chromium
 
       - name: Run E2E tests against preview deployment
         id: e2e_tests
