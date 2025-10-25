@@ -257,3 +257,14 @@ ui-debug.log
 .env.firbase
 service-account.json
 setup-workload-identity.sh
+
+# Test and debug files
+test_buy_now.py
+test_buy_now_prod.py
+test_complete_payment_flow.py
+GET_API_KEY_INSTRUCTIONS.md
+fix_gcp_permissions.sh
+coffee-website-react/test-generated-content/
+coffee-website-react/content/photo/
+coffee-website-react/scripts/README-CONTENT-TEST.md
+stockbridge-coffee---ai-creative-studio/

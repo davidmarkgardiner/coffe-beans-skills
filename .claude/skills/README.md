@@ -31,6 +31,38 @@ You can also manually invoke a skill by asking Claude to use it:
 
 ### Project-Specific Skills
 
+#### ai-content-manager
+**Description:** Expert AI-powered content management and generation for coffee e-commerce websites. Automates weekly creation of seasonal videos and images using Google Gemini/Veo, manages content rotation via Firebase, and integrates dynamic backgrounds into React components.
+
+**Use when:**
+- Setting up AI-powered content generation for website backgrounds
+- Implementing seasonal/holiday content automation
+- Building dynamic content rotation systems (videos, images)
+- Integrating Google Gemini/Veo APIs for media generation
+- Creating automated workflows for weekly content creation
+- Managing content libraries in Firebase Storage and Firestore
+- Updating Hero components with AI-generated backgrounds
+
+**Key features:**
+- Comprehensive seasonal prompt library (Winter, Spring, Summer, Autumn)
+- Holiday-specific content generation (Christmas, Easter, Halloween, etc.)
+- Firebase Storage and Firestore integration
+- React hooks for content rotation (`useContentRotation`)
+- ContentRotationProvider for global state management
+- GitHub Actions workflow for weekly automated generation
+- Auto-publish workflow (no manual approval required)
+- Complete TypeScript types and interfaces
+- Cost optimization strategies
+
+**Tech stack:**
+- Google Gemini API (Imagen for photos, Veo for videos)
+- Firebase (Storage, Firestore)
+- React + TypeScript hooks
+- GitHub Actions automation
+- Node.js generation scripts
+
+---
+
 #### github-actions-orchestrator
 **Description:** Expert GitHub Actions orchestrator that manages the complete automated workflow lifecycle from PR creation through approval. Monitors workflow runs, fixes issues, and ensures PRs pass through all automated checks.
 
@@ -275,9 +307,11 @@ Skills are **living documentation** that should evolve with the project:
 ```
 .claude/skills/
 ├── README.md                        # This file
+├── ai-content-manager/              # AI content generation & rotation
 ├── cloudflare-firebase-domain/      # Cloudflare + Firebase domain setup
 ├── coffee-copilot/                  # AI copilot implementation
 ├── firebase-coffee-integration/     # Firebase integration patterns
+├── github-actions-orchestrator/     # GitHub Actions workflow management
 ├── logo-manager/                    # Logo management and optimization
 ├── premium-coffee-website/          # Premium website patterns
 ├── secrets-manager/                 # Secret management workflows
