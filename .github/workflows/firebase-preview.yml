@@ -70,28 +70,82 @@ jobs:
         env:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
 
-      - name: Comment PR with Preview URL
+      - name: Install Playwright
+        working-directory: coffee-website-react
+        run: |
+          npm install --save-dev @playwright/test
+          npx playwright install --with-deps chromium
+
+      - name: Run E2E tests against preview deployment
+        id: e2e_tests
+        working-directory: coffee-website-react
+        run: npx playwright test
+        env:
+          PLAYWRIGHT_TEST_BASE_URL: ${{ steps.deploy.outputs.details_url }}
+        continue-on-error: true  # Don't block deployment, but capture results
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-preview-pr-${{ github.event.pull_request.number }}
+          path: coffee-website-react/playwright-report/
+          retention-days: 30
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-preview-pr-${{ github.event.pull_request.number }}
+          path: coffee-website-react/test-results/
+          retention-days: 30
+
+      - name: Comment PR with Preview URL and Test Results
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const prNumber = context.payload.pull_request.number;
             const deployUrl = '${{ steps.deploy.outputs.details_url }}' || 'Check workflow logs for URL';
+            const e2eResult = '${{ steps.e2e_tests.outcome }}';
 
-            const comment = `## 🚀 Preview Deployment
+            const testStatus = e2eResult === 'success' ? '✅ All E2E tests passed' :
+                              e2eResult === 'failure' ? '❌ Some E2E tests failed - @claude please review and fix' :
+                              '⚠️ E2E tests not configured yet';
 
-            Your preview deployment is ready!
+            const comment = `## 🚀 Preview Deployment & E2E Test Results
+
+            Your preview deployment is ready and has been tested!
 
             **Preview URL:** ${deployUrl}
             **Preview Channel:** \`pr-${prNumber}\`
             **Expires:** 7 days from now
 
-            ### Pre-deployment Checklist
+            ### Deployment Status
             - ✅ Build succeeded
             - ✅ Deployed to preview channel
+            - ${testStatus}
 
-            ### Testing Checklist
-            Please verify the following before merging:
+            ### E2E Test Report
+            ${e2eResult === 'success' || e2eResult === 'failure' ? `
+            📊 **Full Playwright Report:** Download from [Actions Artifacts](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+
+            Test artifacts include:
+            - HTML report with screenshots
+            - Video recordings of test runs
+            - Trace files for debugging
+            ` : 'E2E tests will run once Playwright is configured.'}
+
+            ${e2eResult === 'failure' ? `
+            ### ⚠️ Action Required
+            @claude The E2E tests found issues in the preview deployment. Please:
+            1. Review the test failures in the Playwright report
+            2. Fix the issues in the code
+            3. Push updates to trigger re-test
+            ` : ''}
+
+            ### Manual Testing Checklist
+            Please verify the following on the preview:
             - [ ] All pages load correctly
             - [ ] Authentication works
             - [ ] Shopping cart functionality
@@ -103,7 +157,7 @@ jobs:
             - [ ] Images and logos load correctly
 
             ---
-            *Deployed from commit ${context.sha.substring(0, 7)}*
+            *Deployed and tested from commit ${context.sha.substring(0, 7)}*
             `;
 
             github.rest.issues.createComment({

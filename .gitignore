@@ -256,3 +256,4 @@ firestore-debug.log
 ui-debug.log
 .env.firbase
 service-account.json
+setup-workload-identity.sh

@@ -19,16 +19,16 @@ jobs:
       (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      pull-requests: read
-      issues: read
-      id-token: write
-      actions: read # Required for Claude to read CI results on PRs
+      contents: write        # Required to create branches and push code
+      pull-requests: write   # Required to create and update PRs
+      issues: write          # Required to comment on issues
+      id-token: write        # Required for OIDC authentication
+      actions: read          # Required for Claude to read CI results on PRs
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0  # Full history for better context
 
       - name: Run Claude Code
         id: claude
@@ -40,11 +40,15 @@ jobs:
           additional_permissions: |
             actions: read
 
-          # Optional: Give a custom prompt to Claude. If this is not specified, Claude will perform the instructions specified in the comment that tagged it.
-          # prompt: 'Update the pull request description to include a summary of changes.'
+          # Provide context-aware prompts based on event type
+          prompt: |
+            ${{ github.event_name == 'issues' && format('Issue #{0}: {1}\n\n{2}\n\nPlease implement this feature:\n1. Create a feature branch\n2. Implement the solution\n3. Write tests\n4. Create a PR with clear description', github.event.issue.number, github.event.issue.title, github.event.issue.body) || '' }}
+            ${{ github.event_name == 'pull_request_review' && format('Review feedback on PR #{0}:\n\n{1}\n\nPlease address the review comments and push updates to the same branch.', github.event.pull_request.number, github.event.review.body) || '' }}
+            ${{ (github.event_name == 'issue_comment' || github.event_name == 'pull_request_review_comment') && format('Comment: {0}\n\nPlease respond to this feedback.', github.event.comment.body) || '' }}
 
           # Optional: Add claude_args to customize behavior and configuration
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://docs.claude.com/en/docs/claude-code/cli-reference for available options
-          # claude_args: '--allowed-tools Bash(gh pr:*)'
+          # Allow file operations but block dangerous commands
+          claude_args: '--allowed-tools Bash(!rm -rf*,!sudo*,!chmod*,!chown*,*)'
 

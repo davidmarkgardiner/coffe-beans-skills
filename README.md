@@ -268,6 +268,53 @@ This project is powered by cutting-edge AI technologies:
 
 ---
 
+## Automated Claude Workflows
+
+This repository uses an automated development, testing, and review cycle powered by Claude Code:
+
+### 🔄 How It Works
+
+1. **Create an issue** with `@claude` mention
+2. **Claude implements** the feature automatically
+3. **Automated tests run** (lint, build, Playwright)
+4. **Automated review** scores the code (0-100) including test results
+5. **Iterative improvement** until quality threshold met (85+)
+6. **Auto-approval** when ready to merge
+
+### 📊 Review Scoring
+
+- **85-100**: ✅ Approved - Ready to merge
+- **70-84**: ⚠️ Changes requested - Claude auto-fixes (up to 3 iterations)
+- **0-69**: ❌ Human review required
+
+### 📚 Documentation
+
+- **[Complete Workflow Guide](.github/workflows/WORKFLOW_GUIDE.md)** - Detailed documentation
+- **[Quick Reference](.github/workflows/QUICK_REFERENCE.md)** - Commands and tips
+- **[Testing Integration Summary](.github/workflows/TESTING_INTEGRATION_SUMMARY.md)** - Playwright test details
+- **[CLAUDE.md](CLAUDE.md)** - Repository conventions and skill management
+
+### 🚀 Quick Start
+
+```markdown
+# Create an issue:
+Add user authentication with OAuth
+
+@claude please implement this feature
+```
+
+Claude will automatically:
+- Create a feature branch
+- Implement the solution
+- Write tests
+- Create a PR
+- Run automated tests (lint, build, E2E)
+- Get reviewed (code + test results)
+- Fix any issues iteratively
+- Get approved when quality threshold met
+
+---
+
 ## Master AI **Agentic Coding**
 > And prepare for the future of software engineering
 

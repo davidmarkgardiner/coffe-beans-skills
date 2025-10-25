@@ -31,6 +31,36 @@ You can also manually invoke a skill by asking Claude to use it:
 
 ### Project-Specific Skills
 
+#### github-actions-orchestrator
+**Description:** Expert GitHub Actions orchestrator that manages the complete automated workflow lifecycle from PR creation through approval. Monitors workflow runs, fixes issues, and ensures PRs pass through all automated checks.
+
+**Use when:**
+- Running end-to-end workflow validation
+- Creating PRs and monitoring automated workflows
+- Debugging workflow failures (fast-pre-checks, firebase-preview, code-review)
+- Responding to @claude tags in PR comments
+- Fixing workflow configuration issues
+- Validating the complete automation pipeline works
+
+**Key features:**
+- Complete PR creation and monitoring scripts
+- Workflow diagnostic commands (`gh run view`, `gh run watch`)
+- Artifact downloading and analysis (Playwright reports)
+- Issue diagnosis and resolution patterns
+- End-to-end validation process
+- Iteration monitoring and management
+- Success criteria checklist
+
+**Workflows managed:**
+- `fast-pre-checks.yml` - Type check, lint, build, unit tests
+- `firebase-preview.yml` - Deploy + E2E tests against preview URL
+- `claude-code-review-custom.yml` - Code review with E2E results
+- `claude.yml` - Responds to @claude mentions
+
+**Expected timeline:** 9-20 min for first-pass approval
+
+---
+
 #### coffee-copilot
 **Description:** Implement an AI-powered copilot chat widget for web applications with RAG (Retrieval-Augmented Generation), order management, and GitHub issue integration.
 
