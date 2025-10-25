@@ -50,3 +50,5 @@ jobs:
             ```
 
             If score < 85, tag @claude with specific fixes needed.
+
+            **IMPORTANT**: After completing your review, use `gh pr comment` with your Bash tool to leave your review as a comment on the PR.
