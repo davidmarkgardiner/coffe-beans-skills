@@ -72,12 +72,17 @@ async function main() {
       console.log(`🎥 Generating ${videoCount} video(s)...`)
       for (let i = 0; i < videoCount; i++) {
         console.log(`\n  Video ${i + 1}/${videoCount}:`)
-        execSync(`npm run test:video`, {
-          stdio: 'inherit',
-          env: { ...process.env, SEASON: season },
-        })
+        try {
+          execSync(`npm run test:video`, {
+            stdio: 'inherit',
+            env: { ...process.env, SEASON: season },
+          })
+        } catch (videoError) {
+          console.warn(`⚠️  Video ${i + 1} generation failed. Continuing with photos...`)
+          console.warn(`Error: ${videoError}`)
+        }
       }
-      console.log('✅ Videos generated\n')
+      console.log('✅ Video generation step completed\n')
     }
 
     // Generate photos

@@ -115,9 +115,13 @@ async function generateTestVideo(season: keyof typeof TEST_VIDEO_PROMPTS) {
     console.log('✅ Video generation complete!')
     console.log()
 
+    // Debug: Log the full response structure
+    console.log('🔍 Response structure:', JSON.stringify(operation.response, null, 2))
+
     const downloadLink = operation.response?.generatedVideos?.[0]?.video?.uri
     if (!downloadLink) {
-      throw new Error('No download link in response')
+      console.error('❌ Full operation object:', JSON.stringify(operation, null, 2))
+      throw new Error('No download link in response. Check the logs above for the actual response structure.')
     }
 
     console.log('📥 Downloading video...')
