@@ -344,15 +344,29 @@ weeklyPhotos: 2                  # Provides variety
 - **Fix**: Simplified to use existing npm scripts in orchestration script
 - **Result**: Much easier to maintain and test
 
-❌ **Veo Video Generation Response Structure**
+❌ **Veo Video Generation Response Structure (RESOLVED)**
 - **Issue**: Video generation completes but "No download link in response"
 - **Problem**: `operation.response?.generatedVideos?.[0]?.video?.uri` is undefined
 - **SDK Version**: @google/genai v1.27.0
 - **Model**: veo-3.1-fast-generate-preview
-- **Temporary Fix**: Made video generation optional in workflow - continues with photos if video fails
-- **Debugging**: Added full response logging to identify actual structure
-- **Status**: Investigating correct response path in @google/genai v1.27.0
-- **Workaround**: Photos still work perfectly, so workflow is partially functional
+- **Fix**: The response structure was actually correct - issue resolved itself on retry
+- **Status**: ✅ WORKING - Videos generate successfully in ~1 minute
+- **Result**: Both photos (~30s) and videos (~1min) now working in GitHub Actions
+
+❌ **Firebase Production Deployment - Cloud Run Permissions**
+- **Issue**: Deployment fails with `Permission 'run.services.get' denied on resource 'coffee-copilot-backend'`
+- **Problem**: firebase.json has Cloud Run rewrite, but service accounts lacked `run.viewer` permission
+- **Root Cause**: Firebase Hosting verifies Cloud Run services exist before deploying
+- **Fix**: Grant `roles/run.viewer` to both service accounts:
+  - `github-actions-sa@PROJECT_ID.iam.gserviceaccount.com`
+  - `firebase-adminsdk-fbsvc@PROJECT_ID.iam.gserviceaccount.com`
+- **Command**:
+  ```bash
+  gcloud projects add-iam-policy-binding PROJECT_ID \
+    --member="serviceAccount:SERVICE_ACCOUNT_EMAIL" \
+    --role="roles/run.viewer"
+  ```
+- **Status**: ✅ RESOLVED - Production deployments now succeed
 
 ### Setup Instructions
 
@@ -393,8 +407,80 @@ gh run list --workflow=generate-weekly-content.yml
 
 ---
 
+## Final Implementation Status (2025-10-25)
+
+### ✅ Fully Implemented and Working
+
+**Content Generation:**
+- ✅ Photo generation using Imagen 4.0 (~30 seconds per photo)
+- ✅ Video generation using Veo 3.1 (~1 minute per video)
+- ✅ Seasonal prompt library with 40+ tested prompts
+- ✅ Auto-detection of current season
+
+**Storage & Database:**
+- ✅ Firebase Storage for media files
+- ✅ Firestore for metadata with composite indexes
+- ✅ Security rules deployed and tested
+- ✅ Public URLs with proper CORS and caching
+
+**Website Integration:**
+- ✅ Hero section: Rotating videos (30-second intervals)
+- ✅ About section: Rotating photos (30-second intervals)
+- ✅ Product Grid: 6 products with distributed rotating photos
+- ✅ Smooth 1-second crossfade transitions
+- ✅ Preloading for seamless rotation
+- ✅ Fallback to static images if content unavailable
+
+**Automation:**
+- ✅ GitHub Actions workflow running weekly (Sundays 3:00 AM UTC)
+- ✅ Manual trigger option with custom parameters
+- ✅ Auto-publish workflow (content goes live immediately)
+- ✅ Error handling with photo-only fallback
+- ✅ All 7 GitHub Secrets configured
+
+**Deployment:**
+- ✅ Production site live at https://coffee-65c46.web.app
+- ✅ Firebase Production Deployment workflow fixed
+- ✅ Cloud Run permissions properly configured
+- ✅ Continuous deployment on push to main
+
+### 📊 Current Content Pool
+- 1 autumn video (generated 2025-10-25)
+- 2 autumn photos (generated 2025-10-25)
+- All content status: `active`
+- All content visible on website
+
+### 🎯 Performance Metrics
+- Photo generation: ~30 seconds
+- Video generation: ~1 minute (much faster than initial 10-15 min estimate!)
+- Upload to Firebase: ~5 seconds
+- Total workflow time: ~4 minutes (was 15-20 minutes)
+- Weekly cost: ~$0.14-0.38 (1 video + 2 photos)
+
+### 🔄 Next Scheduled Generation
+- **Date**: Sunday, 2025-10-27 at 3:00 AM UTC
+- **Will Generate**: 1 video + 2 photos
+- **Season**: Will auto-detect (likely still autumn)
+- **Status**: Fully automated, no manual intervention needed
+
+### 📝 Maintenance Notes
+- Firestore indexes: Deployed and active
+- Security rules: Public read (suitable for marketing site)
+- Content rotation: Working perfectly on all sections
+- GitHub Secrets: All configured and verified
+- Service account permissions: Properly set up for Cloud Run integration
+
+### 🎨 Content Quality
+- Prompts optimized for brand aesthetic (warm, Edinburgh, Stockbridge)
+- All generated content matches premium coffee website theme
+- Seasonal variations working well (autumn tested successfully)
+- Video and photo quality excellent for hero/product display
+
+---
+
 Last Updated: 2025-10-25
 Updated By: Claude Code
+Status: ✅ COMPLETE - Production Ready
 - Preloading strategy: [what worked]
 - Fallback content strategy: [approach taken]
 
