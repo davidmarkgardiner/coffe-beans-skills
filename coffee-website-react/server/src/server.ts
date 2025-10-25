@@ -2,7 +2,10 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import multer from 'multer';
 import { OpenAI } from 'openai';
+import path from 'path';
+import fs from 'fs';
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -17,6 +20,21 @@ app.use(cors({
   ]
 }));
 app.use(express.json());
+
+// Configure multer for file uploads
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'));
+    }
+  }
+});
 
 // Initialize OpenAI
 const openai = new OpenAI({
@@ -120,6 +138,54 @@ async function createGithubIssue(params: {
     };
   } catch (error: any) {
     console.error('GitHub issue creation failed:', error);
+    throw error;
+  }
+}
+
+async function uploadScreenshotToGithub(file: Express.Multer.File, issueNumber: number): Promise<string> {
+  const repo = process.env.GITHUB_REPO;
+  const token = process.env.GITHUB_TOKEN;
+
+  if (!repo || !token) {
+    throw new Error('GitHub integration not configured');
+  }
+
+  try {
+    // Create a unique filename
+    const timestamp = Date.now();
+    const ext = path.extname(file.originalname) || '.png';
+    const filename = `issue-${issueNumber}-${timestamp}${ext}`;
+    const filePath = `.github/feedback-screenshots/${filename}`;
+
+    // Convert file buffer to base64
+    const content = file.buffer.toString('base64');
+
+    // Upload to GitHub repository
+    const response = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github+json',
+        'User-Agent': 'coffee-copilot',
+        'X-GitHub-Api-Version': '2022-11-28'
+      },
+      body: JSON.stringify({
+        message: `Add screenshot for issue #${issueNumber}`,
+        content: content,
+        branch: 'main' // or your default branch
+      })
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      console.error('Screenshot upload failed:', error);
+      throw new Error(`GitHub upload error: ${response.status}`);
+    }
+
+    const data = await response.json() as { content: { download_url: string } };
+    return data.content.download_url;
+  } catch (error: any) {
+    console.error('Screenshot upload failed:', error);
     throw error;
   }
 }
@@ -310,6 +376,77 @@ Note: You CANNOT file bug reports in this mode. If users mention bugs, suggest t
     console.error('Chat error:', error.message);
     return res.status(500).json({
       error: 'Server error',
+      message: error.message
+    });
+  }
+});
+
+// SIMPLIFIED FEEDBACK ENDPOINT - Direct GitHub issue creation
+app.post('/api/feedback', upload.single('screenshot'), async (req, res) => {
+  try {
+    const { description } = req.body;
+    const screenshot = req.file;
+
+    if (!description || !description.trim()) {
+      return res.status(400).json({ error: 'Description is required' });
+    }
+
+    // Create a simple title from the description (first 50 chars)
+    const title = description.length > 50
+      ? description.substring(0, 50) + '...'
+      : description;
+
+    // Create the issue body
+    let issueBody = `**User Feedback**\n\n${description}\n\n`;
+
+    // Create the GitHub issue first
+    const issueResult = await createGithubIssue({
+      title: `User Feedback: ${title}`,
+      body: issueBody,
+      labels: ['user-feedback', 'copilot-generated']
+    });
+
+    // If screenshot is provided, upload it and add to issue
+    if (screenshot) {
+      try {
+        const screenshotUrl = await uploadScreenshotToGithub(screenshot, issueResult.issueNumber);
+
+        // Update the issue with the screenshot link
+        const repo = process.env.GITHUB_REPO;
+        const token = process.env.GITHUB_TOKEN;
+
+        const updatedBody = `${issueBody}\n\n**Screenshot:**\n\n![User Screenshot](${screenshotUrl})`;
+
+        await fetch(`https://api.github.com/repos/${repo}/issues/${issueResult.issueNumber}`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/vnd.github+json',
+            'User-Agent': 'coffee-copilot',
+            'X-GitHub-Api-Version': '2022-11-28'
+          },
+          body: JSON.stringify({
+            body: updatedBody
+          })
+        });
+
+        console.log(`Screenshot uploaded for issue #${issueResult.issueNumber}: ${screenshotUrl}`);
+      } catch (uploadError: any) {
+        console.error('Screenshot upload failed, but issue created:', uploadError);
+        // Continue even if screenshot upload fails
+      }
+    }
+
+    return res.json({
+      success: true,
+      issueNumber: issueResult.issueNumber,
+      url: issueResult.url
+    });
+
+  } catch (error: any) {
+    console.error('Feedback submission error:', error);
+    return res.status(500).json({
+      error: 'Failed to submit feedback',
       message: error.message
     });
   }
