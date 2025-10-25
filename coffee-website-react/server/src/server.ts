@@ -4,6 +4,7 @@ import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
 import { OpenAI } from 'openai';
+import Stripe from 'stripe';
 import path from 'path';
 import fs from 'fs';
 
@@ -40,6 +41,19 @@ const upload = multer({
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || ''
 });
+
+// Initialize Stripe
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+let stripe: Stripe | null = null;
+
+if (stripeSecretKey) {
+  stripe = new Stripe(stripeSecretKey, {
+    apiVersion: '2024-12-18.acacia',
+  });
+  console.log('✅ Stripe initialized');
+} else {
+  console.warn('⚠️  STRIPE_SECRET_KEY not set - Stripe payments will not work');
+}
 
 // Simple coffee knowledge base (MVP - will upgrade to vector DB later)
 const coffeeKnowledge = [
@@ -248,6 +262,7 @@ app.get('/health', (req, res) => {
   res.json({
     status: 'healthy',
     openai: process.env.OPENAI_API_KEY ? 'configured' : 'missing',
+    stripe: stripe ? 'configured' : 'missing',
     timestamp: new Date().toISOString()
   });
 });
@@ -453,6 +468,111 @@ app.post('/api/feedback', upload.single('screenshot'), async (req, res) => {
 });
 
 // ============================================================================
+// STRIPE PAYMENT ENDPOINTS
+// ============================================================================
+
+// Create payment intent endpoint
+app.post('/api/create-payment-intent', async (req, res) => {
+  try {
+    if (!stripe) {
+      return res.status(503).json({
+        error: 'Stripe not configured',
+        message: 'STRIPE_SECRET_KEY environment variable is not set'
+      });
+    }
+
+    const { amount, currency = 'usd', metadata = {} } = req.body;
+
+    // Validate amount
+    if (!amount || amount <= 0) {
+      return res.status(400).json({ error: 'Invalid amount' });
+    }
+
+    // Ensure amount is in cents (integer)
+    const amountInCents = Math.round(amount);
+
+    console.log(`Creating payment intent for $${amountInCents / 100} ${currency}`);
+
+    // Create PaymentIntent
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amountInCents,
+      currency,
+      metadata: {
+        ...metadata,
+        created_at: new Date().toISOString(),
+      },
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+
+    res.json({
+      clientSecret: paymentIntent.client_secret,
+      paymentIntentId: paymentIntent.id,
+    });
+  } catch (error: any) {
+    console.error('Error creating payment intent:', error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : 'Internal server error',
+    });
+  }
+});
+
+// Webhook endpoint for Stripe events
+app.post('/api/stripe-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  if (!stripe) {
+    return res.status(503).json({
+      error: 'Stripe not configured'
+    });
+  }
+
+  const sig = req.headers['stripe-signature'];
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  if (!webhookSecret) {
+    console.warn('STRIPE_WEBHOOK_SECRET not set, skipping webhook verification');
+    return res.status(400).send('Webhook secret not configured');
+  }
+
+  try {
+    // Verify webhook signature
+    const event = stripe.webhooks.constructEvent(
+      req.body,
+      sig as string,
+      webhookSecret
+    );
+
+    // Handle the event
+    switch (event.type) {
+      case 'payment_intent.succeeded':
+        const paymentIntent = event.data.object as Stripe.PaymentIntent;
+        console.log('PaymentIntent succeeded:', paymentIntent.id);
+        // TODO: Fulfill the order, send confirmation email, etc.
+        break;
+
+      case 'payment_intent.payment_failed':
+        const failedPayment = event.data.object as Stripe.PaymentIntent;
+        console.log('PaymentIntent failed:', failedPayment.id);
+        // TODO: Handle failed payment
+        break;
+
+      case 'charge.succeeded':
+        const charge = event.data.object as Stripe.Charge;
+        console.log('Charge succeeded:', charge.id);
+        break;
+
+      default:
+        console.log(`Unhandled event type: ${event.type}`);
+    }
+
+    res.json({ received: true });
+  } catch (error: any) {
+    console.error('Webhook error:', error);
+    res.status(400).send(`Webhook Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+});
+
+// ============================================================================
 // START SERVER
 // ============================================================================
 
@@ -461,5 +581,6 @@ app.listen(port, () => {
   console.log(`   Port: ${port}`);
   console.log(`   Health: http://localhost:${port}/health`);
   console.log(`   OpenAI: ${process.env.OPENAI_API_KEY ? '✅ Configured' : '❌ Missing'}`);
+  console.log(`   Stripe: ${stripe ? '✅ Configured' : '⚠️  Not configured'}`);
   console.log('');
 });
