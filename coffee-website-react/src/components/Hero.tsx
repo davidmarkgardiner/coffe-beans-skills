@@ -56,12 +56,19 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
+          className="flex flex-col items-center"
         >
-          <h1 className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-cream mb-4 md:mb-6 tracking-tight leading-[0.95] drop-shadow-[0_8px_16px_rgba(0,0,0,0.4)]">
-            STOCKBRIDGE COFFEE
-            <br />
-            EDINBURGH
-          </h1>
+          {/* Logo */}
+          <img
+            src="/images/stockbridge-logo.png"
+            alt="Stockbridge Coffee Edinburgh"
+            className="w-[87.5vw] sm:w-[75vw] md:w-[62.5vw] lg:w-[56.25vw] xl:w-[50vw] max-w-[1000px] h-auto object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.6)] mb-6 md:mb-8"
+            style={{
+              filter: 'drop-shadow(0 0 30px rgba(255, 255, 255, 0.1))'
+            }}
+            loading="eager"
+          />
+
           <p className="font-serif text-xs sm:text-sm md:text-base text-grey-200 mb-3 md:mb-4 tracking-widest uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)]">
             Est. 2025 · Stockbridge
           </p>
