@@ -69,30 +69,23 @@ export function Hero() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 text-center px-4 max-w-6xl mx-auto">
+      <div className="relative z-10 flex items-center justify-center w-full h-full">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8 }}
-          className="flex flex-col items-center"
+          className="flex items-center justify-center"
         >
-          {/* Logo */}
+          {/* Logo - centered and proportional */}
           <img
             src="/images/stockbridge-logo.png"
             alt="Stockbridge Coffee Edinburgh"
-            className="w-[90vw] sm:w-[85vw] md:w-[70vw] lg:w-[60vw] xl:w-[55vw] max-w-[1000px] h-auto object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.6)] mb-1"
+            className="w-[80vw] sm:w-[70vw] md:w-[60vw] lg:w-[50vw] xl:w-[45vw] max-w-[800px] h-auto object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.6)]"
             style={{
               filter: 'drop-shadow(0 0 30px rgba(255, 255, 255, 0.1))'
             }}
             loading="eager"
           />
-
-          <p className="font-sans text-sm sm:text-base md:text-lg text-grey-200 mb-1 tracking-widest uppercase drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
-            Est. 2025 · Stockbridge
-          </p>
-          <p className="font-sans text-base sm:text-lg md:text-xl text-grey-100 max-w-2xl mx-auto font-light leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] px-4">
-            Independent roastery rooted in the cobbled lanes of Stockbridge. Seasonal beans, heritage blends, and warm community spirit in every cup.
-          </p>
         </motion.div>
       </div>
     </section>
