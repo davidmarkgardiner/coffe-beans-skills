@@ -74,6 +74,8 @@ export function useContentRotation(options: UseContentRotationOptions = {}): Use
 
   /**
    * Preload next content for smooth transitions
+   * Videos: Only preload metadata to save bandwidth
+   * Images: Preload full image
    */
   const preloadContent = useCallback((content: ContentItem) => {
     if (!preloadNext) return
@@ -86,15 +88,24 @@ export function useContentRotation(options: UseContentRotationOptions = {}): Use
     if (content.type === 'video') {
       const video = document.createElement('video')
       video.src = content.url
-      video.preload = 'auto'
+      video.preload = 'metadata' // Only load metadata (not full video)
+      video.muted = true
+      video.playsInline = true
+
+      // Start loading when video becomes visible soon
+      video.addEventListener('loadedmetadata', () => {
+        console.log(`📹 Video metadata loaded: ${content.id}`)
+      })
+
       preloadedImages.current.set(key, video)
     } else {
       const img = new Image()
       img.src = content.url
+      img.loading = 'lazy' // Use native lazy loading
       preloadedImages.current.set(key, img)
     }
 
-    console.log(`🔄 Preloaded: ${content.id}`)
+    console.log(`🔄 Preload initiated: ${content.id}`)
   }, [preloadNext])
 
   /**

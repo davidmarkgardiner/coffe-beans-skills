@@ -35,26 +35,26 @@ if (!config.apiKey) {
 // Initialize Gemini AI
 const genAI = new GoogleGenerativeAI(config.apiKey)
 
-// Seasonal prompts library (subset - full library in seasonal_prompts.md)
+// Coffee Bean Seasonal Prompts Library (subset - full library in seasonal_prompts.md)
 const seasonalPrompts = {
   winter: {
     general: {
       video: [
-        'Cinematic slow-motion video of steam rising from a freshly brewed cappuccino with intricate latte art, placed on a rustic wooden table in a cozy Edinburgh cafe. Warm golden lighting, soft bokeh background with blurred fairy lights, frost patterns visible on the window. Professional 4K quality, 16:9 landscape, 5-second loop.',
-        'Smooth cinematic shot of hot espresso being poured into a white ceramic cup on a wooden counter. Steam rises elegantly, warm amber lighting creates a cozy atmosphere, blurred cafe background. Edinburgh winter cafe ambiance, professional videography, 16:9 aspect ratio, seamless loop.',
+        'Close-up cinematic shot of premium whole coffee beans cascading from a burlap bag in slow motion. The beans tumble gracefully through soft, warm golden hour lighting, revealing their rich brown tones with subtle highlights of caramel and mahogany. Each bean glistens slightly, showing fresh oils on the surface. The beans pour onto a rustic wooden surface, bouncing and settling naturally. Steam or subtle vapor rises gently, suggesting freshness. Shallow depth of field with the falling beans in sharp focus against a softly blurred background. Warm color grading with enhanced contrast to emphasize the beans\' glossy, appetizing texture. Professional product photography aesthetic, 4K quality, 16:9 landscape, smooth 60fps motion, 5-second seamless loop.',
+        'Cozy cinematic video of coffee beans being gently poured from a wooden scoop onto a vintage wooden table in an Edinburgh cafe. Warm amber lighting creates a rich, inviting atmosphere. Steam rises subtly from the fresh-roasted beans. Camera slowly pans across the pile of beans, highlighting their glossy surfaces and varied brown tones. Soft bokeh background with blurred winter window showing frost. Professional videography, 16:9 aspect ratio, 6-second loop.',
       ],
       photo: [
-        'High-resolution professional photograph of a steaming latte in a cream-colored ceramic mug on a rustic wooden table. Beautiful rosetta latte art, warm golden hour lighting, soft shadows, cozy Edinburgh cafe interior in the background with books and vintage decor. Shallow depth of field, 16:9 composition, inviting winter atmosphere.',
-        'Professional food photography of a cappuccino and a fresh croissant on a wooden serving board, placed by a frosted cafe window. Edinburgh cobblestones visible outside, warm interior lighting contrasts with cold blue exterior, steam rising from the cup, soft focus background. 4K resolution, 16:9 landscape.',
+        'High-resolution professional photograph of premium whole coffee beans scattered artistically on a rustic wooden table. Rich brown beans with glossy oil sheen, caramel and mahogany highlights visible. Warm golden hour lighting creates soft shadows and enhances the beans\' texture. Burlap bag partially visible in background. Shallow depth of field, 16:9 composition, inviting winter atmosphere, professional product photography.',
+        'Professional close-up photo of coffee beans in a vintage wooden bowl on a rustic Edinburgh cafe counter. Warm interior lighting, rich brown tones, subtle steam or vapor suggesting freshness. Frosted window with Scottish cobblestones visible in soft-focus background. 4K resolution, 16:9 landscape, appetizing and premium aesthetic.',
       ],
     },
     holidays: {
       christmas: {
         video: [
-          'Festive cinematic video of a latte in a cream mug surrounded by pine branches, cinnamon sticks, and soft fairy lights. Steam gently rises, camera slowly pans across the scene, warm amber glow, blurred Christmas decorations in background. Scottish cafe holiday atmosphere, professional quality, 16:9, 6-second seamless loop.',
+          'Festive cinematic video of premium coffee beans in a rustic wooden bowl surrounded by pine branches, cinnamon sticks, and soft fairy lights. Camera slowly pans across the glossy beans, warm amber glow highlighting their rich texture. Subtle steam rises from the beans. Blurred Christmas decorations in background, Scottish cafe holiday atmosphere. Professional quality, 16:9, 6-second seamless loop.',
         ],
         photo: [
-          'Professional Christmas-themed photograph of a cappuccino with cinnamon stick garnish on a rustic wooden table, surrounded by pine branches, red berries, and soft candlelight. Edinburgh cafe ambiance, warm golden lighting, shallow depth of field, festive yet sophisticated aesthetic. 16:9 landscape, high resolution.',
+          'Professional Christmas-themed photograph of whole coffee beans in a rustic wooden bowl surrounded by pine branches, cinnamon sticks, and soft candlelight. Rich brown beans with glossy sheen, warm golden lighting, shallow depth of field. Edinburgh cafe ambiance, festive yet sophisticated aesthetic, 16:9 landscape, high resolution.',
         ],
       },
     },
@@ -62,10 +62,10 @@ const seasonalPrompts = {
   spring: {
     general: {
       video: [
-        'Bright, airy video of iced coffee being poured into a tall glass on a sunny cafe table. Fresh spring flowers in a small vase beside it, natural window light streaming in, Edinburgh cobblestones visible through window. Light, refreshing mood, professional videography, 16:9 landscape, 6-second loop.',
+        'Bright, airy video of coffee beans being poured into a glass jar on a sunny cafe table. Natural window light streaming through, Edinburgh spring blossoms visible outside window. Fresh, clean atmosphere. Beans flow smoothly, their glossy surfaces catching the bright daylight. Light, refreshing mood, professional videography, 16:9 landscape, 6-second loop.',
       ],
       photo: [
-        'Professional spring photograph of a flat white coffee beside a small vase of fresh tulips on a light wooden table. Bright natural window light, soft pastel color palette, airy and fresh aesthetic. Edinburgh cafe with view of spring trees outside, shallow depth of field, 16:9 composition.',
+        'Professional spring photograph of fresh-roasted coffee beans in a clear glass container beside a small vase of tulips on a light wooden table. Bright natural window light, soft pastel color palette contrasting with rich brown beans. Edinburgh cafe with view of spring trees outside, shallow depth of field, 16:9 composition.',
       ],
     },
     holidays: {},
@@ -73,10 +73,10 @@ const seasonalPrompts = {
   summer: {
     general: {
       video: [
-        'Vibrant video of iced latte with condensed milk swirls in a tall glass, condensation droplets on the glass, placed on sunny outdoor Stockbridge cafe table. Bright natural daylight, blue sky visible, refreshing summer vibe. Cinematic 4K, 16:9, 6-second loop.',
+        'Vibrant video of coffee beans being poured into a clear glass container on sunny outdoor Stockbridge cafe table. Bright natural daylight highlights the beans\' rich brown color and glossy texture. Blue sky visible, refreshing summer atmosphere. Beans cascade smoothly with slight bouncing motion. Cinematic 4K, 16:9, 6-second loop.',
       ],
       photo: [
-        'Professional summer photograph of iced coffee with cream swirl in a clear glass on an outdoor table, Edinburgh summer festival banners softly blurred in background. Bright, vibrant daylight, refreshing and energetic mood, 16:9 composition.',
+        'Professional summer photograph of whole coffee beans in a modern glass jar on an outdoor table, Edinburgh\'s summer festival banners softly blurred in background. Bright, vibrant daylight emphasizing rich bean color and texture. Refreshing and energetic mood, 16:9 composition.',
       ],
     },
     holidays: {},
@@ -84,10 +84,10 @@ const seasonalPrompts = {
   autumn: {
     general: {
       video: [
-        'Warm cinematic video of a latte with autumn leaf latte art on a wooden table surrounded by fallen autumn leaves (maple, oak). Golden hour lighting, cozy Edinburgh cafe, rich amber and orange tones. Professional videography, 16:9 landscape, 6-second seamless loop.',
+        'Warm cinematic video of coffee beans being poured from a burlap bag onto a wooden table surrounded by fallen autumn leaves (maple, oak). Golden hour lighting creates rich amber tones, highlighting the beans\' natural brown and caramel colors. Beans tumble smoothly in slow motion. Cozy Edinburgh cafe, professional videography, 16:9 landscape, 6-second seamless loop.',
       ],
       photo: [
-        'Professional autumn photograph of a cappuccino on a wooden table with scattered autumn leaves, warm scarf partially visible, golden afternoon light through window. Cozy, inviting fall mood, Edinburgh cafe setting, shallow depth of field, 16:9 composition.',
+        'Professional autumn photograph of whole coffee beans in a vintage container on a wooden table with scattered autumn leaves. Warm scarf partially visible, golden afternoon light creates long shadows. Rich brown beans contrast beautifully with orange and red leaves. Cozy, inviting fall mood, Edinburgh cafe setting, shallow depth of field, 16:9 composition.',
       ],
     },
     holidays: {},
@@ -146,18 +146,7 @@ async function generateImage(prompt) {
   try {
     const model = genAI.getGenerativeModel({ model: 'imagen-3.0-generate-001' })
 
-    const result = await model.generateContent({
-      contents: [{
-        parts: [{
-          text: prompt
-        }]
-      }],
-      generationConfig: {
-        numberOfImages: 1,
-        aspectRatio: '16:9',
-        safetyFilterLevel: 'BLOCK_ONLY_HIGH',
-      }
-    })
+    const result = await model.generateContent(prompt)
 
     const response = await result.response
     const imageData = response.candidates[0].content.parts[0].inlineData
@@ -184,18 +173,7 @@ async function generateVideo(prompt) {
   try {
     const model = genAI.getGenerativeModel({ model: 'veo-001' })
 
-    const result = await model.generateContent({
-      contents: [{
-        parts: [{
-          text: prompt
-        }]
-      }],
-      generationConfig: {
-        aspectRatio: '16:9',
-        videoLength: 'short', // 5-8 seconds
-        safetyFilterLevel: 'BLOCK_ONLY_HIGH',
-      }
-    })
+    const result = await model.generateContent(prompt)
 
     const response = await result.response
 
@@ -284,6 +262,9 @@ async function generateManifest(generatedContent) {
     holiday: config.holiday,
     content: generatedContent,
   }
+
+  // Create output directory if it doesn't exist
+  await fs.mkdir(config.outputDir, { recursive: true })
 
   const manifestPath = path.join(config.outputDir, 'manifest.json')
   await fs.writeFile(manifestPath, JSON.stringify(manifest, null, 2))

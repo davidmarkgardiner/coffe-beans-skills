@@ -2,11 +2,14 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useContentRotation } from '../hooks/useContentRotation'
 
 export function Hero() {
-  const { currentContent } = useContentRotation({
+  const { currentContent, isLoading } = useContentRotation({
     contentType: 'video', // Hero section uses videos
     rotationInterval: 30000, // 30 seconds
     preloadNext: true,
   })
+
+  // Static poster image for instant display (low-res placeholder)
+  const posterImage = 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=800&q=60&blur=10'
 
   // Fallback to Unsplash image if no video content available
   const fallbackImage = 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=1600&q=80'
@@ -17,7 +20,7 @@ export function Hero() {
       <div className="absolute inset-0 overflow-hidden">
         <AnimatePresence mode="wait">
           {currentContent?.type === 'video' ? (
-            // Video background
+            // Video background with poster for instant display
             <motion.video
               key={currentContent.id}
               initial={{ opacity: 0 }}
@@ -26,10 +29,25 @@ export function Hero() {
               transition={{ duration: 1 }}
               className="absolute inset-0 w-full h-full object-cover scale-105 blur-[2px]"
               src={currentContent.url}
+              poster={posterImage}
               autoPlay
               loop
               muted
               playsInline
+              preload="metadata"
+            />
+          ) : isLoading ? (
+            // Loading state with static poster
+            <motion.div
+              key="loading"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="absolute inset-0 bg-cover bg-center scale-105 blur-[2px]"
+              style={{
+                backgroundImage: `url(${posterImage})`,
+              }}
             />
           ) : (
             // Fallback image
@@ -62,7 +80,7 @@ export function Hero() {
           <img
             src="/images/stockbridge-logo.png"
             alt="Stockbridge Coffee Edinburgh"
-            className="w-[87.5vw] sm:w-[75vw] md:w-[62.5vw] lg:w-[56.25vw] xl:w-[50vw] max-w-[1000px] h-auto object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.6)] mb-6 md:mb-8"
+            className="w-[95vw] sm:w-[93.75vw] md:w-[78.125vw] lg:w-[70.31vw] xl:w-[62.5vw] max-w-[1250px] h-auto object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.6)] mb-6 md:mb-8"
             style={{
               filter: 'drop-shadow(0 0 30px rgba(255, 255, 255, 0.1))'
             }}

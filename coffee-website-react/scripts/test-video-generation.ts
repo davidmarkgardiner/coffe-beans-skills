@@ -23,15 +23,19 @@ dotenv.config({ path: '.env' })
 const API_KEY = process.env.API_KEY || process.env.VITE_GEMINI_API_KEY
 const OUTPUT_DIR = './test-generated-content'
 
-// Video prompts for testing
+// Coffee Bean Video Prompts for Testing
 const TEST_VIDEO_PROMPTS = {
-  winter: 'Cinematic slow-motion video of steam rising from a freshly brewed cappuccino with intricate latte art, placed on a rustic wooden table in a cozy Edinburgh cafe. Warm golden lighting, soft bokeh background with blurred fairy lights, frost patterns visible on the window. Professional 4K quality, 16:9 landscape, 6-second seamless loop.',
+  winter: 'Close-up cinematic shot of premium whole coffee beans cascading from a burlap bag in slow motion. The beans tumble gracefully through soft, warm golden hour lighting, revealing their rich brown tones with subtle highlights of caramel and mahogany. Each bean glistens slightly, showing fresh oils on the surface. The beans pour onto a rustic wooden surface, bouncing and settling naturally. Steam or subtle vapor rises gently, suggesting freshness. Shallow depth of field with the falling beans in sharp focus against a softly blurred background. Warm color grading with enhanced contrast to emphasize the beans\' glossy, appetizing texture. Professional product photography aesthetic, 4K quality, 16:9 landscape, smooth 60fps motion, 6-second seamless loop.',
 
-  spring: 'Bright, airy video of iced coffee being poured into a tall glass on a sunny cafe table. Fresh spring flowers in a small vase beside it, natural window light streaming in, Edinburgh cobblestones visible through window. Light, refreshing mood, professional videography, 16:9 landscape, 6-second loop.',
+  spring: 'Bright, airy video of coffee beans being poured into a glass jar on a sunny cafe table. Natural window light streaming through, Edinburgh spring blossoms visible outside window. Fresh, clean atmosphere. Beans flow smoothly, their glossy surfaces catching the bright daylight. Light, refreshing mood, professional videography, 16:9 landscape, 6-second loop.',
 
-  summer: 'Vibrant video of iced latte with condensed milk swirls in a tall glass, condensation droplets on the glass, placed on sunny outdoor Stockbridge cafe table. Bright natural daylight, blue sky visible, refreshing summer vibe. Cinematic 4K, 16:9, 6-second loop.',
+  summer: 'Vibrant video of coffee beans being poured into a clear glass container on sunny outdoor Stockbridge cafe table. Bright natural daylight highlights the beans\' rich brown color and glossy texture. Blue sky visible, refreshing summer atmosphere. Beans cascade smoothly with slight bouncing motion. Cinematic 4K, 16:9, 6-second loop.',
 
-  autumn: 'Warm cinematic video of a latte with autumn leaf latte art on a wooden table surrounded by fallen autumn leaves (maple, oak). Golden hour lighting, cozy Edinburgh cafe, rich amber and orange tones. Professional videography, 16:9 landscape, 6-second seamless loop.'
+  autumn: 'Warm cinematic video of coffee beans being poured from a burlap bag onto a wooden table surrounded by fallen autumn leaves (maple, oak). Golden hour lighting creates rich amber tones, highlighting the beans\' natural brown and caramel colors. Beans tumble smoothly in slow motion. Cozy Edinburgh cafe, professional videography, 16:9 landscape, 6-second seamless loop.',
+
+  christmas: 'Festive cinematic video of premium coffee beans in a rustic wooden bowl surrounded by pine branches, cinnamon sticks, and soft fairy lights. Camera slowly pans across the glossy beans, warm amber glow highlighting their rich texture. Subtle steam rises from the beans. Blurred Christmas decorations in background, Scottish cafe holiday atmosphere. Professional quality, 16:9, 6-second seamless loop.',
+
+  newyear: 'Sophisticated video of fresh coffee beans being poured from an elegant container onto a clean wooden surface with subtle gold accents. Bright, fresh lighting suggests new beginnings. Beans cascade smoothly, highlighting their premium quality and glossy texture. Edinburgh cafe with refined decor, cinematic quality, 16:9, 5-second loop.'
 }
 
 /**

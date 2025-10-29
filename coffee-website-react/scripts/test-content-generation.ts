@@ -25,15 +25,19 @@ dotenv.config({ path: '.env' })
 const API_KEY = process.env.API_KEY || process.env.VITE_GEMINI_API_KEY
 const OUTPUT_DIR = './test-generated-content'
 
-// Seasonal prompts (simplified for testing)
+// Coffee Bean Seasonal Prompts  (simplified for testing)
 const TEST_PROMPTS = {
-  winter: 'High-resolution professional photograph of a steaming latte in a cream-colored ceramic mug on a rustic wooden table. Beautiful rosetta latte art, warm golden hour lighting, soft shadows, cozy Edinburgh cafe interior in the background with books and vintage decor. Shallow depth of field, 16:9 composition, inviting winter atmosphere.',
+  winter: 'High-resolution professional photograph of premium whole coffee beans scattered artistically on a rustic wooden table. Rich brown beans with glossy oil sheen, caramel and mahogany highlights visible. Warm golden hour lighting creates soft shadows and enhances the beans\' texture. Burlap bag partially visible in background. Shallow depth of field, 16:9 composition, inviting winter atmosphere, professional product photography.',
 
-  spring: 'Professional spring photograph of a flat white coffee beside a small vase of fresh tulips on a light wooden table. Bright natural window light, soft pastel color palette, airy and fresh aesthetic. Edinburgh cafe with view of spring trees outside, shallow depth of field, 16:9 composition.',
+  spring: 'Professional spring photograph of fresh-roasted coffee beans in a clear glass container beside a small vase of tulips on a light wooden table. Bright natural window light, soft pastel color palette contrasting with rich brown beans. Edinburgh cafe with view of spring trees outside, shallow depth of field, 16:9 composition.',
 
-  summer: 'Professional summer photograph of iced coffee with cream swirl in a clear glass on an outdoor table, Edinburgh summer festival banners softly blurred in background. Bright, vibrant daylight, refreshing and energetic mood, 16:9 composition.',
+  summer: 'Professional summer photograph of whole coffee beans in a modern glass jar on an outdoor table, Edinburgh\'s summer festival banners softly blurred in background. Bright, vibrant daylight emphasizing rich bean color and texture. Refreshing and energetic mood, 16:9 composition.',
 
-  autumn: 'Professional autumn photograph of a cappuccino on a wooden table with scattered autumn leaves, warm scarf partially visible, golden afternoon light through window. Cozy, inviting fall mood, Edinburgh cafe setting, shallow depth of field, 16:9 composition.'
+  autumn: 'Professional autumn photograph of whole coffee beans in a vintage container on a wooden table with scattered autumn leaves. Warm scarf partially visible, golden afternoon light creates long shadows. Rich brown beans contrast beautifully with orange and red leaves. Cozy, inviting fall mood, Edinburgh cafe setting, shallow depth of field, 16:9 composition.',
+
+  christmas: 'Professional Christmas-themed photograph of whole coffee beans in a rustic wooden bowl surrounded by pine branches, cinnamon sticks, and soft candlelight. Rich brown beans with glossy sheen, warm golden lighting, shallow depth of field. Edinburgh cafe ambiance, festive yet sophisticated aesthetic, 16:9 landscape, high resolution.',
+
+  newyear: 'Fresh, minimalist photograph of premium coffee beans arranged in a perfect circle on a clean white marble surface. Bright natural light suggests new beginnings, single green coffee plant leaf for growth symbolism. Professional, clean aesthetic emphasizing bean quality, 16:9 landscape.'
 }
 
 /**

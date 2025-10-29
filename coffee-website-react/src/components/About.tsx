@@ -26,17 +26,16 @@ export function About() {
               Our Story
             </p>
             <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-heading mb-6">
-              Crafted With Passion Since 2010
+              Crafted With Passion
             </h2>
             <p className="text-lg text-text leading-relaxed mb-6">
-              At Stockbridge Coffee, we believe that great coffee starts with great relationships. We work
-              directly with farmers across the globe to source the finest beans, ensuring fair trade and
-              sustainable practices.
+              At Stockbridge Coffee, we believe great coffee starts with great relationships. Our journey begins in Latin America, where we work directly with farmers to source the finest beans, supporting fair trade and sustainable practices. Every origin has its story, and we honor it in every roast.
             </p>
             <p className="text-lg text-text leading-relaxed mb-6">
-              Our master roasters bring decades of experience, carefully roasting each batch to bring out
-              the unique flavors and characteristics of every origin. From the highlands of Ethiopia to
-              the valleys of Colombia, we bring the world's best coffee to your cup.
+              Based in Stockbridge, Edinburgh, our small-batch roasters bring decades of experience and a passion for craft to each bean. Every batch is carefully roasted to highlight the unique flavours, aromas, and character of its origin.
+            </p>
+            <p className="text-lg text-text leading-relaxed mb-6">
+              For us, coffee is more than a drink. It's about connecting communities, celebrating craftsmanship, and sharing the warmth and stories behind every cup.
             </p>
             <div className="grid grid-cols-3 gap-6 mt-8">
               <div className="text-center">

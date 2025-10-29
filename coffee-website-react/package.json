@@ -14,6 +14,8 @@
     "test:content": "tsx scripts/test-content-generation.ts",
     "test:video": "tsx scripts/test-video-generation.ts",
     "upload:content": "tsx scripts/upload-content-to-firebase.ts",
+    "archive:old": "tsx scripts/archive-old-content.ts",
+    "optimize:videos": "./scripts/optimize-videos.sh",
     "generate:weekly": "tsx scripts/generate-weekly-content.ts",
     "server": "tsx server/index.ts",
     "dev:all": "npm run server & npm run dev"
