@@ -144,7 +144,7 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
 
           <div className="flex items-center justify-between pt-4 border-t border-accent-light">
             <span className="font-display text-3xl font-bold tracking-tight text-accent">
-              ${product.price.toFixed(2)}
+              £{product.price.toFixed(2)}
             </span>
             <span className="text-sm text-text/70">{product.weight}</span>
           </div>

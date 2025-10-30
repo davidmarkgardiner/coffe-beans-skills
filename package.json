@@ -1,0 +1,26 @@
+{
+  "name": "coffe-beans-skills",
+  "version": "1.0.0",
+  "description": "> Voice agent (OpenAI Realtime API) that orchestrates coding agents (Claude Code) and browser agents (Gemini Computer Use) >  > **See this codebase in action [here](https://youtu.be/Ur3TJm0BckQ)** >",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidmarkgardiner/coffe-beans-skills.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/davidmarkgardiner/coffe-beans-skills/issues"
+  },
+  "homepage": "https://github.com/davidmarkgardiner/coffe-beans-skills#readme",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1"
+  }
+}

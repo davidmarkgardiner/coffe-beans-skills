@@ -20,7 +20,7 @@ export const getStripe = () => {
 };
 
 // API endpoint for creating payment intents
-export const createPaymentIntent = async (amount: number, currency: string = 'usd', metadata: Record<string, string> = {}) => {
+export const createPaymentIntent = async (amount: number, currency: string = 'gbp', metadata: Record<string, string> = {}) => {
   try {
     const response = await fetch('/api/create-payment-intent', {
       method: 'POST',
@@ -48,8 +48,8 @@ export const createPaymentIntent = async (amount: number, currency: string = 'us
 };
 
 // Format price for display
-export const formatPrice = (amount: number, currency: string = 'usd'): string => {
-  return new Intl.NumberFormat('en-US', {
+export const formatPrice = (amount: number, currency: string = 'gbp'): string => {
+  return new Intl.NumberFormat('en-GB', {
     style: 'currency',
     currency: currency.toUpperCase(),
   }).format(amount);

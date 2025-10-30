@@ -20,7 +20,7 @@ export default function Checkout({ amount, productName, productId, onClose, onSu
 
   useEffect(() => {
     // Create PaymentIntent as soon as the component loads
-    createPaymentIntent(amount, 'usd', {
+    createPaymentIntent(amount, 'gbp', {
       product_name: productName,
       product_id: productId || '',
     })

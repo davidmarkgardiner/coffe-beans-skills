@@ -481,7 +481,7 @@ app.post('/api/create-payment-intent', async (req, res) => {
       });
     }
 
-    const { amount, currency = 'usd', metadata = {} } = req.body;
+    const { amount, currency = 'gbp', metadata = {} } = req.body;
 
     // Validate amount
     if (!amount || amount <= 0) {

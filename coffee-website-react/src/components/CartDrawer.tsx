@@ -139,11 +139,11 @@ export default function CartDrawer({
                             {/* Price */}
                             <div className="text-right">
                               <p className="font-bold text-accent">
-                                ${(item.price * item.quantity).toFixed(2)}
+                                £{(item.price * item.quantity).toFixed(2)}
                               </p>
                               {item.quantity > 1 && (
                                 <p className="text-xs text-text/70">
-                                  ${item.price.toFixed(2)} each
+                                  £{item.price.toFixed(2)} each
                                 </p>
                               )}
                             </div>
@@ -173,7 +173,7 @@ export default function CartDrawer({
                       Subtotal
                     </span>
                     <span className="text-2xl font-display font-bold text-accent">
-                      ${total.toFixed(2)}
+                      £{total.toFixed(2)}
                     </span>
                   </div>
 
