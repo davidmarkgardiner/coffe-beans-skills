@@ -15,7 +15,7 @@ export function Hero() {
   const fallbackImage = 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=1600&q=80'
 
   return (
-    <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden mt-20 pb-24">
+    <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
       {/* Background with soft overlay and blur */}
       <div className="absolute inset-0 overflow-hidden">
         <AnimatePresence mode="wait">
@@ -68,24 +68,20 @@ export function Hero() {
         <div className="absolute inset-0 bg-gradient-to-b from-grey-900/60 via-grey-900/70 to-grey-900/80" />
       </div>
 
-      {/* Content */}
+      {/* Content - Text overlay */}
       <div className="relative z-10 flex items-center justify-center w-full h-full">
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          className="flex items-center justify-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="text-center px-4"
         >
-          {/* Logo - centered and proportional */}
-          <img
-            src="/images/stockbridge-logo.png"
-            alt="Stockbridge Coffee Edinburgh"
-            className="w-[80vw] sm:w-[70vw] md:w-[60vw] lg:w-[50vw] xl:w-[45vw] max-w-[800px] h-auto object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.6)]"
-            style={{
-              filter: 'drop-shadow(0 0 30px rgba(255, 255, 255, 0.1))'
-            }}
-            loading="eager"
-          />
+          <h1 className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-logo text-white mb-6 tracking-widest leading-tight drop-shadow-[0_8px_16px_rgba(0,0,0,0.9)]" style={{ textShadow: '4px 4px 8px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.5)', letterSpacing: '0.1em' }}>
+            STOCKBRIDGE COFFEE
+          </h1>
+          <p className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-logo text-white tracking-widest drop-shadow-[0_6px_12px_rgba(0,0,0,0.9)]" style={{ textShadow: '3px 3px 6px rgba(0,0,0,0.8)', letterSpacing: '0.15em' }}>
+            EDINBURGH, EST 2025
+          </p>
         </motion.div>
       </div>
     </section>

@@ -49,6 +49,7 @@ export default {
         cream: '#F7F4ED',
       },
       fontFamily: {
+        logo: ['Bebas Neue', 'sans-serif'],
         display: ['Cinzel', 'serif'],
         serif: ['Playfair Display', 'serif'],
         sans: ['Inter', 'sans-serif'],
