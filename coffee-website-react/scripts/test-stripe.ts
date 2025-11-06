@@ -31,8 +31,8 @@ async function testStripeConnection() {
 
     // Create a test payment intent
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: 2499, // $24.99 in cents
-      currency: 'usd',
+      amount: 2499, // £24.99 in pence
+      currency: 'gbp',
       metadata: {
         test: 'true',
         product_name: 'Test Coffee Beans',

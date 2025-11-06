@@ -36,7 +36,7 @@ app.get('/api/health', (req: Request, res: Response) => {
 // Create payment intent endpoint
 app.post('/api/create-payment-intent', async (req: Request, res: Response) => {
   try {
-    const { amount, currency = 'usd', metadata = {} } = req.body;
+    const { amount, currency = 'gbp', metadata = {} } = req.body;
 
     // Validate amount
     if (!amount || amount <= 0) {

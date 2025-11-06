@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import type { Product } from '../types/product'
-import Checkout from './Checkout'
 
 interface ProductCardProps {
   product: Product
@@ -11,7 +10,6 @@ interface ProductCardProps {
 export function ProductCard({ product, onAddToCart }: ProductCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false)
   const [added, setAdded] = useState(false)
-  const [showCheckout, setShowCheckout] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
   const handleAddToCart = async () => {
@@ -148,32 +146,8 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
             </span>
             <span className="text-sm text-text/70">{product.weight}</span>
           </div>
-
-          {/* Buy Now Button */}
-          <motion.button
-            onClick={() => setShowCheckout(true)}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full mt-4 px-6 py-3 bg-accent text-white rounded-lg font-semibold hover:bg-accent-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
-          >
-            Buy Now
-          </motion.button>
         </div>
       </div>
-
-      {/* Checkout Modal */}
-      {showCheckout && (
-        <Checkout
-          amount={product.price}
-          productName={product.name}
-          productId={product.id}
-          onClose={() => setShowCheckout(false)}
-          onSuccess={(paymentIntentId) => {
-            console.log('Payment successful!', paymentIntentId)
-            // TODO: Navigate to order confirmation page
-          }}
-        />
-      )}
     </motion.div>
   )
 }
