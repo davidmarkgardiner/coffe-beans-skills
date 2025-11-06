@@ -76,11 +76,11 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="text-center px-4"
         >
-          <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-logo font-extrabold text-white mb-6 leading-tight drop-shadow-[0_8px_16px_rgba(0,0,0,0.9)]" style={{ textShadow: '4px 4px 8px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.5)', fontWeight: '900' }}>
+          <h1 className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-logo text-white mb-6 tracking-widest leading-tight drop-shadow-[0_8px_16px_rgba(0,0,0,0.9)]" style={{ textShadow: '4px 4px 8px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.5)', letterSpacing: '0.1em' }}>
             STOCKBRIDGE COFFEE
           </h1>
-          <p className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-logo font-medium text-white drop-shadow-[0_6px_12px_rgba(0,0,0,0.9)]" style={{ textShadow: '3px 3px 6px rgba(0,0,0,0.8)', fontWeight: '500' }}>
-            Edinburgh, Est 2025
+          <p className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-logo text-white tracking-widest drop-shadow-[0_6px_12px_rgba(0,0,0,0.9)]" style={{ textShadow: '3px 3px 6px rgba(0,0,0,0.8)', letterSpacing: '0.15em' }}>
+            EDINBURGH, EST 2025
           </p>
         </motion.div>
       </div>
