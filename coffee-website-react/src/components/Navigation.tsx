@@ -64,27 +64,27 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
           <div className="hidden md:flex items-center gap-10">
             <a
               href="#products"
-              className="text-xl font-logo text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+              className="text-2xl font-logo text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded tracking-wider"
             >
-              Shop
+              SHOP
             </a>
             <a
               href="#blog"
-              className="text-xl font-logo text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+              className="text-2xl font-logo text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded tracking-wider"
             >
-              Blog
+              BLOG
             </a>
             <a
               href="#about"
-              className="text-xl font-logo text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+              className="text-2xl font-logo text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded tracking-wider"
             >
-              About
+              ABOUT
             </a>
             <a
               href="#contact"
-              className="text-xl font-logo text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+              className="text-2xl font-logo text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded tracking-wider"
             >
-              Contact
+              CONTACT
             </a>
           </div>
 
@@ -212,30 +212,30 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                 <a
                   href="#products"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-lg font-logo text-white hover:text-accent transition-colors duration-200 py-2"
+                  className="block text-xl font-logo text-white hover:text-accent transition-colors duration-200 py-2 tracking-wider"
                 >
-                  Shop
+                  SHOP
                 </a>
                 <a
                   href="#blog"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-lg font-logo text-white hover:text-accent transition-colors duration-200 py-2"
+                  className="block text-xl font-logo text-white hover:text-accent transition-colors duration-200 py-2 tracking-wider"
                 >
-                  Blog
+                  BLOG
                 </a>
                 <a
                   href="#about"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-lg font-logo text-white hover:text-accent transition-colors duration-200 py-2"
+                  className="block text-xl font-logo text-white hover:text-accent transition-colors duration-200 py-2 tracking-wider"
                 >
-                  About
+                  ABOUT
                 </a>
                 <a
                   href="#contact"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-lg font-logo text-white hover:text-accent transition-colors duration-200 py-2"
+                  className="block text-xl font-logo text-white hover:text-accent transition-colors duration-200 py-2 tracking-wider"
                 >
-                  Contact
+                  CONTACT
                 </a>
                 {currentUser && (
                   <button
