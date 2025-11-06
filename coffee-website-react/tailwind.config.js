@@ -49,7 +49,7 @@ export default {
         cream: '#F7F4ED',
       },
       fontFamily: {
-        logo: ['Montserrat', 'sans-serif'],
+        logo: ['Bebas Neue', 'sans-serif'],
         heading: ['Bebas Neue', 'sans-serif'],
         display: ['Cinzel', 'serif'],
         serif: ['Playfair Display', 'serif'],

@@ -65,28 +65,24 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
             <a
               href="#products"
               className="text-xl font-logo text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
-              style={{ fontWeight: '700' }}
             >
               Shop
             </a>
             <a
               href="#blog"
               className="text-xl font-logo text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
-              style={{ fontWeight: '700' }}
             >
               Blog
             </a>
             <a
               href="#about"
               className="text-xl font-logo text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
-              style={{ fontWeight: '700' }}
             >
               About
             </a>
             <a
               href="#contact"
               className="text-xl font-logo text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
-              style={{ fontWeight: '700' }}
             >
               Contact
             </a>
@@ -217,7 +213,6 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                   href="#products"
                   onClick={() => setMobileMenuOpen(false)}
                   className="block text-lg font-logo text-white hover:text-accent transition-colors duration-200 py-2"
-                  style={{ fontWeight: '700' }}
                 >
                   Shop
                 </a>
@@ -225,7 +220,6 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                   href="#blog"
                   onClick={() => setMobileMenuOpen(false)}
                   className="block text-lg font-logo text-white hover:text-accent transition-colors duration-200 py-2"
-                  style={{ fontWeight: '700' }}
                 >
                   Blog
                 </a>
@@ -233,7 +227,6 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                   href="#about"
                   onClick={() => setMobileMenuOpen(false)}
                   className="block text-lg font-logo text-white hover:text-accent transition-colors duration-200 py-2"
-                  style={{ fontWeight: '700' }}
                 >
                   About
                 </a>
@@ -241,7 +234,6 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                   href="#contact"
                   onClick={() => setMobileMenuOpen(false)}
                   className="block text-lg font-logo text-white hover:text-accent transition-colors duration-200 py-2"
-                  style={{ fontWeight: '700' }}
                 >
                   Contact
                 </a>
