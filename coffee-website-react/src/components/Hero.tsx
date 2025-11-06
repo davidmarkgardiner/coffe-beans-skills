@@ -77,10 +77,10 @@ export function Hero() {
           className="text-center px-4"
         >
           <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-logo font-extrabold text-white mb-6 leading-tight drop-shadow-[0_8px_16px_rgba(0,0,0,0.9)]" style={{ textShadow: '4px 4px 8px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.5)', fontWeight: '900' }}>
-            Stockbridge Coffee Roaster
+            STOCKBRIDGE COFFEE
           </h1>
           <p className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-logo font-medium text-white drop-shadow-[0_6px_12px_rgba(0,0,0,0.9)]" style={{ textShadow: '3px 3px 6px rgba(0,0,0,0.8)', fontWeight: '500' }}>
-            Your local friendly coffee roaster in Edinburgh
+            Edinburgh, Est 2025
           </p>
         </motion.div>
       </div>
