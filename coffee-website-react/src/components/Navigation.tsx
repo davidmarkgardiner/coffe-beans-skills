@@ -64,27 +64,31 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
           <div className="hidden md:flex items-center gap-10">
             <a
               href="#products"
-              className="text-2xl font-logo text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded tracking-wider"
+              className="text-xl font-logo font-bold text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+              style={{ fontWeight: '800' }}
             >
-              SHOP
+              Shop
             </a>
             <a
               href="#blog"
-              className="text-2xl font-logo text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded tracking-wider"
+              className="text-xl font-logo font-bold text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+              style={{ fontWeight: '800' }}
             >
-              BLOG
+              Blog
             </a>
             <a
               href="#about"
-              className="text-2xl font-logo text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded tracking-wider"
+              className="text-xl font-logo font-bold text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+              style={{ fontWeight: '800' }}
             >
-              ABOUT
+              About
             </a>
             <a
               href="#contact"
-              className="text-2xl font-logo text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded tracking-wider"
+              className="text-xl font-logo font-bold text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+              style={{ fontWeight: '800' }}
             >
-              CONTACT
+              Contact
             </a>
           </div>
 
@@ -212,30 +216,34 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                 <a
                   href="#products"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-xl font-logo text-white hover:text-accent transition-colors duration-200 py-2 tracking-wider"
+                  className="block text-lg font-logo font-bold text-white hover:text-accent transition-colors duration-200 py-2"
+                  style={{ fontWeight: '800' }}
                 >
-                  SHOP
+                  Shop
                 </a>
                 <a
                   href="#blog"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-xl font-logo text-white hover:text-accent transition-colors duration-200 py-2 tracking-wider"
+                  className="block text-lg font-logo font-bold text-white hover:text-accent transition-colors duration-200 py-2"
+                  style={{ fontWeight: '800' }}
                 >
-                  BLOG
+                  Blog
                 </a>
                 <a
                   href="#about"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-xl font-logo text-white hover:text-accent transition-colors duration-200 py-2 tracking-wider"
+                  className="block text-lg font-logo font-bold text-white hover:text-accent transition-colors duration-200 py-2"
+                  style={{ fontWeight: '800' }}
                 >
-                  ABOUT
+                  About
                 </a>
                 <a
                   href="#contact"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-xl font-logo text-white hover:text-accent transition-colors duration-200 py-2 tracking-wider"
+                  className="block text-lg font-logo font-bold text-white hover:text-accent transition-colors duration-200 py-2"
+                  style={{ fontWeight: '800' }}
                 >
-                  CONTACT
+                  Contact
                 </a>
                 {currentUser && (
                   <button
