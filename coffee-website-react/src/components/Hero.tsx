@@ -80,7 +80,7 @@ export function Hero() {
             STOCKBRIDGE COFFEE
           </h1>
           <p className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-logo text-white tracking-widest drop-shadow-[0_6px_12px_rgba(0,0,0,0.9)]" style={{ textShadow: '3px 3px 6px rgba(0,0,0,0.8)', letterSpacing: '0.15em' }}>
-            EDINBURGH, EST 2025
+            Edinburgh, Est 2025
           </p>
         </motion.div>
       </div>
