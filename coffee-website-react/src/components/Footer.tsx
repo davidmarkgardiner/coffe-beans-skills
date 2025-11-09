@@ -5,6 +5,8 @@ import { newsletterOperations } from '../hooks/useFirestore'
 export function Footer() {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [isAlreadySubscribed, setIsAlreadySubscribed] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -12,25 +14,30 @@ export function Footer() {
     if (!email) return
 
     setStatus('loading')
+    setErrorMessage('')
 
     try {
       const result = await newsletterOperations.subscribe(email, 'footer')
 
       if (result.success) {
         setStatus('success')
+        setIsAlreadySubscribed(result.alreadySubscribed)
 
         // Reset form after 3 seconds
         setTimeout(() => {
           setEmail('')
           setStatus('idle')
+          setIsAlreadySubscribed(false)
         }, 3000)
       }
     } catch (error) {
       setStatus('error')
+      setErrorMessage(error instanceof Error ? error.message : 'Failed to subscribe. Please try again.')
 
       // Reset error after 5 seconds
       setTimeout(() => {
         setStatus('idle')
+        setErrorMessage('')
       }, 5000)
     }
   }
@@ -110,16 +117,16 @@ export function Footer() {
                 whileTap={status !== 'loading' ? { scale: 0.98 } : {}}
                 className="px-4 py-2 rounded-lg bg-gradient-cta text-white font-semibold text-sm tracking-wide uppercase shadow-medium transition-all duration-200 hover:bg-gradient-cta-hover hover:shadow-large focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {status === 'loading' ? 'Subscribing...' : status === 'success' ? '✓ Subscribed!' : 'Subscribe'}
+                {status === 'loading' ? 'Subscribing...' : status === 'success' ? (isAlreadySubscribed ? '✓ Already Subscribed!' : '✓ Subscribed!') : 'Subscribe'}
               </motion.button>
             </form>
-            {status === 'error' && (
+            {status === 'error' && errorMessage && (
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="text-xs text-red-300 mt-2"
               >
-                Failed to subscribe. Please try again.
+                {errorMessage}
               </motion.p>
             )}
             {status === 'success' && (
@@ -128,7 +135,7 @@ export function Footer() {
                 animate={{ opacity: 1 }}
                 className="text-xs text-accent-light mt-2"
               >
-                Thanks for subscribing!
+                {isAlreadySubscribed ? "You're already subscribed!" : 'Thanks for subscribing!'}
               </motion.p>
             )}
           </div>
