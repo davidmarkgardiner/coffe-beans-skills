@@ -5,6 +5,7 @@ import { ProductGrid } from './components/ProductGrid'
 import { About } from './components/About'
 import { Testimonials } from './components/Testimonials'
 import { Newsletter } from './components/Newsletter'
+import { Contact } from './components/Contact'
 import { Footer } from './components/Footer'
 import { BlogHighlights } from './components/BlogHighlights'
 import { CustomCursor } from './components/CustomCursor'
@@ -98,6 +99,7 @@ function App() {
       <Testimonials />
       <BlogHighlights />
       <Newsletter />
+      <Contact />
       <Footer />
 
       {/* Login Modal at App level - covers entire page */}
