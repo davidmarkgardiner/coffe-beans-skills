@@ -1,74 +1,99 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
+
     // Helper functions
-    function isSignedIn() {
+    function isAuthenticated() {
       return request.auth != null;
     }
 
     function isOwner(userId) {
-      return isSignedIn() && request.auth.uid == userId;
+      return isAuthenticated() && request.auth.uid == userId;
     }
 
     function isAdmin() {
-      return isSignedIn() &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      return isAuthenticated() &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
 
-    // Users collection
+    // Products collection - Public read, admin write
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Users collection - Users can read/write their own data
     match /users/{userId} {
-      allow read: if isSignedIn();
-      allow create: if isSignedIn();
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated() && request.auth.uid == userId;
       allow update: if isOwner(userId) || isAdmin();
       allow delete: if isAdmin();
     }
 
-    // Products collection
-    match /products/{productId} {
-      allow read: if true; // Public read
-      allow write: if isAdmin();
-    }
-
-    // Orders collection
+    // Orders collection - Users can create and read their own orders
     match /orders/{orderId} {
       allow read: if isOwner(resource.data.userId) || isAdmin();
-      allow create: if isSignedIn();
+      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.userId;
       allow update: if isAdmin();
       allow delete: if isAdmin();
     }
 
-    // Cart collection
+    // Shopping cart - Users can read/write their own cart
     match /cart/{userId} {
       allow read, write: if isOwner(userId);
     }
 
-    // Newsletter collection
+    // Newsletter subscriptions - Anyone can subscribe
     match /newsletter/{email} {
-      allow create: if true; // Anyone can subscribe
+      allow create: if true;
       allow read, update, delete: if isAdmin();
     }
 
-    // Inventory logs (read-only for non-admins)
+    // Inventory logs - Read only for admins
     match /inventory_logs/{logId} {
       allow read: if isAdmin();
+      allow write: if false; // Created only through server/cloud functions
+    }
+
+    // Gift Cards collection
+    match /giftCards/{giftCardId} {
+      // Anyone can read gift cards they've received or sent
+      allow read: if isAuthenticated() && (
+        resource.data.recipientEmail == request.auth.token.email ||
+        resource.data.senderEmail == request.auth.token.email
+      );
+
+      // Only authenticated users can create gift cards (after payment)
+      allow create: if isAuthenticated();
+
+      // Only authenticated users can update gift cards they've received (for redemption)
+      // or admins can update any gift card
+      allow update: if isAdmin() || (
+        isAuthenticated() &&
+        resource.data.recipientEmail == request.auth.token.email &&
+        // Ensure only balance and redemption fields are updated
+        request.resource.data.keys().hasAll(['balance', 'redemptions', 'updatedAt'])
+      );
+
+      // Only admins can delete gift cards
+      allow delete: if isAdmin();
+    }
+
+    // Content management collections (AI-generated content)
+    match /content-videos/{videoId} {
+      allow read: if true;
       allow write: if isAdmin();
     }
 
-    // AI-generated content collections - public read/write for testing
-    match /content-videos/{contentId} {
-      allow read: if true; // Public read for now
-      allow write: if true; // TODO: Secure for production
+    match /content-photos/{photoId} {
+      allow read: if true;
+      allow write: if isAdmin();
     }
 
-    match /content-photos/{contentId} {
-      allow read: if true; // Public read for now
-      allow write: if true; // TODO: Secure for production
-    }
-
-    // Content rotation config - public read for fetching settings
-    match /content-rotation-config/{section} {
-      allow read: if true; // Anyone can read rotation config
-      allow write: if true; // TODO: Secure for production
+    match /content-rotation-config/{configId} {
+      allow read: if true;
+      allow write: if isAdmin();
     }
   }
 }

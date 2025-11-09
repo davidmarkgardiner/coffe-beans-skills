@@ -9,6 +9,8 @@ import { Footer } from './components/Footer'
 import { BlogHighlights } from './components/BlogHighlights'
 import { CustomCursor } from './components/CustomCursor'
 import { LoginModal } from './components/LoginModal'
+import { GiftCardSection } from './components/GiftCardSection'
+import { GiftCardPurchase } from './components/GiftCardPurchase'
 import CartDrawer from './components/CartDrawer'
 import CoffeeCopilot from './components/CoffeeCopilot'
 import { useCart } from './hooks/useCart'
@@ -72,6 +74,7 @@ function App() {
   const { cart, addToCart, removeFromCart, updateQuantity, total, itemCount } = useCart()
   const [loginModalOpen, setLoginModalOpen] = useState(false)
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false)
+  const [giftCardModalOpen, setGiftCardModalOpen] = useState(false)
 
   // Get rotating product images from AI-generated content
   const { productImages } = useProductImages(baseProducts.length)
@@ -95,6 +98,7 @@ function App() {
       <Hero />
       <About />
       <ProductGrid products={products} onAddToCart={addToCart} />
+      <GiftCardSection onPurchaseClick={() => setGiftCardModalOpen(true)} />
       <Testimonials />
       <BlogHighlights />
       <Newsletter />
@@ -114,6 +118,12 @@ function App() {
         total={total}
         updateQuantity={updateQuantity}
         removeFromCart={removeFromCart}
+      />
+
+      {/* Gift Card Purchase Modal */}
+      <GiftCardPurchase
+        isOpen={giftCardModalOpen}
+        onClose={() => setGiftCardModalOpen(false)}
       />
 
       {/* Coffee Copilot - AI Assistant */}
