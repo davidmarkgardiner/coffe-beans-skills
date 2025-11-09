@@ -13,6 +13,20 @@ export interface CartItem extends Product {
   quantity: number
 }
 
+// Discount Code Types
+export interface DiscountCode {
+  code: string
+  type: 'percentage' | 'fixed'
+  value: number
+  description?: string
+}
+
+export interface AppliedDiscount {
+  code: string
+  amount: number
+  description?: string
+}
+
 // Gift Card Types
 export interface GiftCard {
   id: string
