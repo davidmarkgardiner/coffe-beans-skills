@@ -69,7 +69,18 @@ const baseProducts: Omit<Product, 'image'>[] = [
 ]
 
 function App() {
-  const { cart, addToCart, removeFromCart, updateQuantity, total, itemCount } = useCart()
+  const {
+    cart,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    applyDiscount,
+    removeDiscount,
+    appliedDiscount,
+    subtotal,
+    total,
+    itemCount
+  } = useCart()
   const [loginModalOpen, setLoginModalOpen] = useState(false)
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false)
 
@@ -111,7 +122,11 @@ function App() {
         isOpen={cartDrawerOpen}
         onClose={() => setCartDrawerOpen(false)}
         cart={cart}
+        subtotal={subtotal}
         total={total}
+        appliedDiscount={appliedDiscount}
+        applyDiscount={applyDiscount}
+        removeDiscount={removeDiscount}
         updateQuantity={updateQuantity}
         removeFromCart={removeFromCart}
       />
