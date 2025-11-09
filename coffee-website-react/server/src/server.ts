@@ -547,7 +547,17 @@ app.post('/api/stripe-webhook', express.raw({ type: 'application/json' }), async
       case 'payment_intent.succeeded':
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
         console.log('PaymentIntent succeeded:', paymentIntent.id);
-        // TODO: Fulfill the order, send confirmation email, etc.
+
+        // Check if this is a gift card purchase
+        if (paymentIntent.metadata.type === 'gift_card') {
+          console.log('Gift card purchase detected, creating gift card...');
+          // Note: Gift card creation is handled by the frontend after payment confirmation
+          // The webhook here is for logging and potential email notifications
+          // TODO: Send gift card email to recipient
+        } else {
+          // Regular order fulfillment
+          // TODO: Fulfill the order, send confirmation email, etc.
+        }
         break;
 
       case 'payment_intent.payment_failed':

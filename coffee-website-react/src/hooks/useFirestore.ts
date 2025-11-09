@@ -225,3 +225,171 @@ export const orderOperations = {
     return await firestoreOperations.update('orders', orderId, { status })
   },
 }
+
+// Gift Card operations
+export const giftCardOperations = {
+  // Generate unique gift card code
+  generateCode(): string {
+    const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789' // Exclude ambiguous characters
+    const segments = 4
+    const segmentLength = 4
+
+    let code = 'GIFT'
+    for (let i = 0; i < segments; i++) {
+      let segment = ''
+      for (let j = 0; j < segmentLength; j++) {
+        segment += characters.charAt(Math.floor(Math.random() * characters.length))
+      }
+      code += '-' + segment
+    }
+    return code
+  },
+
+  // Create a new gift card
+  async createGiftCard(giftCardData: {
+    amount: number
+    currency: string
+    senderName: string
+    senderEmail: string
+    recipientEmail: string
+    recipientName?: string
+    message?: string
+    paymentIntentId: string
+  }) {
+    const code = this.generateCode()
+    const now = Timestamp.now()
+    const expiresAt = new Date()
+    expiresAt.setFullYear(expiresAt.getFullYear() + 1) // 1 year expiry
+
+    const giftCard = {
+      code,
+      amount: giftCardData.amount,
+      balance: giftCardData.amount,
+      currency: giftCardData.currency,
+      status: 'active',
+      senderName: giftCardData.senderName,
+      senderEmail: giftCardData.senderEmail,
+      recipientEmail: giftCardData.recipientEmail,
+      recipientName: giftCardData.recipientName || '',
+      message: giftCardData.message || '',
+      paymentIntentId: giftCardData.paymentIntentId,
+      createdAt: now,
+      expiresAt: Timestamp.fromDate(expiresAt),
+      redemptions: [],
+    }
+
+    const docRef = await addDoc(collection(db, 'giftCards'), giftCard)
+    return { id: docRef.id, ...giftCard }
+  },
+
+  // Validate and get gift card by code
+  async validateGiftCard(code: string): Promise<{ valid: boolean; giftCard?: any; error?: string }> {
+    try {
+      const giftCardsRef = collection(db, 'giftCards')
+      const q = query(giftCardsRef, where('code', '==', code.toUpperCase()))
+      const snapshot = await getDocs(q)
+
+      if (snapshot.empty) {
+        return { valid: false, error: 'Gift card not found' }
+      }
+
+      const giftCardDoc = snapshot.docs[0]
+      const giftCard = { id: giftCardDoc.id, ...giftCardDoc.data() }
+
+      // Check if expired
+      const expiresAt = giftCard.expiresAt?.toDate() || new Date()
+      if (expiresAt < new Date()) {
+        return { valid: false, error: 'Gift card has expired' }
+      }
+
+      // Check if fully redeemed
+      if (giftCard.balance <= 0) {
+        return { valid: false, error: 'Gift card has no remaining balance' }
+      }
+
+      // Check status
+      if (giftCard.status !== 'active') {
+        return { valid: false, error: 'Gift card is not active' }
+      }
+
+      return { valid: true, giftCard }
+    } catch (error) {
+      console.error('Error validating gift card:', error)
+      return { valid: false, error: 'Error validating gift card' }
+    }
+  },
+
+  // Redeem gift card (partial or full)
+  async redeemGiftCard(
+    giftCardId: string,
+    amount: number,
+    orderId: string,
+    userId: string
+  ): Promise<{ success: boolean; remainingBalance?: number; error?: string }> {
+    try {
+      const giftCardRef = doc(db, 'giftCards', giftCardId)
+      const giftCardSnap = await getDoc(giftCardRef)
+
+      if (!giftCardSnap.exists()) {
+        return { success: false, error: 'Gift card not found' }
+      }
+
+      const giftCard = giftCardSnap.data()
+      const currentBalance = giftCard.balance
+
+      if (amount > currentBalance) {
+        return { success: false, error: 'Insufficient gift card balance' }
+      }
+
+      const newBalance = currentBalance - amount
+      const redemption = {
+        orderId,
+        userId,
+        amount,
+        remainingBalance: newBalance,
+        timestamp: Timestamp.now(),
+      }
+
+      // Update gift card
+      await updateDoc(giftCardRef, {
+        balance: newBalance,
+        redemptions: [...(giftCard.redemptions || []), redemption],
+        ...(newBalance === 0 && {
+          status: 'redeemed',
+          redeemedAt: Timestamp.now(),
+          redeemedBy: userId,
+        }),
+        updatedAt: Timestamp.now(),
+      })
+
+      return { success: true, remainingBalance: newBalance }
+    } catch (error) {
+      console.error('Error redeeming gift card:', error)
+      return { success: false, error: 'Error redeeming gift card' }
+    }
+  },
+
+  // Get gift card by code (for lookup)
+  async getGiftCardByCode(code: string) {
+    const giftCardsRef = collection(db, 'giftCards')
+    const q = query(giftCardsRef, where('code', '==', code.toUpperCase()))
+    const snapshot = await getDocs(q)
+
+    if (snapshot.empty) {
+      return null
+    }
+
+    const giftCardDoc = snapshot.docs[0]
+    return { id: giftCardDoc.id, ...giftCardDoc.data() }
+  },
+}
+
+// Hook to fetch gift cards by email (for user to see their purchased/received cards)
+export function useUserGiftCards(email: string | null, type: 'sent' | 'received' = 'received', realtime = false) {
+  const field = type === 'sent' ? 'senderEmail' : 'recipientEmail'
+  const constraints = email
+    ? [where(field, '==', email), orderBy('createdAt', 'desc')]
+    : []
+
+  return useCollection('giftCards', constraints, realtime)
+}
