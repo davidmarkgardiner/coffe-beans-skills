@@ -11,6 +11,7 @@ import {
   addDoc,
   updateDoc,
   deleteDoc,
+  setDoc,
   query,
   where,
   orderBy,
@@ -392,4 +393,68 @@ export function useUserGiftCards(email: string | null, type: 'sent' | 'received'
     : []
 
   return useCollection('giftCards', constraints, realtime)
+}
+
+// Email validation helper
+function isValidEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailRegex.test(email)
+}
+
+// Newsletter operations
+export const newsletterOperations = {
+  async subscribe(email: string, source: 'newsletter-section' | 'footer' = 'newsletter-section') {
+    try {
+      // Validate email format
+      if (!email || !email.trim()) {
+        throw new Error('Email address is required')
+      }
+
+      const trimmedEmail = email.trim().toLowerCase()
+
+      if (!isValidEmail(trimmedEmail)) {
+        throw new Error('Please enter a valid email address')
+      }
+
+      // Use email as document ID to prevent duplicate subscriptions
+      const docRef = doc(db, 'newsletter', trimmedEmail)
+      const docSnap = await getDoc(docRef)
+
+      if (docSnap.exists()) {
+        // Already subscribed, update the timestamp
+        await updateDoc(docRef, {
+          lastSubscribedAt: Timestamp.now(),
+          source,
+        })
+        return { success: true, alreadySubscribed: true }
+      }
+
+      // New subscription - use setDoc to use email as document ID
+      await setDoc(docRef, {
+        email: trimmedEmail,
+        subscribedAt: Timestamp.now(),
+        source,
+        active: true,
+      })
+
+      return { success: true, alreadySubscribed: false }
+    } catch (error) {
+      console.error('Newsletter subscription error:', error)
+
+      // Provide more specific error messages
+      if (error instanceof Error) {
+        // Check for Firebase-specific errors
+        if (error.message.includes('permission-denied')) {
+          throw new Error('Unable to subscribe at this time. Please try again later.')
+        }
+        if (error.message.includes('network')) {
+          throw new Error('Network error. Please check your connection and try again.')
+        }
+        // Re-throw validation errors as-is
+        throw error
+      }
+
+      throw new Error('Failed to subscribe. Please try again.')
+    }
+  },
 }
