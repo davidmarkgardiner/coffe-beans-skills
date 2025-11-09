@@ -87,14 +87,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
         })
       } catch (error) {
         console.error('Error creating user document:', error)
+        // Re-throw error so it can be caught and displayed to the user
+        throw new Error('Failed to create user account. Please try again.')
       }
     } else {
       // Update last login
-      await setDoc(
-        userRef,
-        { lastLogin: Timestamp.now() },
-        { merge: true }
-      )
+      try {
+        await setDoc(
+          userRef,
+          { lastLogin: Timestamp.now() },
+          { merge: true }
+        )
+      } catch (error) {
+        console.error('Error updating last login:', error)
+        // Don't throw error for login update failures - non-critical
+      }
     }
   }
 

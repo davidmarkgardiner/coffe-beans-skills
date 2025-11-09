@@ -52,7 +52,22 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
       await loginWithGoogle()
       onClose()
     } catch (err: any) {
-      setError(err.message || 'Failed to login with Google')
+      // Provide user-friendly error messages for common Firebase errors
+      let errorMessage = err.message || 'Failed to login with Google'
+
+      if (err.code === 'auth/popup-closed-by-user') {
+        errorMessage = 'Sign-in cancelled. Please try again.'
+      } else if (err.code === 'auth/popup-blocked') {
+        errorMessage = 'Pop-up blocked by browser. Please allow pop-ups and try again.'
+      } else if (err.code === 'auth/cancelled-popup-request') {
+        errorMessage = 'Sign-in cancelled. Please try again.'
+      } else if (err.code === 'auth/network-request-failed') {
+        errorMessage = 'Network error. Please check your connection and try again.'
+      } else if (err.code === 'auth/account-exists-with-different-credential') {
+        errorMessage = 'An account already exists with this email using a different sign-in method.'
+      }
+
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
