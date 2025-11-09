@@ -27,6 +27,7 @@ export function GiftCardPurchase({ isOpen, onClose }: GiftCardPurchaseProps) {
   const [clientSecret, setClientSecret] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
 
   const handleAmountSelect = (amount: number) => {
     setSelectedAmount(amount)
@@ -43,19 +44,45 @@ export function GiftCardPurchase({ isOpen, onClose }: GiftCardPurchaseProps) {
     setCustomAmount(value)
   }
 
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
   const handleNext = async () => {
     if (step === 'select' && selectedAmount) {
+      setError(null)
       setStep('details')
     } else if (step === 'details') {
       // Validate form
-      if (!formData.senderName || !formData.senderEmail || !formData.recipientEmail) {
-        setError('Please fill in all required fields')
+      const errors: Record<string, string> = {}
+
+      if (!formData.senderName.trim()) {
+        errors.senderName = 'Your name is required'
+      }
+
+      if (!formData.senderEmail.trim()) {
+        errors.senderEmail = 'Your email is required'
+      } else if (!validateEmail(formData.senderEmail)) {
+        errors.senderEmail = 'Please enter a valid email address'
+      }
+
+      if (!formData.recipientEmail.trim()) {
+        errors.recipientEmail = 'Recipient email is required'
+      } else if (!validateEmail(formData.recipientEmail)) {
+        errors.recipientEmail = 'Please enter a valid email address'
+      }
+
+      if (Object.keys(errors).length > 0) {
+        setFieldErrors(errors)
+        setError('Please fix the errors above')
         return
       }
 
       // Create payment intent
       setLoading(true)
       setError(null)
+      setFieldErrors({})
       try {
         const { clientSecret } = await createPaymentIntent(
           selectedAmount! * 100, // Convert to cents
@@ -81,6 +108,8 @@ export function GiftCardPurchase({ isOpen, onClose }: GiftCardPurchaseProps) {
   }
 
   const handleBack = () => {
+    setError(null)
+    setFieldErrors({})
     if (step === 'details') {
       setStep('select')
     } else if (step === 'payment') {
@@ -204,10 +233,18 @@ export function GiftCardPurchase({ isOpen, onClose }: GiftCardPurchaseProps) {
                           value={customAmount}
                           onChange={(e) => handleCustomAmountChange(e.target.value)}
                           placeholder="0.00"
-                          className="w-full pl-10 pr-4 py-4 rounded-xl bg-surface border-2 border-transparent focus:border-accent focus:bg-background transition-colors text-2xl font-display font-bold text-heading focus-visible:outline-none"
+                          className={`w-full pl-10 pr-4 py-4 rounded-xl bg-surface border-2 transition-colors text-2xl font-display font-bold text-heading focus-visible:outline-none ${
+                            selectedAmount && selectedAmount < 10
+                              ? 'border-red-500 focus:border-red-500'
+                              : 'border-transparent focus:border-accent focus:bg-background'
+                          }`}
                         />
                       </div>
-                      <p className="mt-2 text-xs text-text/70">Minimum amount: £10</p>
+                      <p className={`mt-2 text-xs ${
+                        selectedAmount && selectedAmount < 10 ? 'text-red-500' : 'text-text/70'
+                      }`}>
+                        Minimum amount: £10
+                      </p>
                     </div>
                   </motion.div>
                 )}
@@ -244,13 +281,25 @@ export function GiftCardPurchase({ isOpen, onClose }: GiftCardPurchaseProps) {
                           id="sender-name"
                           type="text"
                           value={formData.senderName}
-                          onChange={(e) =>
+                          onChange={(e) => {
                             setFormData({ ...formData, senderName: e.target.value })
-                          }
-                          className="w-full px-4 py-3 rounded-xl bg-surface border-2 border-transparent focus:border-accent focus:bg-background transition-colors text-heading focus-visible:outline-none"
+                            if (fieldErrors.senderName) {
+                              const newErrors = { ...fieldErrors }
+                              delete newErrors.senderName
+                              setFieldErrors(newErrors)
+                            }
+                          }}
+                          className={`w-full px-4 py-3 rounded-xl bg-surface border-2 transition-colors text-heading focus-visible:outline-none ${
+                            fieldErrors.senderName
+                              ? 'border-red-500 focus:border-red-500'
+                              : 'border-transparent focus:border-accent focus:bg-background'
+                          }`}
                           placeholder="John Doe"
                           required
                         />
+                        {fieldErrors.senderName && (
+                          <p className="mt-1 text-xs text-red-500">{fieldErrors.senderName}</p>
+                        )}
                       </div>
                       <div>
                         <label htmlFor="sender-email" className="block text-sm text-text mb-1">
@@ -260,13 +309,25 @@ export function GiftCardPurchase({ isOpen, onClose }: GiftCardPurchaseProps) {
                           id="sender-email"
                           type="email"
                           value={formData.senderEmail}
-                          onChange={(e) =>
+                          onChange={(e) => {
                             setFormData({ ...formData, senderEmail: e.target.value })
-                          }
-                          className="w-full px-4 py-3 rounded-xl bg-surface border-2 border-transparent focus:border-accent focus:bg-background transition-colors text-heading focus-visible:outline-none"
+                            if (fieldErrors.senderEmail) {
+                              const newErrors = { ...fieldErrors }
+                              delete newErrors.senderEmail
+                              setFieldErrors(newErrors)
+                            }
+                          }}
+                          className={`w-full px-4 py-3 rounded-xl bg-surface border-2 transition-colors text-heading focus-visible:outline-none ${
+                            fieldErrors.senderEmail
+                              ? 'border-red-500 focus:border-red-500'
+                              : 'border-transparent focus:border-accent focus:bg-background'
+                          }`}
                           placeholder="john@example.com"
                           required
                         />
+                        {fieldErrors.senderEmail && (
+                          <p className="mt-1 text-xs text-red-500">{fieldErrors.senderEmail}</p>
+                        )}
                       </div>
                     </div>
 
@@ -287,13 +348,25 @@ export function GiftCardPurchase({ isOpen, onClose }: GiftCardPurchaseProps) {
                           id="recipient-email"
                           type="email"
                           value={formData.recipientEmail}
-                          onChange={(e) =>
+                          onChange={(e) => {
                             setFormData({ ...formData, recipientEmail: e.target.value })
-                          }
-                          className="w-full px-4 py-3 rounded-xl bg-surface border-2 border-transparent focus:border-accent focus:bg-background transition-colors text-heading focus-visible:outline-none"
+                            if (fieldErrors.recipientEmail) {
+                              const newErrors = { ...fieldErrors }
+                              delete newErrors.recipientEmail
+                              setFieldErrors(newErrors)
+                            }
+                          }}
+                          className={`w-full px-4 py-3 rounded-xl bg-surface border-2 transition-colors text-heading focus-visible:outline-none ${
+                            fieldErrors.recipientEmail
+                              ? 'border-red-500 focus:border-red-500'
+                              : 'border-transparent focus:border-accent focus:bg-background'
+                          }`}
                           placeholder="recipient@example.com"
                           required
                         />
+                        {fieldErrors.recipientEmail && (
+                          <p className="mt-1 text-xs text-red-500">{fieldErrors.recipientEmail}</p>
+                        )}
                       </div>
                       <div>
                         <label
