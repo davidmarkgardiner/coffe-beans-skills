@@ -294,7 +294,7 @@ export const giftCardOperations = {
       }
 
       const giftCardDoc = snapshot.docs[0]
-      const giftCard = { id: giftCardDoc.id, ...giftCardDoc.data() }
+      const giftCard = { id: giftCardDoc.id, ...giftCardDoc.data() } as any
 
       // Check if expired
       const expiresAt = giftCard.expiresAt?.toDate() || new Date()
