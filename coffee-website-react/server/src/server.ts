@@ -116,6 +116,12 @@ async function createGithubIssue(params: {
   const repo = process.env.GITHUB_REPO;
   const token = process.env.GITHUB_TOKEN;
 
+  console.log('GitHub Config Debug:', {
+    repo,
+    tokenExists: !!token,
+    tokenPrefix: token?.substring(0, 15) + '...'
+  });
+
   if (!repo || !token) {
     throw new Error('GitHub integration not configured. Please set GITHUB_TOKEN and GITHUB_REPO in .env');
   }

@@ -43,8 +43,8 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
       transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-gradient-nav-strong backdrop-blur-md shadow-medium'
-          : 'bg-gradient-nav-soft/80 backdrop-blur-sm shadow-soft'
+          ? 'bg-white/90 backdrop-blur-md shadow-medium'
+          : 'bg-transparent'
       }`}
     >
       <div className="container mx-auto px-6 py-2 md:py-3">
@@ -55,7 +55,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
             aria-label="Stockbridge Coffee"
           >
             <img
-              src="/images/stockbridge-logo2.png"
+              src="/images/stockbridge-logo3.png"
               alt="Stockbridge Coffee"
               className="h-24 md:h-32 w-auto transition-transform duration-300 group-hover:scale-105 drop-shadow-lg"
             />
@@ -64,25 +64,33 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
           <div className="hidden md:flex items-center gap-10">
             <a
               href="#products"
-              className="text-xl font-logo text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+              className={`text-xl font-logo transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded ${
+                scrolled ? 'text-heading hover:text-accent' : 'text-white hover:text-accent-light'
+              }`}
             >
               Shop
             </a>
             <a
               href="#blog"
-              className="text-xl font-logo text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+              className={`text-xl font-logo transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded ${
+                scrolled ? 'text-heading hover:text-accent' : 'text-white hover:text-accent-light'
+              }`}
             >
               Blog
             </a>
             <a
               href="#about"
-              className="text-xl font-logo text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+              className={`text-xl font-logo transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded ${
+                scrolled ? 'text-heading hover:text-accent' : 'text-white hover:text-accent-light'
+              }`}
             >
               About
             </a>
             <a
               href="#contact"
-              className="text-xl font-logo text-white hover:text-accent transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+              className={`text-xl font-logo transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded ${
+                scrolled ? 'text-heading hover:text-accent' : 'text-white hover:text-accent-light'
+              }`}
             >
               Contact
             </a>
@@ -94,7 +102,9 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
               <div className="relative">
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="flex items-center gap-2 p-2 hover:bg-heading/10 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                  className={`flex items-center gap-2 p-2 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
+                    scrolled ? 'hover:bg-accent/10' : 'hover:bg-white/20'
+                  }`}
                   aria-label="User menu"
                 >
                   {currentUser.photoURL && !imageError ? (
@@ -109,7 +119,9 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                       <User className="w-5 h-5 text-white" />
                     </div>
                   )}
-                  <span className="hidden md:block text-sm font-medium text-white max-w-[100px] truncate">
+                  <span className={`hidden md:block text-sm font-medium max-w-[100px] truncate ${
+                    scrolled ? 'text-heading' : 'text-white'
+                  }`}>
                     {currentUser.displayName || currentUser.email?.split('@')[0]}
                   </span>
                 </button>
@@ -156,10 +168,12 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
             {/* Shopping Cart */}
             <button
               onClick={onOpenCart}
-              className="relative p-2 hover:bg-heading/10 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+              className={`relative p-2 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
+                scrolled ? 'hover:bg-accent/10' : 'hover:bg-white/20'
+              }`}
               aria-label={`Shopping cart with ${itemCount} items`}
             >
-              <ShoppingCart className="w-5 h-5 text-white" />
+              <ShoppingCart className={`w-5 h-5 ${scrolled ? 'text-heading' : 'text-white'}`} />
               {itemCount > 0 && (
                 <motion.span
                   initial={{ scale: 0 }}
@@ -174,13 +188,15 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 hover:bg-heading/10 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+              className={`md:hidden p-2 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
+                scrolled ? 'hover:bg-accent/10' : 'hover:bg-white/20'
+              }`}
               aria-label="Toggle mobile menu"
             >
               {mobileMenuOpen ? (
-                <X className="w-5 h-5 text-white" />
+                <X className={`w-5 h-5 ${scrolled ? 'text-heading' : 'text-white'}`} />
               ) : (
-                <Menu className="w-5 h-5 text-white" />
+                <Menu className={`w-5 h-5 ${scrolled ? 'text-heading' : 'text-white'}`} />
               )}
             </button>
           </div>
@@ -194,7 +210,11 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="md:hidden border-t border-grey-200 mt-4"
+              className={`md:hidden border-t mt-4 ${
+                scrolled
+                  ? 'border-accent/20 bg-white'
+                  : 'border-white/20 bg-white/10 backdrop-blur-md'
+              }`}
             >
               <div className="py-4 space-y-4">
                 {!currentUser && (
@@ -212,28 +232,36 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                 <a
                   href="#products"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-lg font-logo text-white hover:text-accent transition-colors duration-200 py-2"
+                  className={`block text-lg font-logo hover:text-accent transition-colors duration-200 py-2 ${
+                    scrolled ? 'text-heading' : 'text-white'
+                  }`}
                 >
                   Shop
                 </a>
                 <a
                   href="#blog"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-lg font-logo text-white hover:text-accent transition-colors duration-200 py-2"
+                  className={`block text-lg font-logo hover:text-accent transition-colors duration-200 py-2 ${
+                    scrolled ? 'text-heading' : 'text-white'
+                  }`}
                 >
                   Blog
                 </a>
                 <a
                   href="#about"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-lg font-logo text-white hover:text-accent transition-colors duration-200 py-2"
+                  className={`block text-lg font-logo hover:text-accent transition-colors duration-200 py-2 ${
+                    scrolled ? 'text-heading' : 'text-white'
+                  }`}
                 >
                   About
                 </a>
                 <a
                   href="#contact"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-lg font-logo text-white hover:text-accent transition-colors duration-200 py-2"
+                  className={`block text-lg font-logo hover:text-accent transition-colors duration-200 py-2 ${
+                    scrolled ? 'text-heading' : 'text-white'
+                  }`}
                 >
                   Contact
                 </a>
@@ -243,7 +271,11 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                       setMobileMenuOpen(false)
                       handleLogout()
                     }}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2 text-surface border border-accent-light rounded-lg hover:bg-heading/10 transition-colors duration-200 font-medium text-sm"
+                    className={`w-full flex items-center justify-center gap-2 px-4 py-2 border rounded-lg hover:bg-accent/10 transition-colors duration-200 font-medium text-sm ${
+                      scrolled
+                        ? 'text-heading border-accent'
+                        : 'text-white border-white/40'
+                    }`}
                   >
                     <LogOut className="w-4 h-4" />
                     Sign Out
