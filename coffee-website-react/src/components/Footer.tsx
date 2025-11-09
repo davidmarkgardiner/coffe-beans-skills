@@ -1,4 +1,39 @@
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { newsletterOperations } from '../hooks/useFirestore'
+
 export function Footer() {
+  const [email, setEmail] = useState('')
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!email) return
+
+    setStatus('loading')
+
+    try {
+      const result = await newsletterOperations.subscribe(email, 'footer')
+
+      if (result.success) {
+        setStatus('success')
+
+        // Reset form after 3 seconds
+        setTimeout(() => {
+          setEmail('')
+          setStatus('idle')
+        }, 3000)
+      }
+    } catch (error) {
+      setStatus('error')
+
+      // Reset error after 5 seconds
+      setTimeout(() => {
+        setStatus('idle')
+      }, 5000)
+    }
+  }
   return (
     <footer className="bg-heading text-surface/80 py-16">
       <div className="container mx-auto px-6">
@@ -57,19 +92,45 @@ export function Footer() {
           <div>
             <h4 className="font-semibold text-background mb-4">Newsletter</h4>
             <p className="text-sm mb-4">Subscribe for updates and special offers.</p>
-            <form className="flex flex-col gap-2">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-2">
               <input
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Your email"
-                className="px-4 py-2 rounded-lg bg-heading/50 border border-accent-dark text-background placeholder-surface/60 focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-200"
+                required
+                disabled={status === 'loading'}
+                aria-label="Email address for newsletter"
+                className="px-4 py-2 rounded-lg bg-heading/50 border border-accent-dark text-background placeholder-surface/60 focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               />
-              <button
+              <motion.button
                 type="submit"
-                className="px-4 py-2 rounded-lg bg-gradient-cta text-white font-semibold text-sm tracking-wide uppercase shadow-medium transition-all duration-200 hover:bg-gradient-cta-hover hover:shadow-large focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
+                disabled={status === 'loading'}
+                whileHover={status !== 'loading' ? { scale: 1.02 } : {}}
+                whileTap={status !== 'loading' ? { scale: 0.98 } : {}}
+                className="px-4 py-2 rounded-lg bg-gradient-cta text-white font-semibold text-sm tracking-wide uppercase shadow-medium transition-all duration-200 hover:bg-gradient-cta-hover hover:shadow-large focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Subscribe
-              </button>
+                {status === 'loading' ? 'Subscribing...' : status === 'success' ? '✓ Subscribed!' : 'Subscribe'}
+              </motion.button>
             </form>
+            {status === 'error' && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-xs text-red-300 mt-2"
+              >
+                Failed to subscribe. Please try again.
+              </motion.p>
+            )}
+            {status === 'success' && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-xs text-accent-light mt-2"
+              >
+                Thanks for subscribing!
+              </motion.p>
+            )}
           </div>
         </div>
 

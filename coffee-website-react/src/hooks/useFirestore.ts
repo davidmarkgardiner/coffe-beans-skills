@@ -11,6 +11,7 @@ import {
   addDoc,
   updateDoc,
   deleteDoc,
+  setDoc,
   query,
   where,
   orderBy,
@@ -223,5 +224,38 @@ export const orderOperations = {
 
   async updateOrderStatus(orderId: string, status: string) {
     return await firestoreOperations.update('orders', orderId, { status })
+  },
+}
+
+// Newsletter operations
+export const newsletterOperations = {
+  async subscribe(email: string, source: 'newsletter-section' | 'footer' = 'newsletter-section') {
+    try {
+      // Use email as document ID to prevent duplicate subscriptions
+      const docRef = doc(db, 'newsletter', email)
+      const docSnap = await getDoc(docRef)
+
+      if (docSnap.exists()) {
+        // Already subscribed, update the timestamp
+        await updateDoc(docRef, {
+          lastSubscribedAt: Timestamp.now(),
+          source,
+        })
+        return { success: true, alreadySubscribed: true }
+      }
+
+      // New subscription - use setDoc to use email as document ID
+      await setDoc(docRef, {
+        email,
+        subscribedAt: Timestamp.now(),
+        source,
+        active: true,
+      })
+
+      return { success: true, alreadySubscribed: false }
+    } catch (error) {
+      console.error('Newsletter subscription error:', error)
+      throw error
+    }
   },
 }
