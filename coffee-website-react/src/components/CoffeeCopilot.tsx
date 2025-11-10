@@ -137,11 +137,11 @@ export default function CoffeeCopilot() {
         setMessages([...updatedMessages, assistantMessage]);
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Coffee Copilot Error:', error);
 
       const errorMessage: Message = {
         role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again in a moment.',
+        content: `Sorry, I encountered an error. Please try again in a moment. ${error instanceof Error ? `(${error.message})` : ''}`,
         timestamp: new Date()
       };
 
