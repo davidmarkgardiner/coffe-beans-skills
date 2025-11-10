@@ -19,7 +19,8 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [
   'http://localhost:5176',
   'https://coffee-65c46.web.app',
   'https://coffee-65c46.firebaseapp.com',
-  'https://stockbridgecoffee.co.uk'
+  'https://stockbridgecoffee.co.uk',
+  'https://www.stockbridgecoffee.co.uk'
 ];
 
 app.use(cors({
@@ -618,5 +619,6 @@ app.listen(port, () => {
   console.log(`   Health: http://localhost:${port}/health`);
   console.log(`   OpenAI: ${process.env.OPENAI_API_KEY ? '✅ Configured' : '❌ Missing'}`);
   console.log(`   Stripe: ${stripe ? '✅ Configured' : '⚠️  Not configured'}`);
+  console.log(`   CORS Origins: ${JSON.stringify(allowedOrigins)}`);
   console.log('');
 });
