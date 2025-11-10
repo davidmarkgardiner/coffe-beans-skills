@@ -61,14 +61,17 @@ export default function CoffeeCopilot() {
     try {
       // SIMPLIFIED FEEDBACK FLOW: Direct GitHub issue creation
       if (bugReportMode) {
-        const apiUrl = import.meta.env.VITE_COPILOT_API_URL || 'http://localhost:3001';
+        // Get base URL (remove /api/chat if present)
+        const fullApiUrl = import.meta.env.VITE_COPILOT_API_URL || 'http://localhost:3001/api/chat';
+        const baseUrl = fullApiUrl.replace(/\/api\/chat$/, '');
+
         const formData = new FormData();
         formData.append('description', input);
         if (screenshot) {
           formData.append('screenshot', screenshot);
         }
 
-        const response = await fetch(`${apiUrl}/api/feedback`, {
+        const response = await fetch(`${baseUrl}/api/feedback`, {
           method: 'POST',
           body: formData
         });
