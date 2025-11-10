@@ -1,31 +1,8 @@
 import { motion } from 'framer-motion'
+import { getAllBlogPosts } from '../data/blog'
+import type { BlogInfo } from '../types/product'
 
-const blogPosts = [
-  {
-    id: 'origin-story',
-    title: 'From Water of Leith to Micro-Roastery',
-    excerpt:
-      'Explore how Stockbridge Coffee has spent 20 years sourcing beans that echo the neighbourhood’s artisan spirit.',
-    date: 'Jan 12, 2025',
-    readTime: '5 min read',
-  },
-  {
-    id: 'seasonal-menu',
-    title: 'Winter Aurora Menu',
-    excerpt:
-      'Take a peek behind the bar and discover the flavour notes inspiring our limited-edition pours this season.',
-    date: 'Feb 02, 2025',
-    readTime: '4 min read',
-  },
-  {
-    id: 'community-market',
-    title: 'Voices from Stockbridge Market',
-    excerpt:
-      'Hear from makers and musicians who join us every Sunday as we brew, taste, and celebrate community.',
-    date: 'Mar 08, 2025',
-    readTime: '6 min read',
-  },
-]
+const blogPosts: BlogInfo[] = getAllBlogPosts()
 
 const container = {
   hidden: { opacity: 0 },

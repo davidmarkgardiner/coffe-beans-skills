@@ -81,3 +81,20 @@ export interface GiftCardValidation {
   giftCard?: GiftCard
   error?: string
 }
+
+// Blog Types
+export interface BlogInfo {
+  id: string
+  title: string
+  excerpt: string
+  date: string
+  readTime: string
+  content?: string
+  author?: string
+  tags?: string[]
+  imageUrl?: string
+}
+
+export interface BlogPost extends BlogInfo {
+  content: string
+}
