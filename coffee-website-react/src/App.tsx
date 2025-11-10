@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { Navigation } from './components/Navigation'
 import { Hero } from './components/Hero'
 import { ProductGrid } from './components/ProductGrid'
@@ -14,6 +15,8 @@ import { GiftCardSection } from './components/GiftCardSection'
 import { GiftCardPurchase } from './components/GiftCardPurchase'
 import CartDrawer from './components/CartDrawer'
 import CoffeeCopilot from './components/CoffeeCopilot'
+import Blog from './pages/Blog'
+import BlogPost from './pages/BlogPost'
 import { useCart } from './hooks/useCart'
 import { useProductImages } from './hooks/useProductImages'
 import type { Product } from './types/product'
@@ -87,6 +90,7 @@ function App() {
   const [loginModalOpen, setLoginModalOpen] = useState(false)
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false)
   const [giftCardModalOpen, setGiftCardModalOpen] = useState(false)
+  const location = useLocation()
 
   // Get rotating product images from AI-generated content
   const { productImages } = useProductImages(baseProducts.length)
@@ -99,6 +103,9 @@ function App() {
     }))
   }, [productImages])
 
+  // Check if we're on a blog page
+  const isBlogPage = location.pathname.startsWith('/blog')
+
   return (
     <>
       <CustomCursor />
@@ -107,14 +114,27 @@ function App() {
         onOpenLogin={() => setLoginModalOpen(true)}
         onOpenCart={() => setCartDrawerOpen(true)}
       />
-      <Hero />
-      <About />
-      <ProductGrid products={products} onAddToCart={addToCart} />
-      <GiftCardSection onPurchaseClick={() => setGiftCardModalOpen(true)} />
-      <Testimonials />
-      <BlogHighlights />
-      <Newsletter />
-      <Contact />
+
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <Hero />
+              <About />
+              <ProductGrid products={products} onAddToCart={addToCart} />
+              <GiftCardSection onPurchaseClick={() => setGiftCardModalOpen(true)} />
+              <Testimonials />
+              <BlogHighlights />
+              <Newsletter />
+              <Contact />
+            </>
+          }
+        />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:id" element={<BlogPost />} />
+      </Routes>
+
       <Footer />
 
       {/* Login Modal at App level - covers entire page */}
@@ -144,7 +164,7 @@ function App() {
       />
 
       {/* Coffee Copilot - AI Assistant */}
-      <CoffeeCopilot />
+      {!isBlogPage && <CoffeeCopilot />}
     </>
   )
 }
