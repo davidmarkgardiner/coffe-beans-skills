@@ -4,8 +4,68 @@ import { Mail, Phone, MapPin, Clock } from 'lucide-react'
 
 type TabType = 'info' | 'form' | 'location'
 
+interface ContactFormData {
+  name: string
+  email: string
+  subject: string
+  message: string
+}
+
 export function Contact() {
   const [activeTab, setActiveTab] = useState<TabType>('info')
+  const [formData, setFormData] = useState<ContactFormData>({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null)
+  const [submitMessage, setSubmitMessage] = useState('')
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [id]: value
+    }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    setSubmitStatus(null)
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      })
+
+      if (response.ok) {
+        setSubmitStatus('success')
+        setSubmitMessage('Thank you for your message! We will get back to you soon.')
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: ''
+        })
+      } else {
+        setSubmitStatus('error')
+        setSubmitMessage('Failed to send message. Please try again later.')
+      }
+    } catch (error) {
+      console.error('Contact form submission error:', error)
+      setSubmitStatus('error')
+      setSubmitMessage('An error occurred. Please try again later.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   return (
     <section id="contact" className="py-24 bg-surface">
@@ -128,7 +188,20 @@ export function Contact() {
 
           {activeTab === 'form' && (
             <div className="bg-white rounded-2xl shadow-large p-8 md:p-12">
-              <form className="space-y-6">
+              {submitStatus && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`mb-6 p-4 rounded-lg ${
+                    submitStatus === 'success'
+                      ? 'bg-green-50 border border-green-200 text-green-800'
+                      : 'bg-red-50 border border-red-200 text-red-800'
+                  }`}
+                >
+                  {submitMessage}
+                </motion.div>
+              )}
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-semibold text-heading mb-2">
@@ -137,6 +210,9 @@ export function Contact() {
                     <input
                       type="text"
                       id="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      required
                       className="w-full px-4 py-3 rounded-lg border border-grey-300 focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all duration-200"
                       placeholder="John Doe"
                     />
@@ -148,6 +224,9 @@ export function Contact() {
                     <input
                       type="email"
                       id="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
                       className="w-full px-4 py-3 rounded-lg border border-grey-300 focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all duration-200"
                       placeholder="john@example.com"
                     />
@@ -161,6 +240,9 @@ export function Contact() {
                   <input
                     type="text"
                     id="subject"
+                    value={formData.subject}
+                    onChange={handleInputChange}
+                    required
                     className="w-full px-4 py-3 rounded-lg border border-grey-300 focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all duration-200"
                     placeholder="How can we help?"
                   />
@@ -173,6 +255,9 @@ export function Contact() {
                   <textarea
                     id="message"
                     rows={6}
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    required
                     className="w-full px-4 py-3 rounded-lg border border-grey-300 focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all duration-200 resize-none"
                     placeholder="Tell us more about your inquiry..."
                   />
@@ -180,9 +265,10 @@ export function Contact() {
 
                 <button
                   type="submit"
-                  className="w-full md:w-auto px-8 py-3 bg-gradient-cta text-white font-semibold rounded-lg hover:bg-gradient-cta-hover transition-all duration-200 shadow-medium hover:shadow-large"
+                  disabled={isSubmitting}
+                  className="w-full md:w-auto px-8 py-3 bg-gradient-cta text-white font-semibold rounded-lg hover:bg-gradient-cta-hover transition-all duration-200 shadow-medium hover:shadow-large disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Send Message
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
                 </button>
               </form>
             </div>
