@@ -11,9 +11,7 @@
  *   tsx scripts/upload-content-to-firebase.ts --file=test-generated-content/test-autumn-photo-20251025T150958.jpg
  */
 
-import { initializeApp } from 'firebase/app'
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { getFirestore, collection, doc, setDoc, serverTimestamp } from 'firebase/firestore'
+import admin from 'firebase-admin'
 import * as fs from 'fs/promises'
 import * as path from 'path'
 import * as dotenv from 'dotenv'
@@ -22,20 +20,28 @@ import * as dotenv from 'dotenv'
 dotenv.config({ path: '.env.local' })
 dotenv.config({ path: '.env' })
 
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: process.env.VITE_FIREBASE_API_KEY,
-  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.VITE_FIREBASE_APP_ID,
+// Initialize Firebase Admin
+const projectId = process.env.VITE_FIREBASE_PROJECT_ID
+const storageBucket = process.env.VITE_FIREBASE_STORAGE_BUCKET
+
+console.log('🔧 Firebase Config:')
+console.log('  Project ID:', projectId)
+console.log('  Storage Bucket:', storageBucket)
+console.log()
+
+try {
+  admin.initializeApp({
+    projectId: projectId,
+    storageBucket: storageBucket,
+  })
+} catch (error: any) {
+  if (error.code !== 'app/duplicate-app') {
+    throw error
+  }
 }
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig)
-const storage = getStorage(app)
-const db = getFirestore(app)
+const db = admin.firestore()
+const storage = admin.storage().bucket()
 
 type Season = 'winter' | 'spring' | 'summer' | 'autumn'
 type ContentType = 'photo' | 'video'
@@ -134,9 +140,6 @@ async function uploadToStorage(
   const ext = path.extname(filePath)
   const storagePath = `content/${type}s/${season}/${contentId}${ext}`
 
-  // Create storage reference
-  const storageRef = ref(storage, storagePath)
-
   // Determine content type
   let contentType = 'image/jpeg'
   if (ext === '.png') contentType = 'image/png'
@@ -144,16 +147,21 @@ async function uploadToStorage(
   if (ext === '.mp4') contentType = 'video/mp4'
   if (ext === '.webm') contentType = 'video/webm'
 
-  // Upload file
-  const metadata = {
-    contentType,
-    cacheControl: 'public, max-age=31536000', // Cache for 1 year
-  }
+  // Upload file using Admin SDK
+  const file = storage.file(storagePath)
 
-  await uploadBytes(storageRef, fileBuffer, metadata)
+  await file.save(fileBuffer, {
+    metadata: {
+      contentType,
+      cacheControl: 'public, max-age=31536000', // Cache for 1 year
+    },
+  })
 
-  // Get download URL
-  const url = await getDownloadURL(storageRef)
+  // Make file publicly accessible
+  await file.makePublic()
+
+  // Get public URL
+  const url = `https://storage.googleapis.com/${storage.name}/${storagePath}`
 
   console.log('✅ Uploaded to:', storagePath)
   console.log('🔗 Public URL:', url)
@@ -171,17 +179,14 @@ async function uploadToStorage(
 async function createFirestoreDocument(content: ContentMetadata) {
   console.log('📝 Creating Firestore document...')
 
-  // Use collection path: content/{type}s/{contentId}
-  // First create a parent doc in 'content' collection, then use subcollection
-  const collectionPath = `content-${content.type}s` // Simplified: content-photos or content-videos
-  const docRef = doc(db, collectionPath, content.id)
+  const collectionPath = `content-${content.type}s` // content-photos or content-videos
 
   const docData = {
     ...content,
-    createdAt: serverTimestamp(),
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
   }
 
-  await setDoc(docRef, docData)
+  await db.collection(collectionPath).doc(content.id).set(docData)
 
   console.log('✅ Firestore document created:', `${collectionPath}/${content.id}`)
 }

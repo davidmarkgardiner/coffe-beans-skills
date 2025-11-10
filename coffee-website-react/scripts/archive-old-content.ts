@@ -12,29 +12,33 @@
  *   tsx scripts/archive-old-content.ts --before=2025-10-29
  */
 
-import { initializeApp } from 'firebase/app'
-import { getFirestore, collection, getDocs, doc, updateDoc, query, where, Timestamp } from 'firebase/firestore'
+import admin from 'firebase-admin'
 import * as dotenv from 'dotenv'
 
 // Load environment variables
 dotenv.config({ path: '.env.local' })
 dotenv.config({ path: '.env' })
 
-const firebaseConfig = {
-  apiKey: process.env.VITE_FIREBASE_API_KEY,
-  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.VITE_FIREBASE_APP_ID,
-}
+// Initialize Firebase Admin
+const projectId = process.env.VITE_FIREBASE_PROJECT_ID
 
 console.log('🔧 Firebase Config:')
-console.log('  Project ID:', firebaseConfig.projectId)
+console.log('  Project ID:', projectId)
 console.log()
 
-const app = initializeApp(firebaseConfig)
-const db = getFirestore(app)
+// Initialize Admin SDK with application default credentials
+try {
+  admin.initializeApp({
+    projectId: projectId,
+  })
+} catch (error: any) {
+  // App may already be initialized
+  if (error.code !== 'app/duplicate-app') {
+    throw error
+  }
+}
+
+const db = admin.firestore()
 
 interface ContentDoc {
   id: string
@@ -61,8 +65,7 @@ async function archiveOldContent(beforeDate?: string) {
 
   // Archive videos
   console.log('📹 Processing videos...')
-  const videosRef = collection(db, 'content-videos')
-  const videosSnapshot = await getDocs(videosRef)
+  const videosSnapshot = await db.collection('content-videos').get()
 
   console.log(`Found ${videosSnapshot.size} video documents`)
 
@@ -77,22 +80,24 @@ async function archiveOldContent(beforeDate?: string) {
     // Check if content should be archived based on creation date
     let shouldArchive = false
 
+    // Check createdAt timestamp if it exists
     if (data.createdAt) {
       const createdDate = data.createdAt.toDate()
       shouldArchive = createdDate < cutoffDate
-    } else {
-      // If no creation date, check if it's old content based on ID or prompt
-      // Old content IDs are from October 25th or earlier
-      const hasOldDateInId = /202510(2[0-8]|[01]\d|0[1-9])/i.test(docSnapshot.id)
-      const isLiquidCoffee = data.prompt?.toLowerCase().includes('cappuccino') ||
-                            data.prompt?.toLowerCase().includes('latte') ||
-                            data.prompt?.toLowerCase().includes('liquid')
-
-      shouldArchive = hasOldDateInId || isLiquidCoffee
     }
 
+    // Also check ID pattern and prompt (even if createdAt exists)
+    // This handles cases where createdAt was set incorrectly
+    const hasOldDateInId = /202510(2[0-8]|[01]\d|0[1-9])/i.test(docSnapshot.id)
+    const isLiquidCoffee = data.prompt?.toLowerCase().includes('cappuccino') ||
+                          data.prompt?.toLowerCase().includes('latte') ||
+                          data.prompt?.toLowerCase().includes('liquid')
+
+    // Archive if ANY condition is true
+    shouldArchive = shouldArchive || hasOldDateInId || isLiquidCoffee
+
     if (shouldArchive) {
-      await updateDoc(doc(db, 'content-videos', docSnapshot.id), {
+      await db.collection('content-videos').doc(docSnapshot.id).update({
         status: 'archived'
       })
 
@@ -105,8 +110,7 @@ async function archiveOldContent(beforeDate?: string) {
 
   // Archive photos
   console.log('🖼️  Processing photos...')
-  const photosRef = collection(db, 'content-photos')
-  const photosSnapshot = await getDocs(photosRef)
+  const photosSnapshot = await db.collection('content-photos').get()
 
   console.log(`Found ${photosSnapshot.size} photo documents`)
 
@@ -121,21 +125,24 @@ async function archiveOldContent(beforeDate?: string) {
     // Check if content should be archived based on creation date
     let shouldArchive = false
 
+    // Check createdAt timestamp if it exists
     if (data.createdAt) {
       const createdDate = data.createdAt.toDate()
       shouldArchive = createdDate < cutoffDate
-    } else {
-      // If no creation date, check if it's old content based on ID or prompt
-      const hasOldDateInId = /202510(2[0-8]|[01]\d|0[1-9])/i.test(docSnapshot.id)
-      const isLiquidCoffee = data.prompt?.toLowerCase().includes('cappuccino') ||
-                            data.prompt?.toLowerCase().includes('latte') ||
-                            data.prompt?.toLowerCase().includes('liquid')
-
-      shouldArchive = hasOldDateInId || isLiquidCoffee
     }
 
+    // Also check ID pattern and prompt (even if createdAt exists)
+    // This handles cases where createdAt was set incorrectly
+    const hasOldDateInId = /202510(2[0-8]|[01]\d|0[1-9])/i.test(docSnapshot.id)
+    const isLiquidCoffee = data.prompt?.toLowerCase().includes('cappuccino') ||
+                          data.prompt?.toLowerCase().includes('latte') ||
+                          data.prompt?.toLowerCase().includes('liquid')
+
+    // Archive if ANY condition is true
+    shouldArchive = shouldArchive || hasOldDateInId || isLiquidCoffee
+
     if (shouldArchive) {
-      await updateDoc(doc(db, 'content-photos', docSnapshot.id), {
+      await db.collection('content-photos').doc(docSnapshot.id).update({
         status: 'archived'
       })
 
@@ -164,9 +171,9 @@ async function listActiveContent() {
   console.log('━'.repeat(60))
 
   // Count active videos
-  const videosRef = collection(db, 'content-videos')
-  const activeVideosQuery = query(videosRef, where('status', '==', 'active'))
-  const activeVideosSnapshot = await getDocs(activeVideosQuery)
+  const activeVideosSnapshot = await db.collection('content-videos')
+    .where('status', '==', 'active')
+    .get()
 
   console.log(`📹 Active Videos: ${activeVideosSnapshot.size}`)
   activeVideosSnapshot.forEach(doc => {
@@ -177,9 +184,9 @@ async function listActiveContent() {
   console.log()
 
   // Count active photos
-  const photosRef = collection(db, 'content-photos')
-  const activePhotosQuery = query(photosRef, where('status', '==', 'active'))
-  const activePhotosSnapshot = await getDocs(activePhotosQuery)
+  const activePhotosSnapshot = await db.collection('content-photos')
+    .where('status', '==', 'active')
+    .get()
 
   console.log(`🖼️  Active Photos: ${activePhotosSnapshot.size}`)
   activePhotosSnapshot.forEach(doc => {
