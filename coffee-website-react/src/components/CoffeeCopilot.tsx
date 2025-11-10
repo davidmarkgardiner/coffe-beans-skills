@@ -166,6 +166,7 @@ export default function CoffeeCopilot() {
           onClick={() => setIsOpen(true)}
           className="fixed bottom-4 right-4 w-14 h-14 rounded-full bg-gray-900 text-white shadow-lg hover:bg-gray-800 transition-colors flex items-center justify-center text-2xl z-50"
           aria-label="Open Coffee Copilot chat"
+          data-testid="copilot-button"
         >
           ☕️
         </button>
@@ -178,6 +179,7 @@ export default function CoffeeCopilot() {
           role="dialog"
           aria-label="Coffee Copilot Chat"
           aria-modal="true"
+          data-testid="copilot-widget"
         >
           {/* Header */}
           <div className="px-4 py-3 border-b font-semibold bg-gray-50 rounded-t-2xl">
