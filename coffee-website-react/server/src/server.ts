@@ -7,6 +7,9 @@ import { OpenAI } from 'openai';
 import Stripe from 'stripe';
 import path from 'path';
 import fs from 'fs';
+import { initializeApp, cert } from 'firebase-admin/app';
+import { getFirestore } from 'firebase-admin/firestore';
+import * as FirebaseFirestore from 'firebase-admin/firestore';
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -74,6 +77,26 @@ if (stripeSecretKey) {
   console.log('✅ Stripe initialized');
 } else {
   console.warn('⚠️  STRIPE_SECRET_KEY not set - Stripe payments will not work');
+}
+
+// Initialize Firebase Admin
+let firebaseDb: FirebaseFirestore.Firestore | null = null;
+
+try {
+  const firebaseCredentials = process.env.FIREBASE_CREDENTIALS;
+  if (firebaseCredentials) {
+    const serviceAccount = JSON.parse(firebaseCredentials);
+    initializeApp({
+      credential: cert(serviceAccount as any),
+      projectId: serviceAccount.project_id,
+    });
+    firebaseDb = getFirestore();
+    console.log('✅ Firebase Admin initialized');
+  } else {
+    console.warn('⚠️  FIREBASE_CREDENTIALS not set - Contact form submissions will not be stored');
+  }
+} catch (error: any) {
+  console.warn('⚠️  Firebase Admin initialization failed:', error.message);
 }
 
 // Simple coffee knowledge base (MVP - will upgrade to vector DB later)
@@ -495,6 +518,75 @@ app.post('/api/feedback', upload.single('screenshot'), async (req, res) => {
 });
 
 // ============================================================================
+// CONTACT FORM ENDPOINT
+// ============================================================================
+
+app.post('/api/contact', async (req, res) => {
+  try {
+    const { name, email, subject, message } = req.body;
+
+    // Validate input
+    if (!name || !email || !subject || !message) {
+      return res.status(400).json({
+        error: 'All fields are required: name, email, subject, message'
+      });
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        error: 'Invalid email address'
+      });
+    }
+
+    // Create contact message object
+    const contactMessage = {
+      name: name.trim(),
+      email: email.trim(),
+      subject: subject.trim(),
+      message: message.trim(),
+      createdAt: new Date().toISOString(),
+      status: 'new'
+    };
+
+    // Try to store in Firebase if available
+    if (firebaseDb) {
+      try {
+        const docRef = await firebaseDb.collection('contact_messages').add(contactMessage);
+        console.log(`Contact message stored: ${docRef.id}`);
+        return res.json({
+          success: true,
+          message: 'Your message has been received. We will get back to you soon.',
+          messageId: docRef.id
+        });
+      } catch (firebaseError: any) {
+        console.error('Firebase storage error:', firebaseError);
+        // Continue without Firebase storage - still return success to user
+        return res.json({
+          success: true,
+          message: 'Your message has been received. We will get back to you soon.'
+        });
+      }
+    } else {
+      // Firebase not configured, but still accept the message
+      console.warn('Firebase not configured, contact message not persisted but acknowledged');
+      return res.json({
+        success: true,
+        message: 'Your message has been received. We will get back to you soon.'
+      });
+    }
+
+  } catch (error: any) {
+    console.error('Contact form submission error:', error);
+    return res.status(500).json({
+      error: 'Failed to process contact form',
+      message: error.message
+    });
+  }
+});
+
+// ============================================================================
 // STRIPE PAYMENT ENDPOINTS
 // ============================================================================
 
@@ -619,6 +711,7 @@ app.listen(port, () => {
   console.log(`   Health: http://localhost:${port}/health`);
   console.log(`   OpenAI: ${process.env.OPENAI_API_KEY ? '✅ Configured' : '❌ Missing'}`);
   console.log(`   Stripe: ${stripe ? '✅ Configured' : '⚠️  Not configured'}`);
+  console.log(`   Firebase: ${firebaseDb ? '✅ Configured' : '⚠️  Not configured'}`);
   console.log(`   CORS Origins: ${JSON.stringify(allowedOrigins)}`);
   console.log('');
 });
