@@ -7,46 +7,58 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Sophisticated Color Palette
-        background: '#F7F4ED', // Light cream - main background
-        surface: '#E9E1D7', // Soft beige - cards, sections
+        // Stockbridge Coffee Brand Colors
+        // Primary Colors
+        background: '#F5F0E8', // Off-White - website background
+        surface: '#E8DCC8', // Cream/Beige - cards, sections
         accent: {
-          DEFAULT: '#B8A690', // Taupe brown - buttons, borders, highlights
-          hover: '#A69582', // Darkened by 10% for hover states
-          light: '#C9B5A4', // Lighter shade for subtle elements
-          dark: '#A08976', // Darker shade for borders/dividers
+          DEFAULT: '#A89175', // Tan/Brown - accent elements
+          hover: '#8F7B62', // Darker tan for hover states
+          light: '#B8975A', // Gold/Bronze - highlights
+          dark: '#212f1f', // Log Cabin Green - primary brand color
         },
-        text: '#5B5245', // Deep mocha - primary text
-        heading: '#3A3530', // Espresso brown - headings, footer, nav
+        text: '#1A1A1A', // Black - primary text
+        heading: '#212f1f', // Log Cabin Green - headings, emphasis
+
+        // Secondary Colors
+        brand: {
+          green: '#212f1f', // Log Cabin Green (main brand)
+          'green-dark': '#1a231a', // Darker Green (shadows)
+          cream: '#E8DCC8', // Cream/Beige (labels, backgrounds)
+          tan: '#A89175', // Tan/Brown (accents)
+          gold: '#B8975A', // Gold/Bronze (premium accents)
+          black: '#1A1A1A', // Black (text, buttons)
+          'off-white': '#F5F0E8', // Off-White (backgrounds)
+        },
 
         // Legacy color mappings for backward compatibility
         coffee: {
-          50: '#F7F4ED',
-          100: '#F7F4ED',
-          200: '#E9E1D7',
-          300: '#E9E1D7',
-          400: '#C9B5A4',
-          500: '#B8A690',
-          600: '#B8A690',
-          700: '#B8A690',
-          800: '#A08976',
-          900: '#5B5245',
-          950: '#3A3530',
+          50: '#F5F0E8',
+          100: '#E8DCC8',
+          200: '#E8DCC8',
+          300: '#B8975A',
+          400: '#A89175',
+          500: '#A89175',
+          600: '#8F7B62',
+          700: '#212f1f',
+          800: '#1a231a',
+          900: '#1A1A1A',
+          950: '#1A1A1A',
         },
         grey: {
-          50: '#F7F4ED',
-          100: '#E9E1D7',
-          200: '#E9E1D7',
-          300: '#C9B5A4',
-          400: '#B8A690',
-          500: '#A08976',
-          600: '#7A6F63',
-          700: '#5B5245',
-          800: '#4A453F',
-          900: '#3A3530',
+          50: '#F5F0E8',
+          100: '#E8DCC8',
+          200: '#E8DCC8',
+          300: '#B8975A',
+          400: '#A89175',
+          500: '#8F7B62',
+          600: '#212f1f',
+          700: '#1a231a',
+          800: '#1A1A1A',
+          900: '#1A1A1A',
         },
-        charcoal: '#3A3530',
-        cream: '#F7F4ED',
+        charcoal: '#1A1A1A',
+        cream: '#F5F0E8',
       },
       fontFamily: {
         logo: ['Bebas Neue', 'sans-serif'],
@@ -56,18 +68,18 @@ export default {
         sans: ['Inter', 'sans-serif'],
       },
       boxShadow: {
-        soft: 'inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 1px 2px rgba(47, 39, 33, 0.08)',
-        medium: 'inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 6px 12px rgba(47, 39, 33, 0.12)',
-        large: 'inset 0 2px 0 rgba(255, 255, 255, 0.24), 0 12px 24px rgba(47, 39, 33, 0.18)',
-        xl: 'inset 0 3px 0 rgba(255, 255, 255, 0.28), 0 18px 36px rgba(30, 25, 21, 0.22)',
+        soft: 'inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 1px 2px rgba(33, 47, 31, 0.08)',
+        medium: 'inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 6px 12px rgba(33, 47, 31, 0.12)',
+        large: 'inset 0 2px 0 rgba(255, 255, 255, 0.24), 0 12px 24px rgba(33, 47, 31, 0.18)',
+        xl: 'inset 0 3px 0 rgba(255, 255, 255, 0.28), 0 18px 36px rgba(26, 35, 26, 0.22)',
       },
       backgroundImage: {
-        'gradient-cta': 'linear-gradient(135deg, #B8A690 0%, #A08976 55%, #7A6F63 100%)',
-        'gradient-cta-hover': 'linear-gradient(135deg, #C9B5A4 0%, #B8A690 45%, #A69582 100%)',
-        'gradient-surface': 'linear-gradient(180deg, rgba(247, 244, 237, 0.95) 0%, rgba(233, 225, 215, 0.9) 100%)',
-        'gradient-surface-hover': 'linear-gradient(180deg, rgba(247, 244, 237, 0.98) 0%, rgba(233, 225, 215, 0.95) 100%)',
-        'gradient-nav-strong': 'linear-gradient(180deg, rgba(58, 53, 48, 0.95) 0%, rgba(58, 53, 48, 0.9) 70%, rgba(58, 53, 48, 0.85) 100%)',
-        'gradient-nav-soft': 'linear-gradient(180deg, rgba(58, 53, 48, 0.88) 0%, rgba(58, 53, 48, 0.82) 70%, rgba(58, 53, 48, 0.75) 100%)',
+        'gradient-cta': 'linear-gradient(135deg, #A89175 0%, #8F7B62 55%, #212f1f 100%)',
+        'gradient-cta-hover': 'linear-gradient(135deg, #B8975A 0%, #A89175 45%, #8F7B62 100%)',
+        'gradient-surface': 'linear-gradient(180deg, rgba(245, 240, 232, 0.95) 0%, rgba(232, 220, 200, 0.9) 100%)',
+        'gradient-surface-hover': 'linear-gradient(180deg, rgba(245, 240, 232, 0.98) 0%, rgba(232, 220, 200, 0.95) 100%)',
+        'gradient-nav-strong': 'linear-gradient(180deg, rgba(33, 47, 31, 0.95) 0%, rgba(33, 47, 31, 0.9) 70%, rgba(33, 47, 31, 0.85) 100%)',
+        'gradient-nav-soft': 'linear-gradient(180deg, rgba(33, 47, 31, 0.88) 0%, rgba(33, 47, 31, 0.82) 70%, rgba(33, 47, 31, 0.75) 100%)',
         'gradient-body': 'radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.38) 0, transparent 70%), radial-gradient(circle at 80% 0%, rgba(255, 255, 255, 0.25) 0, transparent 70%)',
       },
       animation: {

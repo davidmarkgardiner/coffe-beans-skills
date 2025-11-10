@@ -39,38 +39,38 @@ export function GiftCardSection({ onPurchaseClick }: GiftCardSectionProps) {
               transition={{ duration: 0.3 }}
               className="relative mx-auto max-w-md"
             >
-              <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-accent via-accent-hover to-accent-dark shadow-xl p-8 before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-white/30 before:content-['']">
+              <div className="relative rounded-3xl overflow-hidden shadow-xl p-8 before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-[#ebddc5]/30 before:content-['']" style={{ backgroundColor: '#7a5c31' }}>
                 {/* Decorative elements */}
-                <div className="absolute top-4 right-4 w-20 h-20 bg-white/10 rounded-full blur-2xl" />
-                <div className="absolute bottom-4 left-4 w-32 h-32 bg-white/5 rounded-full blur-3xl" />
+                <div className="absolute top-4 right-4 w-20 h-20 bg-[#ebddc5]/10 rounded-full blur-2xl" />
+                <div className="absolute bottom-4 left-4 w-32 h-32 bg-[#ebddc5]/5 rounded-full blur-3xl" />
 
                 {/* Content */}
                 <div className="relative z-10">
                   <div className="flex items-center justify-between mb-8">
                     <div className="flex items-center gap-2">
-                      <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                        <Gift className="w-5 h-5 text-white" />
+                      <div className="w-10 h-10 bg-[#ebddc5]/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                        <Gift className="w-5 h-5" style={{ color: '#ebddc5' }} />
                       </div>
-                      <span className="font-display text-xl font-bold text-white">
+                      <span className="font-display text-xl font-bold" style={{ color: '#ebddc5' }}>
                         Gift Card
                       </span>
                     </div>
-                    <Sparkles className="w-6 h-6 text-white/60" />
+                    <Sparkles className="w-6 h-6" style={{ color: '#ebddc5', opacity: 0.6 }} />
                   </div>
 
                   <div className="mb-6">
-                    <p className="text-sm text-white/70 mb-2">Balance</p>
-                    <p className="font-display text-5xl font-bold text-white">£50.00</p>
+                    <p className="text-sm mb-2" style={{ color: '#ebddc5', opacity: 0.7 }}>Balance</p>
+                    <p className="font-display text-5xl font-bold" style={{ color: '#ebddc5' }}>£50.00</p>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-white/60 mb-1">Gift Code</p>
-                      <p className="font-mono text-sm text-white font-semibold">
+                      <p className="text-xs mb-1" style={{ color: '#ebddc5', opacity: 0.6 }}>Gift Code</p>
+                      <p className="font-mono text-sm font-semibold" style={{ color: '#ebddc5' }}>
                         GIFT-XXXX-XXXX
                       </p>
                     </div>
-                    <Heart className="w-5 h-5 text-white/40" />
+                    <Heart className="w-5 h-5" style={{ color: '#ebddc5', opacity: 0.4 }} />
                   </div>
                 </div>
               </div>

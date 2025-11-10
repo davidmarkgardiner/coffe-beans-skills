@@ -79,7 +79,7 @@ export function Hero() {
           <h1 className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-logo text-white mb-4 leading-tight drop-shadow-[0_8px_16px_rgba(0,0,0,0.9)]" style={{ textShadow: '4px 4px 8px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.5)' }}>
             STOCKBRIDGE COFFEE
           </h1>
-          <p className="text-2xl md:text-3xl lg:text-4xl font-logo text-[#E9E1D7] drop-shadow-[0_6px_12px_rgba(0,0,0,0.9)]" style={{ textShadow: '3px 3px 6px rgba(0,0,0,0.8)' }}>
+          <p className="text-2xl md:text-3xl lg:text-4xl font-logo text-surface drop-shadow-[0_6px_12px_rgba(0,0,0,0.9)]" style={{ textShadow: '3px 3px 6px rgba(0,0,0,0.8)' }}>
             Edinburgh
           </p>
         </motion.div>
