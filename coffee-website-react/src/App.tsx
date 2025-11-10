@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { Navigation } from './components/Navigation'
 import { Hero } from './components/Hero'
 import { ProductGrid } from './components/ProductGrid'
@@ -14,6 +15,7 @@ import { GiftCardSection } from './components/GiftCardSection'
 import { GiftCardPurchase } from './components/GiftCardPurchase'
 import CartDrawer from './components/CartDrawer'
 import CoffeeCopilot from './components/CoffeeCopilot'
+import { BlogPost } from './pages/BlogPost'
 import { useCart } from './hooks/useCart'
 import { useProductImages } from './hooks/useProductImages'
 import type { Product } from './types/product'
@@ -71,6 +73,47 @@ const baseProducts: Omit<Product, 'image'>[] = [
   },
 ]
 
+// Component to handle hash-based navigation scrolling
+interface HomePageProps {
+  products: Product[]
+  onAddToCart: (product: Product) => void
+  onGiftCardClick: () => void
+}
+
+function HomePage({ products, onAddToCart, onGiftCardClick }: HomePageProps) {
+  const location = useLocation()
+
+  useEffect(() => {
+    // Handle hash-based navigation (e.g., /#blog)
+    if (location.hash) {
+      const id = location.hash.replace('#', '')
+      // Wait for components to render
+      setTimeout(() => {
+        const element = document.getElementById(id)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+      }, 100)
+    } else {
+      // Scroll to top when navigating to home without hash
+      window.scrollTo(0, 0)
+    }
+  }, [location.hash])
+
+  return (
+    <>
+      <Hero />
+      <About />
+      <ProductGrid products={products} onAddToCart={onAddToCart} />
+      <GiftCardSection onPurchaseClick={onGiftCardClick} />
+      <Testimonials />
+      <BlogHighlights />
+      <Newsletter />
+      <Contact />
+    </>
+  )
+}
+
 function App() {
   const {
     cart,
@@ -107,14 +150,21 @@ function App() {
         onOpenLogin={() => setLoginModalOpen(true)}
         onOpenCart={() => setCartDrawerOpen(true)}
       />
-      <Hero />
-      <About />
-      <ProductGrid products={products} onAddToCart={addToCart} />
-      <GiftCardSection onPurchaseClick={() => setGiftCardModalOpen(true)} />
-      <Testimonials />
-      <BlogHighlights />
-      <Newsletter />
-      <Contact />
+
+      <Routes>
+        {/* Blog detail page */}
+        <Route path="/blog/:slug" element={<BlogPost />} />
+
+        {/* Home page */}
+        <Route path="/" element={
+          <HomePage
+            products={products}
+            onAddToCart={addToCart}
+            onGiftCardClick={() => setGiftCardModalOpen(true)}
+          />
+        } />
+      </Routes>
+
       <Footer />
 
       {/* Login Modal at App level - covers entire page */}

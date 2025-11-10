@@ -17,6 +17,13 @@ dist-ssr
 .env.local
 .env.*.local
 
+# Gmail OAuth credentials (NEVER commit these!)
+gmail-credentials.json
+gmail-token.json
+
+# Generated blog content (temporary)
+scripts/generated-blog-post.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

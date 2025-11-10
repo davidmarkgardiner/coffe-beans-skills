@@ -17,6 +17,11 @@
     "archive:old": "tsx scripts/archive-old-content.ts",
     "optimize:videos": "./scripts/optimize-videos.sh",
     "generate:weekly": "tsx scripts/generate-weekly-content.ts",
+    "curate:blog": "tsx scripts/curate-blog-content.ts",
+    "upload:blog": "tsx scripts/upload-blog-post.ts",
+    "gmail:auth": "tsx scripts/gmail-auth.ts",
+    "send:newsletter": "tsx scripts/send-newsletter.ts",
+    "blog:auto": "npm run curate:blog && npm run upload:blog && npm run send:newsletter",
     "server": "tsx server/index.ts",
     "dev:all": "npm run server & npm run dev"
   },
@@ -28,9 +33,12 @@
     "express": "^5.1.0",
     "firebase": "^12.4.0",
     "framer-motion": "^12.23.24",
+    "googleapis": "^165.0.0",
     "lucide-react": "^0.546.0",
+    "nodemailer": "^7.0.10",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-router-dom": "^7.9.5",
     "stripe": "^19.1.0"
   },
   "devDependencies": {
@@ -39,6 +47,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/node": "^24.10.0",
+    "@types/nodemailer": "^7.0.3",
     "@types/react": "^19.1.16",
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^5.0.4",

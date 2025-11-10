@@ -1,31 +1,17 @@
 import { motion } from 'framer-motion'
+import { useCollection } from '../hooks/useFirestore'
+import { orderBy, limit } from 'firebase/firestore'
 
-const blogPosts = [
-  {
-    id: 'origin-story',
-    title: 'From Water of Leith to Micro-Roastery',
-    excerpt:
-      'Explore how Stockbridge Coffee has spent 20 years sourcing beans that echo the neighbourhood’s artisan spirit.',
-    date: 'Jan 12, 2025',
-    readTime: '5 min read',
-  },
-  {
-    id: 'seasonal-menu',
-    title: 'Winter Aurora Menu',
-    excerpt:
-      'Take a peek behind the bar and discover the flavour notes inspiring our limited-edition pours this season.',
-    date: 'Feb 02, 2025',
-    readTime: '4 min read',
-  },
-  {
-    id: 'community-market',
-    title: 'Voices from Stockbridge Market',
-    excerpt:
-      'Hear from makers and musicians who join us every Sunday as we brew, taste, and celebrate community.',
-    date: 'Mar 08, 2025',
-    readTime: '6 min read',
-  },
-]
+interface BlogPost {
+  id: string
+  title: string
+  slug: string
+  excerpt: string
+  publishedAt: any
+  readTime: string
+  status: string
+  featuredImage?: string
+}
 
 const container = {
   hidden: { opacity: 0 },
@@ -43,6 +29,32 @@ const card = {
 }
 
 export function BlogHighlights() {
+  // Fetch latest 3 published blog posts from Firestore
+  // Note: Simplified query to avoid composite index requirement
+  // All blog posts created by scripts have status 'published' by default
+  const { data: blogPosts = [], loading, error } = useCollection<BlogPost>(
+    'blog-posts',
+    [
+      orderBy('publishedAt', 'desc'),
+      limit(3)
+    ]
+  )
+
+  // Format date for display
+  const formatDate = (timestamp: any): string => {
+    if (!timestamp) return ''
+    try {
+      const date = timestamp.toDate()
+      return new Intl.DateTimeFormat('en-GB', {
+        month: 'short',
+        day: '2-digit',
+        year: 'numeric',
+      }).format(date)
+    } catch {
+      return ''
+    }
+  }
+
   return (
     <section className="py-20 bg-background" id="blog">
       <div className="container mx-auto px-6">
@@ -65,38 +77,74 @@ export function BlogHighlights() {
           </p>
         </motion.div>
 
-        <motion.div
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
-        >
-          {blogPosts.map((post) => (
-            <motion.article
-              key={post.id}
-              variants={card}
-              className="relative h-full rounded-2xl bg-gradient-surface p-8 shadow-medium transition-all duration-300 hover:bg-gradient-surface-hover hover:shadow-large"
-            >
-              <p className="text-xs font-semibold tracking-widest uppercase text-accent mb-4">
-                {post.date} · {post.readTime}
-              </p>
-              <h3 className="font-display text-2xl font-semibold tracking-tight text-heading mb-3">
-                {post.title}
-              </h3>
-              <p className="text-sm text-text leading-relaxed mb-6">{post.excerpt}</p>
-              <a
-                href={`/blog/${post.id}`}
-                className="inline-flex items-center text-sm font-semibold text-accent hover:text-accent-hover transition-colors duration-200"
+        {loading && (
+          <div className="text-center py-12">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
+            <p className="text-text mt-4">Loading latest posts...</p>
+          </div>
+        )}
+
+        {error && (
+          <div className="text-center py-12">
+            <p className="text-red-600">Failed to load blog posts. Please try again later.</p>
+          </div>
+        )}
+
+        {!loading && !error && blogPosts.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-text">No blog posts yet. Check back soon for our latest stories!</p>
+          </div>
+        )}
+
+        {!loading && !error && blogPosts.length > 0 && (
+          <motion.div
+            variants={container}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.2 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          >
+            {blogPosts.map((post) => (
+              <motion.article
+                key={post.id}
+                variants={card}
+                className="relative h-full rounded-2xl bg-gradient-surface overflow-hidden shadow-medium transition-all duration-300 hover:bg-gradient-surface-hover hover:shadow-large group"
               >
-                Read Story
-                <span aria-hidden className="ml-2 text-base">
-                  →
-                </span>
-              </a>
-            </motion.article>
-          ))}
-        </motion.div>
+                {/* Featured Image */}
+                {post.featuredImage && (
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={post.featuredImage}
+                      alt={post.title}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/80" />
+                  </div>
+                )}
+
+                {/* Content */}
+                <div className="p-8">
+                  <p className="text-xs font-semibold tracking-widest uppercase text-accent mb-4">
+                    {formatDate(post.publishedAt)} · {post.readTime}
+                  </p>
+                  <h3 className="font-display text-2xl font-semibold tracking-tight text-heading mb-3">
+                    {post.title}
+                  </h3>
+                  <p className="text-sm text-text leading-relaxed mb-6">{post.excerpt}</p>
+                  <a
+                    href={`/blog/${post.slug}`}
+                    className="inline-flex items-center text-sm font-semibold text-accent hover:text-accent-hover transition-colors duration-200"
+                  >
+                    Read Recipes
+                    <span aria-hidden className="ml-2 text-base">
+                      →
+                    </span>
+                  </a>
+                </div>
+              </motion.article>
+            ))}
+          </motion.div>
+        )}
       </div>
     </section>
   )

@@ -1,23 +1,29 @@
 ---
 name: ai-content-manager
-description: Expert AI-powered content management and generation for coffee e-commerce websites. Automates weekly creation of seasonal videos and images using Google Gemini/Veo, manages content rotation via Firebase, and integrates dynamic backgrounds into React components. Use when implementing AI content generation, seasonal theming, automated content workflows, or dynamic media rotation systems.
+description: Expert AI-powered content management and generation for coffee e-commerce websites. Automates weekly creation of seasonal videos and images using Google Gemini/Veo, blog content curation, and newsletter distribution. Manages content rotation via Firebase and integrates dynamic backgrounds into React components. Use when implementing AI content generation, automated blog systems, newsletter automation, seasonal theming, or dynamic media rotation systems.
 ---
 
 # AI Content Manager
 
-Automate creation, storage, and rotation of AI-generated seasonal content for premium coffee websites. This skill integrates Google Gemini/Veo APIs with Firebase storage and implements dynamic content rotation to keep your website fresh and engaging.
+Automate creation, storage, and rotation of AI-generated content for premium coffee websites. This skill covers two main systems:
+
+1. **Visual Content Generation** - Seasonal videos and images using Google Gemini/Veo
+2. **Blog & Newsletter Automation** - AI-curated blog posts with automated newsletter distribution
 
 ## When to Use This Skill
 
 Use this skill when:
 - Setting up AI-powered content generation for website backgrounds
+- Implementing blog content curation and automated publishing
+- Building newsletter systems with Gmail API integration
 - Implementing seasonal/holiday content automation
-- Building dynamic content rotation systems (videos, images)
-- Integrating Google Gemini/Veo APIs for media generation
+- Building dynamic content rotation systems (videos, images, blog posts)
+- Integrating Google Gemini/Veo APIs for media and text generation
 - Creating automated workflows for weekly content creation
 - Managing content libraries in Firebase Storage and Firestore
 - Updating Hero components with AI-generated backgrounds
 - Implementing GitHub Actions for content generation automation
+- Setting up OAuth-based email sending systems
 
 ## Prerequisites
 
@@ -699,4 +705,408 @@ firebase deploy --only firestore:rules,storage
 6. ✅ Generate first batch of content
 7. ✅ Monitor and update prompts based on quality
 
-For questions or issues, refer to the troubleshooting section or update `LESSONS_LEARNED.md` with new discoveries.
+---
+
+## Part 2: Blog & Newsletter Automation System
+
+### Overview
+
+The blog automation system uses Gemini AI to curate coffee-related articles weekly, generate blog posts, publish them to Firestore, and send newsletters to subscribers via Gmail API.
+
+### System Architecture
+
+```
+Weekly Automation (Sundays, 2:00 AM UTC)
+    ↓
+Gemini AI: Search & curate 4 coffee articles
+    ↓
+Gemini AI: Generate blog post with summaries
+    ↓
+Firestore: Publish blog post (/blog-posts)
+    ↓
+Gmail API: Send newsletter to subscribers
+    ↓
+Firestore: Record send in /newsletter-history
+```
+
+### Quick Setup
+
+#### 1. Install Dependencies
+
+```bash
+npm install googleapis nodemailer @types/nodemailer
+```
+
+#### 2. Set Up Gmail OAuth
+
+**Enable Gmail API:**
+1. Go to Google Cloud Console
+2. Enable Gmail API
+3. Configure OAuth consent screen
+4. Create OAuth Desktop credentials
+5. Download `gmail-credentials.json`
+
+**Authenticate:**
+```bash
+npm run gmail:auth
+```
+
+Follow prompts to authorize and get refresh token.
+
+**Add to .env.local:**
+```env
+GMAIL_USER=your-email@gmail.com
+GMAIL_CLIENT_ID=your-client-id.apps.googleusercontent.com
+GMAIL_CLIENT_SECRET=your-client-secret
+GMAIL_REFRESH_TOKEN=your-refresh-token
+```
+
+**Detailed Guide:** See `scripts/gmail-setup.md` for complete instructions.
+
+#### 3. Update Firestore Rules
+
+Add blog collections to `firestore.rules`:
+
+```javascript
+// Blog posts - Public read, admin write
+match /blog-posts/{postId} {
+  allow read: if true;
+  allow write: if isAdmin();
+}
+
+// Newsletter sent history - Admin only
+match /newsletter-history/{historyId} {
+  allow read, write: if isAdmin();
+}
+```
+
+Deploy:
+```bash
+firebase deploy --only firestore:rules
+```
+
+#### 4. Test Locally
+
+```bash
+# Curate blog content (generates JSON)
+npm run curate:blog
+
+# Upload to Firestore
+npm run upload:blog
+
+# Send newsletter (dry run)
+npm run send:newsletter -- --dry-run
+
+# Full workflow
+npm run blog:auto
+```
+
+### Blog Curation Script
+
+**Location:** `scripts/curate-blog-content.ts`
+
+**What it does:**
+1. Uses Gemini 2.0 Flash to search for recent coffee articles
+2. Focuses on: brewing techniques, recipes, coffee culture
+3. Analyzes and summarizes each article
+4. Extracts 3-4 key takeaways per article
+5. Generates cohesive blog post introduction and conclusion
+6. Saves to `scripts/generated-blog-post.json`
+
+**Usage:**
+```bash
+# Default: 4 articles
+npm run curate:blog
+
+# Custom article count
+npm run curate:blog -- --articles=5
+```
+
+**Gemini Prompt Strategy:**
+- Requests specific, reputable sources (Perfect Daily Grind, Barista Magazine, James Hoffmann)
+- Focuses on practical, actionable content for home brewers
+- Avoids commercial reviews and business advice
+- Emphasizes brewing techniques and coffee science
+
+### Blog Upload Script
+
+**Location:** `scripts/upload-blog-post.ts`
+
+**What it does:**
+1. Reads `generated-blog-post.json`
+2. Generates URL-friendly slug
+3. Calculates estimated read time
+4. Creates excerpt from introduction
+5. Uploads to Firestore with metadata
+
+**Firestore Schema:**
+```typescript
+{
+  title: string
+  slug: string  // URL-friendly, e.g., "brewing-perfect-espresso"
+  introduction: string
+  articles: CuratedArticle[]  // Array of curated articles with summaries
+  conclusion: string
+  tags: string[]
+  category: "brewing-techniques" | "coffee-recipes" | "coffee-culture" | "coffee-science"
+  status: "published" | "draft"
+  publishedAt: Timestamp
+  createdAt: Timestamp
+  updatedAt: Timestamp
+  author: "Stockbridge Coffee Team"
+  readTime: "5 min read"
+  excerpt: string  // First 160 chars of introduction
+}
+```
+
+### Newsletter Email System
+
+**Location:** `scripts/send-newsletter.ts`
+
+**Gmail OAuth Integration:**
+- Uses OAuth 2.0 for secure authentication
+- Refresh token stored in environment variables
+- No password storage required
+- Better deliverability than SMTP
+
+**Email Template:**
+- Responsive HTML design
+- Matches Stockbridge Coffee brand (Teal, Golden, Cream, Grey)
+- Includes all curated articles with summaries and key takeaways
+- Read More buttons linking to original sources
+- Subscribe CTA linking back to website
+- Unsubscribe link with email parameter
+
+**Rate Limiting:**
+- 1 second delay between emails (prevents rate limiting)
+- Batch tracking for success/failure counts
+- Records sends in `/newsletter-history` collection
+
+**Subscriber Management:**
+- Fetches from existing `/newsletter` collection
+- Compatible with existing Newsletter component
+- No migration required
+
+### GitHub Actions Workflow
+
+**Location:** `.github/workflows/weekly-blog-newsletter.yml`
+
+**Schedule:** Every Sunday at 2:00 AM UTC (3:00 AM BST, 2:00 AM GMT)
+
+**Required Secrets:**
+```bash
+# Set all secrets:
+gh secret set GEMINI_API_KEY --body "..."
+gh secret set VITE_FIREBASE_API_KEY --body "..."
+gh secret set VITE_FIREBASE_AUTH_DOMAIN --body "..."
+gh secret set VITE_FIREBASE_PROJECT_ID --body "..."
+gh secret set VITE_FIREBASE_STORAGE_BUCKET --body "..."
+gh secret set VITE_FIREBASE_MESSAGING_SENDER_ID --body "..."
+gh secret set VITE_FIREBASE_APP_ID --body "..."
+gh secret set GMAIL_USER --body "your-email@gmail.com"
+gh secret set GMAIL_CLIENT_ID --body "..."
+gh secret set GMAIL_CLIENT_SECRET --body "..."
+gh secret set GMAIL_REFRESH_TOKEN --body "..."
+```
+
+**Workflow Steps:**
+1. Checkout repository
+2. Set up Node.js 18
+3. Install dependencies
+4. Set environment variables
+5. Curate blog content with Gemini
+6. Upload to Firestore
+7. Send newsletter to subscribers
+8. Archive generated content as artifact
+
+**Manual Trigger:**
+```bash
+# Via CLI
+gh workflow run weekly-blog-newsletter.yml
+
+# Via Web UI: Actions > Weekly Blog & Newsletter > Run workflow
+```
+
+**Input Parameters:**
+- `article_count`: Number of articles (default: 4)
+- `skip_newsletter`: Set to `true` for dry run (default: false)
+
+### Website Integration
+
+#### BlogHighlights Component
+
+**Updated:** `src/components/BlogHighlights.tsx`
+
+**Changes:**
+- Now fetches from Firestore instead of hardcoded data
+- Uses `useCollection` hook with query filters
+- Shows latest 3 published posts
+- Loading and error states
+- Formats Firestore timestamps
+- Links to blog detail pages using slug
+
+#### BlogPost Detail Page
+
+**Created:** `src/pages/BlogPost.tsx`
+
+**Features:**
+- Fetches blog post by slug parameter
+- Displays full blog post with all articles
+- Shows article summaries and key takeaways
+- External links to original sources
+- Relevance score visualization
+- Newsletter subscription CTA
+- Back button navigation
+- Responsive design matching brand
+
+**Routing:**
+Add to your router:
+```typescript
+<Route path="/blog/:slug" element={<BlogPost />} />
+```
+
+### NPM Scripts Reference
+
+```json
+{
+  "curate:blog": "Generate blog post from AI-curated articles",
+  "upload:blog": "Upload generated blog post to Firestore",
+  "gmail:auth": "Authenticate Gmail API with OAuth",
+  "send:newsletter": "Send newsletter to all subscribers",
+  "blog:auto": "Full workflow: curate, upload, send"
+}
+```
+
+### Cost Analysis
+
+**Gemini AI (Blog Curation):**
+- Model: Gemini 2.0 Flash
+- Cost per blog: $0.10-$0.30
+- Weekly: ~$1.20/month
+- Annual: ~$15/year
+
+**Gmail API:**
+- Free tier: 250 emails/day
+- Sufficient for <250 subscribers
+- Cost: $0/month
+- Upgrade: Google Workspace ($6/user/month for 2,000 emails/day)
+
+**Firebase Firestore:**
+- Blog posts read: ~1,000 reads/month (existing free tier)
+- Blog posts write: ~4 writes/month (negligible)
+- Cost: $0/month
+
+**GitHub Actions:**
+- Workflow runtime: ~3-5 minutes/week
+- Free tier: 2,000 minutes/month
+- Cost: $0/month
+
+**Total Operating Cost:** ~$1.50/month
+
+### Scaling Considerations
+
+#### 100+ Subscribers
+
+**Option 1: Upgrade to SendGrid**
+- Free tier: 100 emails/day
+- Paid: $19.95/month for 50,000 emails
+- Better deliverability and analytics
+
+**Option 2: Gmail with Google Workspace**
+- $6/user/month
+- 2,000 emails/day limit
+- Professional sender reputation
+
+#### 500+ Subscribers
+
+**Recommended: SendGrid or Mailgun**
+- Mailgun: $0.80/1,000 emails (pay-as-you-go)
+- SendGrid: $19.95/month for 50,000 emails
+- Built-in bounce handling and unsubscribe management
+- Detailed analytics and reporting
+
+### Troubleshooting
+
+#### Issue: "Invalid grant" error
+
+**Cause:** Gmail refresh token expired
+
+**Solution:**
+```bash
+npm run gmail:auth  # Re-authenticate
+# Update .env.local with new GMAIL_REFRESH_TOKEN
+```
+
+#### Issue: Blog curation produces low-quality articles
+
+**Solution:**
+Edit `scripts/curate-blog-content.ts`:
+- Adjust search prompt to be more specific
+- Add more reputable source examples
+- Increase `relevanceScore` threshold
+- Filter by publication date more strictly
+
+#### Issue: Newsletter emails going to spam
+
+**Solutions:**
+1. Add SPF/DKIM records to domain
+2. Warm up sender reputation (start with small batches)
+3. Avoid spam trigger words in subject/content
+4. Ensure unsubscribe link is prominent
+5. Consider migrating to SendGrid/Mailgun
+
+#### Issue: Rate limit exceeded
+
+**Gmail API Limits:**
+- Free: 250 emails/day
+- Google Workspace: 2,000 emails/day
+
+**Solutions:**
+1. Batch emails across multiple days
+2. Upgrade to Google Workspace
+3. Migrate to dedicated email service
+
+### Security Best Practices
+
+**Gmail Credentials:**
+- ✅ Never commit `gmail-credentials.json` or `gmail-token.json`
+- ✅ Use GitHub Secrets for CI/CD
+- ✅ Rotate refresh tokens quarterly
+- ✅ Use OAuth (not app passwords) for better security
+- ✅ Add `.gitignore` entries for credential files
+
+**API Keys:**
+- ✅ Store in `.env.local` (git-ignored)
+- ✅ Use GitHub Secrets for automation
+- ✅ Never hardcode in source files
+- ✅ Rotate regularly (every 90 days)
+
+**Subscriber Data:**
+- ✅ Store only email addresses (minimal data)
+- ✅ Provide unsubscribe links in all emails
+- ✅ Use Firestore security rules to protect admin access
+- ✅ Log newsletter sends for audit trail
+
+### Complete Documentation
+
+For detailed setup instructions, see:
+- **`docs/BLOG-AUTOMATION-SETUP.md`** - Complete setup guide
+- **`scripts/gmail-setup.md`** - Gmail OAuth detailed instructions
+- **`.github/workflows/weekly-blog-newsletter.yml`** - Automation workflow
+
+### Next Steps After Blog Setup
+
+1. ✅ Install dependencies: `npm install googleapis nodemailer @types/nodemailer`
+2. ✅ Set up Gmail OAuth: `npm run gmail:auth`
+3. ✅ Update environment variables in `.env.local`
+4. ✅ Test blog curation: `npm run curate:blog`
+5. ✅ Test upload: `npm run upload:blog`
+6. ✅ Test newsletter (dry run): `npm run send:newsletter -- --dry-run`
+7. ✅ Deploy Firestore rules: `firebase deploy --only firestore:rules`
+8. ✅ Add GitHub secrets for automation
+9. ✅ Run manual workflow test
+10. ✅ Monitor first automated run
+
+---
+
+For questions or issues, refer to the troubleshooting sections or update `LESSONS_LEARNED.md` with new discoveries.

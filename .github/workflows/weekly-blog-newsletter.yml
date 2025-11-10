@@ -1,0 +1,142 @@
+name: Weekly Blog & Newsletter
+
+on:
+  # Run every Sunday at 2:00 AM UTC (3:00 AM BST, 2:00 AM GMT)
+  schedule:
+    - cron: '0 2 * * 0'
+
+  # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      article_count:
+        description: 'Number of articles to curate'
+        required: false
+        default: '4'
+      skip_newsletter:
+        description: 'Skip sending newsletter (dry run)'
+        required: false
+        default: 'false'
+
+jobs:
+  generate-and-send:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./coffee-website-react
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: './coffee-website-react/package-lock.json'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Set up environment variables
+        run: |
+          echo "VITE_GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env.local
+          echo "VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }}" >> .env.local
+          echo "VITE_FIREBASE_AUTH_DOMAIN=${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}" >> .env.local
+          echo "VITE_FIREBASE_PROJECT_ID=${{ secrets.VITE_FIREBASE_PROJECT_ID }}" >> .env.local
+          echo "VITE_FIREBASE_STORAGE_BUCKET=${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}" >> .env.local
+          echo "VITE_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}" >> .env.local
+          echo "VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID }}" >> .env.local
+          echo "GMAIL_USER=${{ secrets.GMAIL_USER }}" >> .env.local
+          echo "GMAIL_CLIENT_ID=${{ secrets.GMAIL_CLIENT_ID }}" >> .env.local
+          echo "GMAIL_CLIENT_SECRET=${{ secrets.GMAIL_CLIENT_SECRET }}" >> .env.local
+          echo "GMAIL_REFRESH_TOKEN=${{ secrets.GMAIL_REFRESH_TOKEN }}" >> .env.local
+
+      - name: Curate blog content with Gemini
+        id: curate
+        run: |
+          ARTICLE_COUNT="${{ github.event.inputs.article_count || '4' }}"
+          echo "📝 Curating $ARTICLE_COUNT coffee articles..."
+          npm run curate:blog -- --articles=$ARTICLE_COUNT
+
+          # Check if blog post was generated
+          if [ ! -f "./scripts/generated-blog-post.json" ]; then
+            echo "❌ Failed to generate blog post"
+            exit 1
+          fi
+
+          echo "✅ Blog post generated successfully"
+
+      - name: Upload blog post to Firestore
+        id: upload
+        run: |
+          echo "📤 Uploading blog post to Firestore..."
+          npm run upload:blog
+
+          if [ $? -eq 0 ]; then
+            echo "✅ Blog post uploaded successfully"
+          else
+            echo "❌ Failed to upload blog post"
+            exit 1
+          fi
+
+      - name: Send newsletter to subscribers
+        id: send
+        if: github.event.inputs.skip_newsletter != 'true'
+        run: |
+          echo "📧 Sending newsletter to subscribers..."
+          npm run send:newsletter
+
+          if [ $? -eq 0 ]; then
+            echo "✅ Newsletter sent successfully"
+          else
+            echo "⚠️ Newsletter sending failed, but blog post was published"
+            # Don't fail the workflow if newsletter fails
+            exit 0
+          fi
+
+      - name: Dry run summary
+        if: github.event.inputs.skip_newsletter == 'true'
+        run: |
+          echo "🔍 Dry run complete - newsletter was not sent"
+          echo "Blog post has been published to Firestore"
+          echo "To send newsletter manually, run: npm run send:newsletter"
+
+      - name: Archive generated content
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: blog-content-${{ github.run_id }}
+          path: |
+            coffee-website-react/scripts/generated-blog-post.json
+          retention-days: 30
+
+      - name: Workflow summary
+        if: always()
+        run: |
+          echo "## Weekly Blog & Newsletter Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Date**: $(date -u +"%Y-%m-%d %H:%M UTC")" >> $GITHUB_STEP_SUMMARY
+          echo "- **Articles curated**: ${{ github.event.inputs.article_count || '4' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Blog post**: ${{ steps.upload.outcome == 'success' && '✅ Published' || '❌ Failed' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Newsletter**: ${{ steps.send.outcome == 'success' && '✅ Sent' || steps.send.outcome == 'skipped' && '⏭️ Skipped' || '❌ Failed' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f "./scripts/generated-blog-post.json" ]; then
+            echo "### Generated Blog Post" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`json" >> $GITHUB_STEP_SUMMARY
+            cat ./scripts/generated-blog-post.json | jq '.title, .category, .tags' >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "❌ Workflow failed!"
+          echo "Check the logs above for details"
+          echo "You may need to:"
+          echo "  1. Verify API keys and secrets are set correctly"
+          echo "  2. Check Gemini API quota"
+          echo "  3. Verify Firebase permissions"
+          echo "  4. Check Gmail OAuth credentials"

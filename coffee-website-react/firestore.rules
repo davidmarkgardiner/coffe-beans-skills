@@ -44,10 +44,12 @@ service cloud.firestore {
       allow read, write: if isOwner(userId);
     }
 
-    // Newsletter subscriptions - Anyone can subscribe
+    // Newsletter subscriptions - Anyone can subscribe and update their own subscription
     match /newsletter/{email} {
       allow create: if true;
-      allow read, update, delete: if isAdmin();
+      allow read: if true;  // Allow reading to check if already subscribed
+      allow update: if true;  // Allow updating subscription timestamp
+      allow delete: if isAdmin();
     }
 
     // Inventory logs - Read only for admins
@@ -94,6 +96,19 @@ service cloud.firestore {
     match /content-rotation-config/{configId} {
       allow read: if true;
       allow write: if isAdmin();
+    }
+
+    // Blog posts - Public read, anyone can write (scripts need this)
+    // TODO: In production, change to: allow write: if isAdmin();
+    match /blog-posts/{postId} {
+      allow read: if true;
+      allow create: if true;  // Allow scripts to create blog posts
+      allow update, delete: if isAdmin();  // Only admins can update/delete
+    }
+
+    // Newsletter sent history - Admin only
+    match /newsletter-history/{historyId} {
+      allow read, write: if isAdmin();
     }
   }
 }
