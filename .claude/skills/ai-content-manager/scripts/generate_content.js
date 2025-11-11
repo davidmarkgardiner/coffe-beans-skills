@@ -40,6 +40,7 @@ const seasonalPrompts = {
   winter: {
     general: {
       video: [
+        'Cinematic 4K video of a professional Probat G150 coffee roaster in operation. The metal drum rotates slowly with a glass inspection window showing fresh coffee beans being roasted inside. Steam and smoke rise dramatically from the beans, which glisten with natural oils in golden and brown hues under warm lighting. Camera focuses on the shiny roasted beans tumbling inside the drum, with visible heat and light reflections on the polished metal surfaces. The scene captures the premium, artisanal atmosphere of coffee roasting craftsmanship. Professional videography, 16:9 landscape, 6-second seamless loop, high detail.',
         'Close-up cinematic shot of premium whole coffee beans cascading from a burlap bag in slow motion. The beans tumble gracefully through soft, warm golden hour lighting, revealing their rich brown tones with subtle highlights of caramel and mahogany. Each bean glistens slightly, showing fresh oils on the surface. The beans pour onto a rustic wooden surface, bouncing and settling naturally. Steam or subtle vapor rises gently, suggesting freshness. Shallow depth of field with the falling beans in sharp focus against a softly blurred background. Warm color grading with enhanced contrast to emphasize the beans\' glossy, appetizing texture. Professional product photography aesthetic, 4K quality, 16:9 landscape, smooth 60fps motion, 5-second seamless loop.',
         'Cozy cinematic video of coffee beans being gently poured from a wooden scoop onto a vintage wooden table in an Edinburgh cafe. Warm amber lighting creates a rich, inviting atmosphere. Steam rises subtly from the fresh-roasted beans. Camera slowly pans across the pile of beans, highlighting their glossy surfaces and varied brown tones. Soft bokeh background with blurred winter window showing frost. Professional videography, 16:9 aspect ratio, 6-second loop.',
       ],
@@ -62,6 +63,7 @@ const seasonalPrompts = {
   spring: {
     general: {
       video: [
+        'Cinematic 4K video of a professional Probat G150 coffee roaster in operation. The metal drum rotates slowly with a glass inspection window showing fresh coffee beans being roasted inside. Steam and smoke rise dramatically from the beans, which glisten with natural oils in golden and brown hues under warm lighting. Camera focuses on the shiny roasted beans tumbling inside the drum, with visible heat and light reflections on the polished metal surfaces. The scene captures the premium, artisanal atmosphere of coffee roasting craftsmanship. Professional videography, 16:9 landscape, 6-second seamless loop, high detail.',
         'Bright, airy video of coffee beans being poured into a glass jar on a sunny cafe table. Natural window light streaming through, Edinburgh spring blossoms visible outside window. Fresh, clean atmosphere. Beans flow smoothly, their glossy surfaces catching the bright daylight. Light, refreshing mood, professional videography, 16:9 landscape, 6-second loop.',
       ],
       photo: [
@@ -73,6 +75,7 @@ const seasonalPrompts = {
   summer: {
     general: {
       video: [
+        'Cinematic 4K video of a professional Probat G150 coffee roaster in operation. The metal drum rotates slowly with a glass inspection window showing fresh coffee beans being roasted inside. Steam and smoke rise dramatically from the beans, which glisten with natural oils in golden and brown hues under warm lighting. Camera focuses on the shiny roasted beans tumbling inside the drum, with visible heat and light reflections on the polished metal surfaces. The scene captures the premium, artisanal atmosphere of coffee roasting craftsmanship. Professional videography, 16:9 landscape, 6-second seamless loop, high detail.',
         'Vibrant video of coffee beans being poured into a clear glass container on sunny outdoor Stockbridge cafe table. Bright natural daylight highlights the beans\' rich brown color and glossy texture. Blue sky visible, refreshing summer atmosphere. Beans cascade smoothly with slight bouncing motion. Cinematic 4K, 16:9, 6-second loop.',
       ],
       photo: [
@@ -84,6 +87,7 @@ const seasonalPrompts = {
   autumn: {
     general: {
       video: [
+        'Cinematic 4K video of a professional Probat G150 coffee roaster in operation. The metal drum rotates slowly with a glass inspection window showing fresh coffee beans being roasted inside. Steam and smoke rise dramatically from the beans, which glisten with natural oils in golden and brown hues under warm lighting. Camera focuses on the shiny roasted beans tumbling inside the drum, with visible heat and light reflections on the polished metal surfaces. The scene captures the premium, artisanal atmosphere of coffee roasting craftsmanship. Professional videography, 16:9 landscape, 6-second seamless loop, high detail.',
         'Warm cinematic video of coffee beans being poured from a burlap bag onto a wooden table surrounded by fallen autumn leaves (maple, oak). Golden hour lighting creates rich amber tones, highlighting the beans\' natural brown and caramel colors. Beans tumble smoothly in slow motion. Cozy Edinburgh cafe, professional videography, 16:9 landscape, 6-second seamless loop.',
       ],
       photo: [
