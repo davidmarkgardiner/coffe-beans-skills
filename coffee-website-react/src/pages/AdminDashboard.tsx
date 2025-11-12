@@ -136,33 +136,33 @@ export function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-stone-950 flex items-center justify-center">
-        <div className="text-amber-600 text-2xl">Loading dashboard...</div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-heading text-2xl font-heading">Loading dashboard...</div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-stone-950 text-stone-100 pt-24 pb-12">
+    <div className="min-h-screen bg-background text-text pt-24 pb-12">
       <Toaster position="top-right" />
 
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 text-amber-600">Admin Dashboard</h1>
-          <p className="text-stone-400">Manage orders, inventory, and view analytics</p>
+          <h1 className="text-5xl font-heading mb-2 text-heading">Admin Dashboard</h1>
+          <p className="text-accent-dark text-lg">Manage orders, inventory, and view analytics</p>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-4 mb-8 border-b border-stone-800">
+        <div className="flex gap-4 mb-8 border-b border-surface">
           {(['overview', 'orders', 'inventory'] as const).map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`px-6 py-3 font-semibold capitalize transition-colors relative ${
                 activeTab === tab
-                  ? 'text-amber-600'
-                  : 'text-stone-400 hover:text-stone-200'
+                  ? 'text-accent-light'
+                  : 'text-accent hover:text-heading'
               }`}
             >
               {tab}
@@ -174,7 +174,7 @@ export function AdminDashboard() {
               {activeTab === tab && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-600"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent-light"
                 />
               )}
             </button>
@@ -218,17 +218,17 @@ export function AdminDashboard() {
 
             {/* Low Stock Alerts */}
             {lowStockProducts.length > 0 && (
-              <div className="bg-stone-900 rounded-lg p-6">
-                <h2 className="text-xl font-bold mb-4 text-red-500">⚠️ Low Stock Alerts</h2>
+              <div className="bg-surface rounded-lg p-6 shadow-medium border border-accent/20">
+                <h2 className="text-2xl font-heading mb-4 text-red-600">⚠️ Low Stock Alerts</h2>
                 <div className="space-y-3">
                   {lowStockProducts.map(product => (
                     <div
                       key={product.id}
-                      className="flex items-center justify-between p-4 bg-stone-800 rounded-lg"
+                      className="flex items-center justify-between p-4 bg-background rounded-lg shadow-soft border border-accent/10"
                     >
                       <div>
-                        <p className="font-semibold">{product.name}</p>
-                        <p className="text-sm text-stone-400">
+                        <p className="font-semibold text-heading">{product.name}</p>
+                        <p className="text-sm text-accent">
                           Only {product.stock} units remaining
                         </p>
                       </div>
@@ -237,7 +237,7 @@ export function AdminDashboard() {
                           const qty = prompt('Add quantity:')
                           if (qty) adjustInventory(product.id, parseInt(qty), 'restock')
                         }}
-                        className="px-4 py-2 bg-amber-600 hover:bg-amber-700 rounded-lg transition-colors"
+                        className="px-4 py-2 bg-accent-light hover:bg-accent text-white rounded-lg transition-colors shadow-soft font-semibold"
                       >
                         Restock
                       </button>
@@ -248,23 +248,23 @@ export function AdminDashboard() {
             )}
 
             {/* Recent Orders */}
-            <div className="bg-stone-900 rounded-lg p-6">
-              <h2 className="text-xl font-bold mb-4">Recent Activity</h2>
+            <div className="bg-surface rounded-lg p-6 shadow-medium border border-accent/20">
+              <h2 className="text-2xl font-heading mb-4 text-heading">Recent Activity</h2>
               <div className="space-y-3">
                 {orders.slice(0, 5).map(order => (
                   <div
                     key={order.id}
-                    className="flex items-center justify-between p-4 bg-stone-800 rounded-lg hover:bg-stone-700 transition-colors cursor-pointer"
+                    className="flex items-center justify-between p-4 bg-background rounded-lg shadow-soft border border-accent/10 hover:shadow-medium transition-all cursor-pointer"
                     onClick={() => setSelectedOrder(order)}
                   >
                     <div>
-                      <p className="font-semibold">{order.customerEmail}</p>
-                      <p className="text-sm text-stone-400">
+                      <p className="font-semibold text-heading">{order.customerEmail}</p>
+                      <p className="text-sm text-accent">
                         {new Date(order.createdAt).toLocaleString()}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-amber-600">
+                      <p className="font-bold text-accent-light text-lg">
                         £{order.total.toFixed(2)}
                       </p>
                       <StatusBadge status={order.status} />
@@ -281,46 +281,46 @@ export function AdminDashboard() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-stone-900 rounded-lg p-6"
+            className="bg-surface rounded-lg p-6 shadow-medium border border-accent/20"
           >
-            <h2 className="text-xl font-bold mb-4">All Orders</h2>
+            <h2 className="text-2xl font-heading mb-4 text-heading">All Orders</h2>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-stone-800">
-                    <th className="text-left py-3 px-4">Order ID</th>
-                    <th className="text-left py-3 px-4">Customer</th>
-                    <th className="text-left py-3 px-4">Items</th>
-                    <th className="text-left py-3 px-4">Total</th>
-                    <th className="text-left py-3 px-4">Status</th>
-                    <th className="text-left py-3 px-4">Date</th>
-                    <th className="text-left py-3 px-4">Actions</th>
+                  <tr className="border-b border-accent/30">
+                    <th className="text-left py-3 px-4 text-heading font-semibold">Order ID</th>
+                    <th className="text-left py-3 px-4 text-heading font-semibold">Customer</th>
+                    <th className="text-left py-3 px-4 text-heading font-semibold">Items</th>
+                    <th className="text-left py-3 px-4 text-heading font-semibold">Total</th>
+                    <th className="text-left py-3 px-4 text-heading font-semibold">Status</th>
+                    <th className="text-left py-3 px-4 text-heading font-semibold">Date</th>
+                    <th className="text-left py-3 px-4 text-heading font-semibold">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {orders.map(order => (
                     <tr
                       key={order.id}
-                      className="border-b border-stone-800 hover:bg-stone-800 transition-colors"
+                      className="border-b border-accent/20 hover:bg-background transition-colors"
                     >
-                      <td className="py-3 px-4 font-mono text-sm">
+                      <td className="py-3 px-4 font-mono text-sm text-accent">
                         {order.id.slice(0, 8)}...
                       </td>
-                      <td className="py-3 px-4">{order.customerEmail}</td>
-                      <td className="py-3 px-4">{order.items.length} items</td>
-                      <td className="py-3 px-4 font-bold text-amber-600">
+                      <td className="py-3 px-4 text-text">{order.customerEmail}</td>
+                      <td className="py-3 px-4 text-text">{order.items.length} items</td>
+                      <td className="py-3 px-4 font-bold text-accent-light">
                         £{order.total.toFixed(2)}
                       </td>
                       <td className="py-3 px-4">
                         <StatusBadge status={order.status} />
                       </td>
-                      <td className="py-3 px-4 text-sm text-stone-400">
+                      <td className="py-3 px-4 text-sm text-accent">
                         {new Date(order.createdAt).toLocaleDateString()}
                       </td>
                       <td className="py-3 px-4">
                         <button
                           onClick={() => setSelectedOrder(order)}
-                          className="text-amber-600 hover:text-amber-500 text-sm"
+                          className="text-accent-light hover:text-heading text-sm font-semibold transition-colors"
                         >
                           View Details
                         </button>
@@ -338,39 +338,39 @@ export function AdminDashboard() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-stone-900 rounded-lg p-6"
+            className="bg-surface rounded-lg p-6 shadow-medium border border-accent/20"
           >
-            <h2 className="text-xl font-bold mb-4">Inventory History</h2>
+            <h2 className="text-2xl font-heading mb-4 text-heading">Inventory History</h2>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-stone-800">
-                    <th className="text-left py-3 px-4">Product</th>
-                    <th className="text-left py-3 px-4">Previous</th>
-                    <th className="text-left py-3 px-4">Change</th>
-                    <th className="text-left py-3 px-4">New Stock</th>
-                    <th className="text-left py-3 px-4">Reason</th>
-                    <th className="text-left py-3 px-4">Date</th>
+                  <tr className="border-b border-accent/30">
+                    <th className="text-left py-3 px-4 text-heading font-semibold">Product</th>
+                    <th className="text-left py-3 px-4 text-heading font-semibold">Previous</th>
+                    <th className="text-left py-3 px-4 text-heading font-semibold">Change</th>
+                    <th className="text-left py-3 px-4 text-heading font-semibold">New Stock</th>
+                    <th className="text-left py-3 px-4 text-heading font-semibold">Reason</th>
+                    <th className="text-left py-3 px-4 text-heading font-semibold">Date</th>
                   </tr>
                 </thead>
                 <tbody>
                   {inventoryLogs.map(log => (
                     <tr
                       key={log.id}
-                      className="border-b border-stone-800 hover:bg-stone-800 transition-colors"
+                      className="border-b border-accent/20 hover:bg-background transition-colors"
                     >
-                      <td className="py-3 px-4 font-semibold">{log.productName}</td>
-                      <td className="py-3 px-4">{log.previousStock}</td>
+                      <td className="py-3 px-4 font-semibold text-heading">{log.productName}</td>
+                      <td className="py-3 px-4 text-text">{log.previousStock}</td>
                       <td className={`py-3 px-4 font-bold ${
-                        log.change > 0 ? 'text-green-500' : 'text-red-500'
+                        log.change > 0 ? 'text-green-600' : 'text-red-600'
                       }`}>
                         {log.change > 0 ? '+' : ''}{log.change}
                       </td>
-                      <td className="py-3 px-4">{log.newStock}</td>
-                      <td className="py-3 px-4 capitalize">
+                      <td className="py-3 px-4 text-text">{log.newStock}</td>
+                      <td className="py-3 px-4 capitalize text-accent">
                         {log.reason.replace('_', ' ')}
                       </td>
-                      <td className="py-3 px-4 text-sm text-stone-400">
+                      <td className="py-3 px-4 text-sm text-accent">
                         {new Date(log.timestamp).toLocaleString()}
                       </td>
                     </tr>
@@ -409,13 +409,13 @@ function StatCard({
   trend: 'up' | 'down' | 'neutral'
 }) {
   return (
-    <div className="bg-stone-900 rounded-lg p-6">
-      <p className="text-stone-400 text-sm mb-2">{title}</p>
-      <p className="text-3xl font-bold mb-1">{value}</p>
+    <div className="bg-surface rounded-lg p-6 shadow-medium border border-accent/20 hover:shadow-large transition-all">
+      <p className="text-accent text-sm mb-2 font-semibold">{title}</p>
+      <p className="text-3xl font-bold mb-1 text-heading">{value}</p>
       <div className="flex items-center gap-2">
-        {trend === 'up' && <span className="text-green-500">↑</span>}
-        {trend === 'down' && <span className="text-red-500">↓</span>}
-        <p className="text-stone-500 text-sm">{subtitle}</p>
+        {trend === 'up' && <span className="text-green-600 text-lg">↑</span>}
+        {trend === 'down' && <span className="text-red-600 text-lg">↓</span>}
+        <p className="text-accent-dark text-sm">{subtitle}</p>
       </div>
     </div>
   )
@@ -456,24 +456,24 @@ function OrderDetailModal({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-6"
+      className="fixed inset-0 bg-heading/80 backdrop-blur-sm flex items-center justify-center z-50 p-6"
       onClick={onClose}
     >
       <motion.div
         initial={{ scale: 0.9, y: 20 }}
         animate={{ scale: 1, y: 0 }}
         exit={{ scale: 0.9, y: 20 }}
-        className="bg-stone-900 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8"
+        className="bg-background rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8 shadow-xl border border-accent/30"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex justify-between items-start mb-6">
           <div>
-            <h2 className="text-2xl font-bold">Order Details</h2>
-            <p className="text-stone-400 text-sm mt-1">ID: {order.id}</p>
+            <h2 className="text-3xl font-heading text-heading">Order Details</h2>
+            <p className="text-accent text-sm mt-1">ID: {order.id}</p>
           </div>
           <button
             onClick={onClose}
-            className="text-stone-400 hover:text-stone-200 text-2xl"
+            className="text-accent hover:text-heading text-3xl transition-colors"
           >
             ×
           </button>
@@ -481,45 +481,45 @@ function OrderDetailModal({
 
         {/* Customer Info */}
         <div className="mb-6">
-          <h3 className="font-semibold mb-2">Customer</h3>
-          <p className="text-stone-400">{order.customerEmail}</p>
-          <p className="text-sm text-stone-500 mt-1">
+          <h3 className="font-semibold mb-2 text-heading text-lg">Customer</h3>
+          <p className="text-text">{order.customerEmail}</p>
+          <p className="text-sm text-accent mt-1">
             {new Date(order.createdAt).toLocaleString()}
           </p>
         </div>
 
         {/* Items */}
         <div className="mb-6">
-          <h3 className="font-semibold mb-2">Items</h3>
+          <h3 className="font-semibold mb-2 text-heading text-lg">Items</h3>
           <div className="space-y-2">
             {order.items.map((item, i) => (
-              <div key={i} className="flex justify-between p-3 bg-stone-800 rounded">
+              <div key={i} className="flex justify-between p-3 bg-surface rounded shadow-soft border border-accent/10">
                 <div>
-                  <p className="font-medium">{item.name}</p>
-                  <p className="text-sm text-stone-400">Quantity: {item.quantity}</p>
+                  <p className="font-medium text-heading">{item.name}</p>
+                  <p className="text-sm text-accent">Quantity: {item.quantity}</p>
                 </div>
-                <p className="font-semibold">£{(item.price * item.quantity).toFixed(2)}</p>
+                <p className="font-semibold text-accent-light">£{(item.price * item.quantity).toFixed(2)}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Total */}
-        <div className="mb-6 pb-6 border-b border-stone-800">
+        <div className="mb-6 pb-6 border-b border-accent/30">
           <div className="flex justify-between text-xl font-bold">
-            <span>Total</span>
-            <span className="text-amber-600">£{order.total.toFixed(2)}</span>
+            <span className="text-heading">Total</span>
+            <span className="text-accent-light">£{order.total.toFixed(2)}</span>
           </div>
         </div>
 
         {/* Status Update */}
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold mb-2">Update Status</label>
+            <label className="block text-sm font-semibold mb-2 text-heading">Update Status</label>
             <select
               value={newStatus}
               onChange={e => setNewStatus(e.target.value)}
-              className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-2"
+              className="w-full bg-surface border border-accent/30 rounded-lg px-4 py-2 text-text focus:outline-none focus:ring-2 focus:ring-accent-light"
             >
               <option value="pending">Pending</option>
               <option value="processing">Processing</option>
@@ -531,20 +531,20 @@ function OrderDetailModal({
 
           {(newStatus === 'shipped' || newStatus === 'delivered') && (
             <div>
-              <label className="block text-sm font-semibold mb-2">Tracking Number</label>
+              <label className="block text-sm font-semibold mb-2 text-heading">Tracking Number</label>
               <input
                 type="text"
                 value={trackingNumber}
                 onChange={e => setTrackingNumber(e.target.value)}
                 placeholder="Enter tracking number"
-                className="w-full bg-stone-800 border border-stone-700 rounded-lg px-4 py-2"
+                className="w-full bg-surface border border-accent/30 rounded-lg px-4 py-2 text-text focus:outline-none focus:ring-2 focus:ring-accent-light"
               />
             </div>
           )}
 
           <button
             onClick={() => onUpdateStatus(order.id, newStatus, trackingNumber)}
-            className="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 rounded-lg transition-colors"
+            className="w-full bg-accent-light hover:bg-accent text-white font-semibold py-3 rounded-lg transition-colors shadow-medium"
           >
             Update Order
           </button>
