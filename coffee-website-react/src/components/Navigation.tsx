@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import { ShoppingCart, Menu, X, User, LogOut } from 'lucide-react'
+import { ShoppingCart, Menu, X, User, LogOut, Shield } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../contexts/AuthContext'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 interface NavigationProps {
   itemCount: number
@@ -14,7 +15,29 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [imageError, setImageError] = useState(false)
-  const { currentUser, logout } = useAuth()
+  const { currentUser, userRole, logout } = useAuth()
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  // Check if we're on the homepage
+  const isHomePage = location.pathname === '/'
+
+  // Handle navigation clicks - navigate to homepage with hash if not already there
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, section: string) => {
+    e.preventDefault()
+    setMobileMenuOpen(false)
+
+    if (isHomePage) {
+      // Already on homepage - just scroll to section
+      const element = document.getElementById(section)
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    } else {
+      // Navigate to homepage with hash
+      navigate(`/#${section}`)
+    }
+  }
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50)
@@ -50,7 +73,12 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
       <div className="container mx-auto px-6 py-0">
         <div className="flex items-center justify-between gap-8">
           <a
-            href="#home"
+            href="/"
+            onClick={(e) => {
+              e.preventDefault()
+              navigate('/')
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }}
             className="flex items-center transition-all duration-300 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2 rounded-lg relative z-50"
             aria-label="Stockbridge Coffee"
           >
@@ -64,6 +92,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
           <div className="hidden md:flex items-center gap-10">
             <a
               href="#products"
+              onClick={(e) => handleNavClick(e, 'products')}
               className={`text-xl font-logo transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded ${
                 scrolled ? 'text-white hover:text-accent-light' : 'text-white hover:text-accent-light'
               }`}
@@ -72,6 +101,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
             </a>
             <a
               href="#blog"
+              onClick={(e) => handleNavClick(e, 'blog')}
               className={`text-xl font-logo transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded ${
                 scrolled ? 'text-white hover:text-accent-light' : 'text-white hover:text-accent-light'
               }`}
@@ -80,6 +110,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
             </a>
             <a
               href="#about"
+              onClick={(e) => handleNavClick(e, 'about')}
               className={`text-xl font-logo transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded ${
                 scrolled ? 'text-white hover:text-accent-light' : 'text-white hover:text-accent-light'
               }`}
@@ -88,6 +119,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
             </a>
             <a
               href="#contact"
+              onClick={(e) => handleNavClick(e, 'contact')}
               className={`text-xl font-logo transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded ${
                 scrolled ? 'text-white hover:text-accent-light' : 'text-white hover:text-accent-light'
               }`}
@@ -143,7 +175,24 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                         <p className="text-xs text-grey-500 truncate">
                           {currentUser.email}
                         </p>
+                        {userRole === 'admin' && (
+                          <span className="inline-block mt-1 px-2 py-0.5 bg-amber-100 text-amber-700 text-xs font-semibold rounded">
+                            Admin
+                          </span>
+                        )}
                       </div>
+                      {userRole === 'admin' && (
+                        <button
+                          onClick={() => {
+                            setUserMenuOpen(false)
+                            navigate('/admin')
+                          }}
+                          className="w-full px-4 py-2 text-left text-sm text-grey-700 hover:bg-grey-50 transition-colors duration-200 flex items-center gap-2"
+                        >
+                          <Shield className="w-4 h-4 text-amber-600" />
+                          Admin Dashboard
+                        </button>
+                      )}
                       <button
                         onClick={handleLogout}
                         className="w-full px-4 py-2 text-left text-sm text-grey-700 hover:bg-grey-50 transition-colors duration-200 flex items-center gap-2"
@@ -231,7 +280,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                 )}
                 <a
                   href="#products"
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={(e) => handleNavClick(e, 'products')}
                   className={`block text-lg font-logo hover:text-accent-light transition-colors duration-200 py-2 ${
                     scrolled ? 'text-white' : 'text-white'
                   }`}
@@ -240,7 +289,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                 </a>
                 <a
                   href="#blog"
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={(e) => handleNavClick(e, 'blog')}
                   className={`block text-lg font-logo hover:text-accent-light transition-colors duration-200 py-2 ${
                     scrolled ? 'text-white' : 'text-white'
                   }`}
@@ -249,7 +298,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                 </a>
                 <a
                   href="#about"
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={(e) => handleNavClick(e, 'about')}
                   className={`block text-lg font-logo hover:text-accent-light transition-colors duration-200 py-2 ${
                     scrolled ? 'text-white' : 'text-white'
                   }`}
@@ -258,13 +307,25 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                 </a>
                 <a
                   href="#contact"
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={(e) => handleNavClick(e, 'contact')}
                   className={`block text-lg font-logo hover:text-accent-light transition-colors duration-200 py-2 ${
                     scrolled ? 'text-white' : 'text-white'
                   }`}
                 >
                   Contact
                 </a>
+                {currentUser && userRole === 'admin' && (
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false)
+                      navigate('/admin')
+                    }}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors duration-200 font-medium text-sm"
+                  >
+                    <Shield className="w-4 h-4" />
+                    Admin Dashboard
+                  </button>
+                )}
                 {currentUser && (
                   <button
                     onClick={() => {

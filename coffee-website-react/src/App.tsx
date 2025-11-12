@@ -16,6 +16,7 @@ import { GiftCardPurchase } from './components/GiftCardPurchase'
 import CartDrawer from './components/CartDrawer'
 import CoffeeCopilot from './components/CoffeeCopilot'
 import { BlogPost } from './pages/BlogPost'
+import { AdminDashboard } from './pages/AdminDashboard'
 import { useCart } from './hooks/useCart'
 import { useProductImages } from './hooks/useProductImages'
 import type { Product } from './types/product'
@@ -152,6 +153,9 @@ function App() {
       />
 
       <Routes>
+        {/* Admin Dashboard */}
+        <Route path="/admin" element={<AdminDashboard />} />
+
         {/* Blog detail page */}
         <Route path="/blog/:slug" element={<BlogPost />} />
 

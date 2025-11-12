@@ -10,7 +10,9 @@
     "index-docs": "tsx src/index-docs.ts",
     "type-check": "tsc --noEmit",
     "lint": "eslint src --ext .ts,.tsx",
-    "test": "jest"
+    "test": "jest",
+    "set-admin": "tsx scripts/set-admin.ts",
+    "seed-data": "tsx scripts/seed-test-data.ts"
   },
   "keywords": [
     "ai",

@@ -1,45 +1,54 @@
-// Coffee Copilot Backend Server - MVP
+// Unified Backend Server - Stripe Payments + Coffee Copilot AI
 import 'dotenv/config';
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import multer from 'multer';
 import { OpenAI } from 'openai';
 import Stripe from 'stripe';
 import path from 'path';
 import fs from 'fs';
+import admin from 'firebase-admin';
 
 const app = express();
-const port = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3001;
 
-// Middleware - CORS Configuration
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [
-  'http://localhost:5173',
-  'http://localhost:5174',
-  'http://localhost:5175',
-  'http://localhost:5176',
-  'https://coffee-65c46.web.app',
-  'https://coffee-65c46.firebaseapp.com',
-  'https://stockbridgecoffee.co.uk',
-  'https://www.stockbridgecoffee.co.uk'
-];
+// Initialize Stripe with secret key
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+let stripe: Stripe | null = null;
 
+if (stripeSecretKey) {
+  stripe = new Stripe(stripeSecretKey, {
+    apiVersion: '2025-09-30.clover',
+  });
+  console.log('✅ Stripe initialized');
+} else {
+  console.warn('⚠️  STRIPE_SECRET_KEY not set - Stripe payments will not work');
+}
+
+// Initialize Firebase Admin SDK
+if (!admin.apps.length) {
+  // Initialize with default credentials (works on Cloud Run and locally with GOOGLE_APPLICATION_CREDENTIALS)
+  admin.initializeApp({
+    credential: admin.credential.applicationDefault(),
+  });
+  console.log('✅ Firebase Admin initialized');
+}
+
+const db = admin.firestore();
+
+// Initialize OpenAI
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY || ''
+});
+
+// Middleware
 app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps, curl, postman)
-    if (!origin) return callback(null, true);
-
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.warn(`CORS blocked origin: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  preflightContinue: false,
-  optionsSuccessStatus: 204
+  origin: process.env.ALLOWED_ORIGINS?.split(',') || [
+    'http://localhost:5173',
+    'https://coffee-65c46.web.app',
+    'https://coffee-65c46.firebaseapp.com',
+    'https://stockbridgecoffee.co.uk'
+  ]
 }));
 app.use(express.json());
 
@@ -57,24 +66,6 @@ const upload = multer({
     }
   }
 });
-
-// Initialize OpenAI
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || ''
-});
-
-// Initialize Stripe
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-let stripe: Stripe | null = null;
-
-if (stripeSecretKey) {
-  stripe = new Stripe(stripeSecretKey, {
-    apiVersion: '2025-09-30.clover',
-  });
-  console.log('✅ Stripe initialized');
-} else {
-  console.warn('⚠️  STRIPE_SECRET_KEY not set - Stripe payments will not work');
-}
 
 // Simple coffee knowledge base (MVP - will upgrade to vector DB later)
 const coffeeKnowledge = [
@@ -101,7 +92,7 @@ const coffeeKnowledge = [
 ];
 
 // ============================================================================
-// TOOL IMPLEMENTATIONS
+// COFFEE COPILOT TOOL IMPLEMENTATIONS
 // ============================================================================
 
 async function searchDocs(query: string) {
@@ -136,12 +127,6 @@ async function createGithubIssue(params: {
 
   const repo = process.env.GITHUB_REPO;
   const token = process.env.GITHUB_TOKEN;
-
-  console.log('GitHub Config Debug:', {
-    repo,
-    tokenExists: !!token,
-    tokenPrefix: token?.substring(0, 15) + '...'
-  });
 
   if (!repo || !token) {
     throw new Error('GitHub integration not configured. Please set GITHUB_TOKEN and GITHUB_REPO in .env');
@@ -232,7 +217,7 @@ async function uploadScreenshotToGithub(file: Express.Multer.File, issueNumber: 
 }
 
 // ============================================================================
-// TOOL DEFINITIONS
+// COFFEE COPILOT TOOL DEFINITIONS
 // ============================================================================
 
 const tools = [
@@ -282,9 +267,10 @@ const tools = [
 ];
 
 // ============================================================================
-// ROUTES
+// API ROUTES
 // ============================================================================
 
+// Health check endpoint
 app.get('/health', (req, res) => {
   res.json({
     status: 'healthy',
@@ -293,6 +279,14 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
+
+app.get('/api/health', (req: Request, res: Response) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// ============================================================================
+// COFFEE COPILOT ENDPOINTS
+// ============================================================================
 
 app.post('/api/chat', async (req, res) => {
   try {
@@ -495,19 +489,163 @@ app.post('/api/feedback', upload.single('screenshot'), async (req, res) => {
 });
 
 // ============================================================================
+// ORDER FULFILLMENT LOGIC
+// ============================================================================
+
+async function fulfillOrder(paymentIntent: Stripe.PaymentIntent) {
+  console.log('📦 Fulfilling order for payment:', paymentIntent.id);
+
+  const { metadata } = paymentIntent;
+  const userId = metadata.userId || 'guest';
+  const customerEmail = metadata.customerEmail || 'no-email@provided.com';
+
+  // Parse cart items from metadata
+  let cartItems: any[] = [];
+  try {
+    cartItems = JSON.parse(metadata.cartItems || '[]');
+  } catch (error) {
+    console.error('Failed to parse cart items:', error);
+    throw new Error('Invalid cart items in payment metadata');
+  }
+
+  if (!cartItems || cartItems.length === 0) {
+    console.warn('No cart items found in payment intent metadata');
+    return;
+  }
+
+  // Calculate totals
+  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const shipping = parseFloat(metadata.shipping || '0');
+  const tax = parseFloat(metadata.tax || '0');
+  const total = paymentIntent.amount / 100; // Convert from cents
+
+  // Create order document
+  const orderData = {
+    userId,
+    customerEmail,
+    status: 'processing',
+    paymentStatus: 'paid',
+    paymentIntentId: paymentIntent.id,
+    items: cartItems,
+    subtotal,
+    shipping,
+    tax,
+    total,
+    currency: paymentIntent.currency,
+    shippingAddress: metadata.shippingAddress ? JSON.parse(metadata.shippingAddress) : null,
+    billingAddress: metadata.billingAddress ? JSON.parse(metadata.billingAddress) : null,
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+  };
+
+  try {
+    // Create order in Firestore
+    const orderRef = await db.collection('orders').add(orderData);
+    console.log('✅ Order created:', orderRef.id);
+
+    // Deduct inventory for each item
+    for (const item of cartItems) {
+      try {
+        await deductInventory(item.id, item.quantity, orderRef.id);
+      } catch (inventoryError) {
+        console.error(`Failed to deduct inventory for product ${item.id}:`, inventoryError);
+        // Log inventory issue but don't fail the entire order
+        await db.collection('inventory_issues').add({
+          orderId: orderRef.id,
+          productId: item.id,
+          productName: item.name,
+          requestedQuantity: item.quantity,
+          error: inventoryError instanceof Error ? inventoryError.message : 'Unknown error',
+          timestamp: admin.firestore.FieldValue.serverTimestamp(),
+        });
+      }
+    }
+
+    // Clear user's cart if not guest
+    if (userId !== 'guest') {
+      try {
+        await db.collection('cart').doc(userId).delete();
+        console.log('🗑️  Cart cleared for user:', userId);
+      } catch (error) {
+        console.error('Failed to clear cart:', error);
+      }
+    }
+
+    // Create notification for admin
+    await db.collection('admin_notifications').add({
+      type: 'new_order',
+      orderId: orderRef.id,
+      customerEmail,
+      total,
+      currency: paymentIntent.currency,
+      itemCount: cartItems.length,
+      read: false,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    console.log('✅ Order fulfillment complete:', orderRef.id);
+    return orderRef.id;
+  } catch (error) {
+    console.error('Order creation failed:', error);
+    throw error;
+  }
+}
+
+async function deductInventory(productId: string, quantity: number, orderId: string) {
+  const productRef = db.collection('products').doc(productId);
+
+  try {
+    // Use a transaction to ensure atomic stock updates
+    await db.runTransaction(async (transaction) => {
+      const productDoc = await transaction.get(productRef);
+
+      if (!productDoc.exists) {
+        throw new Error(`Product ${productId} not found`);
+      }
+
+      const productData = productDoc.data()!;
+      const currentStock = productData.stock || 0;
+      const newStock = currentStock - quantity;
+
+      if (newStock < 0) {
+        throw new Error(`Insufficient stock for product ${productData.name}. Available: ${currentStock}, Requested: ${quantity}`);
+      }
+
+      // Update product stock
+      transaction.update(productRef, {
+        stock: newStock,
+        sold: (productData.sold || 0) + quantity,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+
+      // Log inventory change
+      const inventoryLogRef = db.collection('inventory_logs').doc();
+      transaction.set(inventoryLogRef, {
+        productId,
+        productName: productData.name,
+        previousStock: currentStock,
+        newStock,
+        change: -quantity,
+        reason: 'sale',
+        orderId,
+        timestamp: admin.firestore.FieldValue.serverTimestamp(),
+      });
+    });
+
+    console.log(`📉 Inventory updated for product ${productId}: -${quantity}`);
+  } catch (error) {
+    console.error(`Inventory deduction failed for product ${productId}:`, error);
+    throw error;
+  }
+}
+
+// ============================================================================
 // STRIPE PAYMENT ENDPOINTS
 // ============================================================================
 
 // Create payment intent endpoint
-app.post('/api/create-payment-intent', async (req, res) => {
+app.post('/api/create-payment-intent', async (req: Request, res: Response) => {
   try {
-    if (!stripe) {
-      return res.status(503).json({
-        error: 'Stripe not configured',
-        message: 'STRIPE_SECRET_KEY environment variable is not set'
-      });
-    }
-
     const { amount, currency = 'gbp', metadata = {} } = req.body;
 
     // Validate amount
@@ -537,7 +675,7 @@ app.post('/api/create-payment-intent', async (req, res) => {
       clientSecret: paymentIntent.client_secret,
       paymentIntentId: paymentIntent.id,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error creating payment intent:', error);
     res.status(500).json({
       error: error instanceof Error ? error.message : 'Internal server error',
@@ -546,13 +684,7 @@ app.post('/api/create-payment-intent', async (req, res) => {
 });
 
 // Webhook endpoint for Stripe events
-app.post('/api/stripe-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
-  if (!stripe) {
-    return res.status(503).json({
-      error: 'Stripe not configured'
-    });
-  }
-
+app.post('/api/stripe-webhook', express.raw({ type: 'application/json' }), async (req: Request, res: Response) => {
   const sig = req.headers['stripe-signature'];
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
@@ -573,39 +705,265 @@ app.post('/api/stripe-webhook', express.raw({ type: 'application/json' }), async
     switch (event.type) {
       case 'payment_intent.succeeded':
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
-        console.log('PaymentIntent succeeded:', paymentIntent.id);
+        console.log('✅ PaymentIntent succeeded:', paymentIntent.id);
 
-        // Check if this is a gift card purchase
-        if (paymentIntent.metadata.type === 'gift_card') {
-          console.log('Gift card purchase detected, creating gift card...');
-          // Note: Gift card creation is handled by the frontend after payment confirmation
-          // The webhook here is for logging and potential email notifications
-          // TODO: Send gift card email to recipient
-        } else {
-          // Regular order fulfillment
-          // TODO: Fulfill the order, send confirmation email, etc.
+        try {
+          await fulfillOrder(paymentIntent);
+        } catch (error) {
+          console.error('Error fulfilling order:', error);
+          // Don't fail the webhook - order creation errors should be logged and handled separately
         }
         break;
 
       case 'payment_intent.payment_failed':
         const failedPayment = event.data.object as Stripe.PaymentIntent;
-        console.log('PaymentIntent failed:', failedPayment.id);
-        // TODO: Handle failed payment
+        console.log('❌ PaymentIntent failed:', failedPayment.id);
+
+        // Log failed payment attempt
+        try {
+          await db.collection('payment_failures').add({
+            paymentIntentId: failedPayment.id,
+            amount: failedPayment.amount,
+            currency: failedPayment.currency,
+            metadata: failedPayment.metadata,
+            error: failedPayment.last_payment_error?.message || 'Unknown error',
+            timestamp: admin.firestore.FieldValue.serverTimestamp(),
+          });
+        } catch (error) {
+          console.error('Error logging failed payment:', error);
+        }
         break;
 
       case 'charge.succeeded':
         const charge = event.data.object as Stripe.Charge;
-        console.log('Charge succeeded:', charge.id);
+        console.log('💳 Charge succeeded:', charge.id);
         break;
 
       default:
-        console.log(`Unhandled event type: ${event.type}`);
+        console.log(`⚠️  Unhandled event type: ${event.type}`);
     }
 
     res.json({ received: true });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Webhook error:', error);
     res.status(400).send(`Webhook Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+});
+
+// ============================================================================
+// ADMIN API ENDPOINTS
+// ============================================================================
+
+// Get all orders with optional filtering
+app.get('/api/admin/orders', async (req: Request, res: Response) => {
+  try {
+    const { status, limit = 50 } = req.query;
+
+    let query = db.collection('orders').orderBy('createdAt', 'desc').limit(Number(limit));
+
+    if (status) {
+      query = db.collection('orders')
+        .where('status', '==', status)
+        .orderBy('createdAt', 'desc')
+        .limit(Number(limit));
+    }
+
+    const snapshot = await query.get();
+    const orders = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      createdAt: doc.data().createdAt?.toDate?.()?.toISOString() || null,
+      updatedAt: doc.data().updatedAt?.toDate?.()?.toISOString() || null,
+    }));
+
+    res.json({ orders });
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({ error: 'Failed to fetch orders' });
+  }
+});
+
+// Update order status
+app.patch('/api/admin/orders/:orderId', async (req: Request, res: Response) => {
+  try {
+    const { orderId } = req.params;
+    const { status, trackingNumber } = req.body;
+
+    const updateData: any = {
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    };
+
+    if (status) updateData.status = status;
+    if (trackingNumber) updateData.trackingNumber = trackingNumber;
+
+    await db.collection('orders').doc(orderId).update(updateData);
+
+    res.json({ success: true, orderId });
+  } catch (error) {
+    console.error('Error updating order:', error);
+    res.status(500).json({ error: 'Failed to update order' });
+  }
+});
+
+// Get admin statistics
+app.get('/api/admin/stats', async (req: Request, res: Response) => {
+  try {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const thisWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    // Get orders
+    const ordersSnapshot = await db.collection('orders').get();
+    const orders = ordersSnapshot.docs.map(doc => doc.data());
+
+    // Calculate stats
+    const todayOrders = orders.filter(o => o.createdAt?.toDate?.() >= today);
+    const weekOrders = orders.filter(o => o.createdAt?.toDate?.() >= thisWeek);
+    const monthOrders = orders.filter(o => o.createdAt?.toDate?.() >= thisMonth);
+
+    const stats = {
+      totalRevenue: orders.reduce((sum, o) => sum + (o.total || 0), 0),
+      todayRevenue: todayOrders.reduce((sum, o) => sum + (o.total || 0), 0),
+      weekRevenue: weekOrders.reduce((sum, o) => sum + (o.total || 0), 0),
+      monthRevenue: monthOrders.reduce((sum, o) => sum + (o.total || 0), 0),
+      totalOrders: orders.length,
+      todayOrders: todayOrders.length,
+      weekOrders: weekOrders.length,
+      monthOrders: monthOrders.length,
+      pendingOrders: orders.filter(o => o.status === 'pending' || o.status === 'processing').length,
+      averageOrderValue: orders.length > 0 ? orders.reduce((sum, o) => sum + (o.total || 0), 0) / orders.length : 0,
+    };
+
+    // Get low stock products
+    const productsSnapshot = await db.collection('products')
+      .where('stock', '<=', 10)
+      .where('active', '==', true)
+      .get();
+
+    const lowStockProducts = productsSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    // Get unread notifications count
+    const notificationsSnapshot = await db.collection('admin_notifications')
+      .where('read', '==', false)
+      .get();
+
+    res.json({
+      stats,
+      lowStockProducts,
+      unreadNotifications: notificationsSnapshot.size,
+    });
+  } catch (error) {
+    console.error('Error fetching admin stats:', error);
+    res.status(500).json({ error: 'Failed to fetch statistics' });
+  }
+});
+
+// Get inventory logs
+app.get('/api/admin/inventory-logs', async (req: Request, res: Response) => {
+  try {
+    const { productId, limit = 50 } = req.query;
+
+    let query = db.collection('inventory_logs')
+      .orderBy('timestamp', 'desc')
+      .limit(Number(limit));
+
+    if (productId) {
+      query = db.collection('inventory_logs')
+        .where('productId', '==', productId)
+        .orderBy('timestamp', 'desc')
+        .limit(Number(limit));
+    }
+
+    const snapshot = await query.get();
+    const logs = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      timestamp: doc.data().timestamp?.toDate?.()?.toISOString() || null,
+    }));
+
+    res.json({ logs });
+  } catch (error) {
+    console.error('Error fetching inventory logs:', error);
+    res.status(500).json({ error: 'Failed to fetch inventory logs' });
+  }
+});
+
+// Update product stock manually
+app.post('/api/admin/inventory/adjust', async (req: Request, res: Response) => {
+  try {
+    const { productId, quantity, reason } = req.body;
+
+    if (!productId || quantity === undefined) {
+      return res.status(400).json({ error: 'Product ID and quantity required' });
+    }
+
+    const productRef = db.collection('products').doc(productId);
+
+    await db.runTransaction(async (transaction) => {
+      const productDoc = await transaction.get(productRef);
+
+      if (!productDoc.exists) {
+        throw new Error('Product not found');
+      }
+
+      const productData = productDoc.data()!;
+      const currentStock = productData.stock || 0;
+      const newStock = currentStock + Number(quantity);
+
+      if (newStock < 0) {
+        throw new Error('Cannot reduce stock below zero');
+      }
+
+      transaction.update(productRef, {
+        stock: newStock,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+
+      const inventoryLogRef = db.collection('inventory_logs').doc();
+      transaction.set(inventoryLogRef, {
+        productId,
+        productName: productData.name,
+        previousStock: currentStock,
+        newStock,
+        change: Number(quantity),
+        reason: reason || 'manual_adjustment',
+        timestamp: admin.firestore.FieldValue.serverTimestamp(),
+      });
+    });
+
+    res.json({ success: true, productId });
+  } catch (error) {
+    console.error('Error adjusting inventory:', error);
+    res.status(500).json({
+      error: error instanceof Error ? error.message : 'Failed to adjust inventory'
+    });
+  }
+});
+
+// Mark notifications as read
+app.post('/api/admin/notifications/read', async (req: Request, res: Response) => {
+  try {
+    const { notificationIds } = req.body;
+
+    if (!Array.isArray(notificationIds)) {
+      return res.status(400).json({ error: 'notificationIds must be an array' });
+    }
+
+    const batch = db.batch();
+    notificationIds.forEach(id => {
+      const ref = db.collection('admin_notifications').doc(id);
+      batch.update(ref, { read: true, readAt: admin.firestore.FieldValue.serverTimestamp() });
+    });
+
+    await batch.commit();
+    res.json({ success: true, count: notificationIds.length });
+  } catch (error) {
+    console.error('Error marking notifications as read:', error);
+    res.status(500).json({ error: 'Failed to mark notifications as read' });
   }
 });
 
@@ -613,12 +971,20 @@ app.post('/api/stripe-webhook', express.raw({ type: 'application/json' }), async
 // START SERVER
 // ============================================================================
 
-app.listen(port, () => {
-  console.log(`\n🚀 Coffee Copilot Server`);
-  console.log(`   Port: ${port}`);
-  console.log(`   Health: http://localhost:${port}/health`);
+app.listen(PORT, () => {
+  console.log(`\n🚀 Unified Backend Server - Coffee Copilot + Stripe`);
+  console.log(`   Port: ${PORT}`);
+  console.log(`   Health: http://localhost:${PORT}/health`);
+  console.log(`\n☕️ Coffee Copilot:`);
   console.log(`   OpenAI: ${process.env.OPENAI_API_KEY ? '✅ Configured' : '❌ Missing'}`);
+  console.log(`   - POST /api/chat (AI chat endpoint)`);
+  console.log(`   - POST /api/feedback (Bug reports with screenshots)`);
+  console.log(`\n💳 Stripe Payments:`);
   console.log(`   Stripe: ${stripe ? '✅ Configured' : '⚠️  Not configured'}`);
-  console.log(`   CORS Origins: ${JSON.stringify(allowedOrigins)}`);
+  console.log(`   - POST /api/create-payment-intent`);
+  console.log(`   - POST /api/stripe-webhook`);
+  if (stripe && stripeSecretKey) {
+    console.log(`   Mode: ${stripeSecretKey.includes('test') ? 'TEST' : 'LIVE'}`);
+  }
   console.log('');
 });

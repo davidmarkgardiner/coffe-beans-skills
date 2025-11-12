@@ -38,6 +38,7 @@
     "nodemailer": "^7.0.10",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-hot-toast": "^2.6.0",
     "react-router-dom": "^7.9.5",
     "stripe": "^19.1.0"
   },
