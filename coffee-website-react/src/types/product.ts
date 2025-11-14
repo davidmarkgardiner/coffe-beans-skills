@@ -81,3 +81,34 @@ export interface GiftCardValidation {
   giftCard?: GiftCard
   error?: string
 }
+
+// Order Types
+export interface OrderItem {
+  id: string
+  name: string
+  price: number
+  quantity: number
+  weight: string
+  category: string
+}
+
+export interface Order {
+  id: string
+  userId: string
+  items: OrderItem[]
+  subtotal: number
+  total: number
+  status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
+  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded'
+  shippingAddress?: {
+    name: string
+    address: string
+    city: string
+    postcode: string
+    country: string
+  }
+  createdAt: Date
+  updatedAt?: Date
+  paymentIntentId?: string
+  trackingNumber?: string
+}

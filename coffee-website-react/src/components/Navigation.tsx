@@ -144,6 +144,14 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                           {currentUser.email}
                         </p>
                       </div>
+                      <a
+                        href="/orders"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="w-full px-4 py-2 text-left text-sm text-grey-700 hover:bg-grey-50 transition-colors duration-200 flex items-center gap-2 border-b border-grey-200"
+                      >
+                        <ShoppingCart className="w-4 h-4" />
+                        My Orders
+                      </a>
                       <button
                         onClick={handleLogout}
                         className="w-full px-4 py-2 text-left text-sm text-grey-700 hover:bg-grey-50 transition-colors duration-200 flex items-center gap-2"
