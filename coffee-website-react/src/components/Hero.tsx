@@ -6,6 +6,7 @@ export function Hero() {
     contentType: 'video', // Hero section uses videos
     rotationInterval: 30000, // 30 seconds
     preloadNext: true,
+    refreshInterval: 5 * 60 * 1000, // Refresh content pool every 5 minutes to pick up newly generated videos
   })
 
   // Static poster image for instant display (low-res placeholder)
