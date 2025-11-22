@@ -108,38 +108,58 @@ export function BlogHighlights() {
               <motion.article
                 key={post.id}
                 variants={card}
-                className="relative h-full rounded-2xl bg-gradient-surface overflow-hidden shadow-medium transition-all duration-300 hover:bg-gradient-surface-hover hover:shadow-large group"
+                whileHover={{ y: -8, scale: 1.02 }}
+                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                className="relative h-full rounded-2xl bg-gradient-surface overflow-hidden shadow-medium hover:shadow-large group cursor-pointer hover-lift"
               >
                 {/* Featured Image */}
                 {post.featuredImage && (
                   <div className="relative h-48 overflow-hidden">
-                    <img
+                    <motion.img
                       src={post.featuredImage}
                       alt={post.title}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      className="w-full h-full object-cover"
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/80" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/80 group-hover:to-background/60 transition-all duration-300" />
+
+                    {/* Animated overlay on hover */}
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-tr from-accent/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    />
                   </div>
                 )}
 
                 {/* Content */}
                 <div className="p-8">
-                  <p className="text-xs font-semibold tracking-widest uppercase text-accent mb-4">
+                  <motion.p
+                    className="text-xs font-semibold tracking-widest uppercase text-accent mb-4"
+                    whileHover={{ x: 4 }}
+                    transition={{ duration: 0.2 }}
+                  >
                     {formatDate(post.publishedAt)} · {post.readTime}
-                  </p>
-                  <h3 className="font-display text-2xl font-semibold tracking-tight text-heading mb-3">
+                  </motion.p>
+                  <h3 className="font-display text-2xl font-semibold tracking-tight text-heading mb-3 group-hover:text-accent transition-colors duration-300">
                     {post.title}
                   </h3>
                   <p className="text-sm text-text leading-relaxed mb-6">{post.excerpt}</p>
-                  <a
+                  <motion.a
                     href={`/blog/${post.slug}`}
-                    className="inline-flex items-center text-sm font-semibold text-accent hover:text-accent-hover transition-colors duration-200"
+                    className="inline-flex items-center text-sm font-semibold text-accent hover:text-accent-dark transition-colors duration-200 group/link"
+                    whileHover={{ x: 6 }}
+                    transition={{ duration: 0.2 }}
                   >
                     Read Recipes
-                    <span aria-hidden className="ml-2 text-base">
+                    <motion.span
+                      aria-hidden
+                      className="ml-2 text-base"
+                      animate={{ x: [0, 4, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                    >
                       →
-                    </span>
-                  </a>
+                    </motion.span>
+                  </motion.a>
                 </div>
               </motion.article>
             ))}

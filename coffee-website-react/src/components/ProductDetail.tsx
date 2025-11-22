@@ -40,8 +40,8 @@ export function ProductDetail({ product, onAddToCart, onClose }: ProductDetailPr
   const [deliveryFrequency, setDeliveryFrequency] = useState('every-2-weeks')
 
   const subscriptionPrice = product.price * 0.9 // 10% off for subscription
-  const currentPrice = purchaseType === 'subscribe' ? subscriptionPrice : product.price
-  const savings = product.price - subscriptionPrice
+  // const currentPrice = purchaseType === 'subscribe' ? subscriptionPrice : product.price
+  // const savings = product.price - subscriptionPrice
 
   return (
     <motion.div

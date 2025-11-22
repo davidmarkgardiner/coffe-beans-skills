@@ -1,0 +1,12 @@
+# robots.txt for Stockbridge Coffee
+# This file tells search engine crawlers which pages they can and cannot access
+
+# Allow all crawlers to access all content
+User-agent: *
+Allow: /
+
+# Disallow crawling of administrative directories
+Disallow: /admin/
+
+# Sitemap location
+Sitemap: https://stockbridgecoffee.com/sitemap.xml

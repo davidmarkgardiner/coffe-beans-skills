@@ -54,21 +54,47 @@ export function Testimonials() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-background rounded-2xl p-8 shadow-medium hover:shadow-large transition-shadow duration-300"
+              whileHover={{ y: -8, scale: 1.03 }}
+              className="bg-background rounded-2xl p-8 shadow-medium hover:shadow-large transition-all duration-300 hover-lift group cursor-pointer relative overflow-hidden"
             >
-              <div className="flex items-center mb-6">
-                <img
-                  src={testimonial.image}
-                  alt={testimonial.name}
-                  loading="lazy"
-                  className="w-12 h-12 rounded-full object-cover mr-4"
-                />
-                <div>
-                  <h4 className="font-semibold text-heading">{testimonial.name}</h4>
-                  <p className="text-sm text-text">{testimonial.role}</p>
+              {/* Animated background gradient on hover */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+              />
+
+              {/* Content wrapper for proper z-index */}
+              <div className="relative z-10">
+                <div className="flex items-center mb-6">
+                  <motion.img
+                    src={testimonial.image}
+                    alt={testimonial.name}
+                    loading="lazy"
+                    className="w-12 h-12 rounded-full object-cover mr-4 ring-2 ring-transparent group-hover:ring-accent/30 transition-all duration-300"
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                  <div>
+                    <h4 className="font-semibold text-heading group-hover:text-accent transition-colors duration-300">{testimonial.name}</h4>
+                    <p className="text-sm text-text">{testimonial.role}</p>
+                  </div>
                 </div>
+                <motion.p
+                  className="text-text leading-relaxed italic"
+                  initial={{ opacity: 0.9 }}
+                  whileHover={{ opacity: 1 }}
+                >
+                  "{testimonial.content}"
+                </motion.p>
               </div>
-              <p className="text-text leading-relaxed italic">"{testimonial.content}"</p>
+
+              {/* Decorative quote mark */}
+              <motion.div
+                className="absolute top-4 right-4 text-6xl text-accent/10 font-serif leading-none group-hover:text-accent/20 transition-colors duration-500"
+                initial={{ scale: 1, rotate: 0 }}
+                whileHover={{ scale: 1.1, rotate: 5 }}
+              >
+                "
+              </motion.div>
             </motion.div>
           ))}
         </div>
