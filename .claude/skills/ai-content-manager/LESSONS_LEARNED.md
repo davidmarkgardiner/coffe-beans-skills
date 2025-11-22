@@ -1422,6 +1422,467 @@ open test-generated-content/optimized/test-autumn-video-*-optimized.mp4
 
 ---
 
-Last Updated: 2025-10-29
+---
+
+## Blog Recipe Seasonal Theming (2025-11-11)
+
+### Context
+Updated blog curation system to focus on seasonal recipes (currently Christmas-themed) with matching AI-generated images for each recipe. Removed non-working external article links from blog display.
+
+### What Worked Well
+
+✅ **Christmas Recipe Curation**
+Successfully updated `curate-blog-content.ts` to generate Christmas-themed coffee recipes:
+
+**Search prompt changes:**
+- Focus: Christmas coffee recipes (peppermint mocha, gingerbread latte, eggnog latte, etc.)
+- Added festive context in prompts (holiday entertaining, Christmas parties, festive treats)
+- Generated 400-600 word articles with holiday flavor profiles and seasonal spices
+- Image prompts include Christmas decorations (pine branches, cinnamon sticks, fairy lights, festive mugs)
+
+**Example Christmas image prompt:**
+```
+"Professional food photography of [specific Christmas recipe]: overhead shot of a beautiful
+[drink/dessert] in a festive red mug on a rustic wooden table with Christmas decorations
+(pine branches, cinnamon sticks, star anise, cranberries), warm golden lighting from fairy
+lights, shallow depth of field, steam rising, cozy Christmas cafe atmosphere with bokeh
+lights in background, 4K quality, no text or watermarks"
+```
+
+✅ **Blog Photo Generation Strategy**
+Updated `upload-blog-post.ts` to use AI-generated images:
+
+**Implementation:**
+- Function renamed: `fetchCoffeeImage()` → `generateCoffeeImage()`
+- Uses `article.imagePrompt` field from curated content
+- Falls back to Christmas-themed Unsplash images when Imagen API unavailable
+- Featured images rotate based on day of month for variety
+- All images sized appropriately (800x600 for articles, 1200x800 for featured)
+
+**Christmas-themed fallback images:**
+```typescript
+const christmasCoffeeImages = [
+  'https://images.unsplash.com/photo-1512568400610-62da28bc8a13?w=800&h=600&fit=crop', // Christmas coffee with decorations
+  'https://images.unsplash.com/photo-1482146039114-f19e8b7d7889?w=800&h=600&fit=crop', // Christmas hot chocolate/coffee
+  'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800&h=600&fit=crop', // Festive coffee drink
+  'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=800&h=600&fit=crop', // Seasonal latte
+]
+```
+
+✅ **Removed Non-Working Article Links**
+Updated `BlogPost.tsx` to remove external article links:
+
+**Before:**
+```tsx
+<a href={article.url} target="_blank" rel="noopener noreferrer">
+  Read Original Article →
+</a>
+```
+
+**After:**
+- Link removed completely
+- Full blog content (400-600 words) is now the complete experience
+- No broken links or link-rot issues
+- Users stay on site for entire recipe experience
+
+### Key Learnings
+
+🔑 **Seasonal Recipe Theming is Powerful**
+- Focusing blog content on current season/holiday increases relevance
+- Christmas-themed prompts create cohesive, festive blog experience
+- Seasonal recipes are more shareable and engaging than generic content
+- Easy to update prompts for next season (Spring, Easter, etc.)
+
+🔑 **Image Generation with Fallbacks**
+- Gemini 2.0 Flash doesn't yet support direct image generation via simple API
+- Using curated seasonal Unsplash images as fallback maintains quality
+- `imagePrompt` field in curated content prepares for future Imagen integration
+- Christmas-specific fallback images match recipe themes better than generic coffee photos
+
+🔑 **Article Link Removal Benefits**
+- Eliminates broken link issues (sites change URLs, articles get deleted)
+- Keeps users on site longer (better engagement metrics)
+- Full 400-600 word articles provide complete value without external content
+- Simpler, cleaner UI without outbound links
+
+🔑 **Content Structure Improvements**
+- `CuratedArticle` interface includes `imagePrompt` field for AI generation
+- Upload script uses prompts to attempt AI generation first, then falls back
+- Seasonal theming applied consistently across all content (recipes, images, prompts)
+- Easy to switch seasons by updating prompts in curation script
+
+### Seasonal Prompt Strategy
+
+**Current Season: Christmas (Nov-Dec)**
+```typescript
+FOCUS EXCLUSIVELY ON CHRISTMAS COFFEE RECIPES:
+- Christmas coffee drinks (peppermint mocha, gingerbread latte, eggnog latte, Christmas spice cappuccino)
+- Festive iced coffee drinks with holiday flavors
+- Christmas coffee cocktails (Irish coffee, coffee martini with holiday spices)
+- Holiday coffee desserts (tiramisu with Christmas spices, coffee yule log, etc.)
+- Coffee-infused Christmas treats (coffee cookies, coffee brownies)
+- Specialty Christmas coffee preparations with seasonal spices
+```
+
+**Image Prompt Template:**
+```
+Professional food photography of [recipe] in a festive red mug on a rustic wooden table
+with Christmas decorations (pine branches, cinnamon sticks, star anise, cranberries),
+warm golden lighting from fairy lights, shallow depth of field, steam rising, cozy
+Christmas cafe atmosphere with bokeh lights in background, 4K quality, no text or watermarks
+```
+
+**Seasonal Rotation Schedule:**
+| Season | Months | Recipe Focus | Visual Elements |
+|--------|--------|--------------|-----------------|
+| Christmas | Nov-Dec | Peppermint mocha, gingerbread, eggnog | Pine branches, cinnamon, fairy lights, festive mugs |
+| Winter | Jan-Feb | Warm spiced drinks, hot chocolate variations | Snow, frost, cozy scarves, warm lighting |
+| Spring | Mar-May | Floral lattes, iced coffee, light refreshing | Fresh flowers, bright daylight, outdoor cafes, blossoms |
+| Summer | Jun-Aug | Cold brew, iced coffee cocktails, refreshing | Bright sun, outdoor tables, fresh fruits, ice |
+| Autumn | Sep-Nov | Pumpkin spice, cinnamon, cozy warm drinks | Falling leaves, warm scarves, golden hour, harvest elements |
+
+### Files Updated
+
+✅ **Scripts:**
+1. `coffee-website-react/scripts/curate-blog-content.ts`
+   - Updated search prompt to focus on Christmas recipes
+   - Updated blog generation prompt for festive tone
+   - Updated example JSON format with Christmas image prompt
+
+2. `coffee-website-react/scripts/upload-blog-post.ts`
+   - Renamed `fetchCoffeeImage()` → `generateCoffeeImage()`
+   - Added AI image generation logic (with fallback)
+   - Updated to use Christmas-themed Unsplash fallbacks
+   - Featured image function updated to `generateFeaturedImage()`
+   - Added Christmas-themed featured image rotation
+
+✅ **Frontend Components:**
+3. `coffee-website-react/src/pages/BlogPost.tsx`
+   - Removed external article link section (lines 277-286)
+   - Cleaner article display focusing on full content
+
+✅ **Skills Documentation:**
+4. `.claude/skills/ai-content-manager/SKILL.md`
+   - Updated blog curation script documentation
+   - Added seasonal theming strategy
+   - Updated blog upload script documentation
+   - Added image generation strategy section
+   - Added future enhancement notes for Imagen API
+
+5. `.claude/skills/ai-content-manager/LESSONS_LEARNED.md`
+   - Added this section documenting Christmas theming implementation
+
+### Future Imagen API Integration
+
+When Google Imagen API becomes available for direct image generation:
+
+**Step 1: Update generateCoffeeImage() function**
+```typescript
+async function generateCoffeeImage(article: CuratedArticle, articleIndex: number): Promise<string | null> {
+  const model = genAI.getGenerativeModel({ model: 'imagen-4.0-generate-001' })
+
+  // Generate image using article.imagePrompt
+  const result = await model.generateImage({
+    prompt: article.imagePrompt,
+    numberOfImages: 1,
+    aspectRatio: '4:3',
+  })
+
+  // Upload to Firebase Storage
+  const imageBuffer = await result.images[0].buffer()
+  const storageRef = ref(storage, `blog-images/${Date.now()}-${articleIndex}.jpg`)
+  await uploadBytes(storageRef, imageBuffer)
+  const downloadURL = await getDownloadURL(storageRef)
+
+  return downloadURL
+}
+```
+
+**Step 2: Remove fallback images**
+- Keep fallback only for error cases
+- Primary path uses AI-generated images
+
+**Step 3: Update costs**
+- Imagen 4.0: ~$0.02-0.04 per image
+- 4 images per blog post: ~$0.08-0.16
+- Weekly blog post: ~$0.32-0.64/month
+- Still very affordable for high-quality, perfectly-matched images
+
+### Performance Considerations
+
+📊 **Image Loading Strategy:**
+- Article images: 800x600 (~300-500 KB each)
+- Featured image: 1200x800 (~400-600 KB)
+- Total per blog post: ~1.5-2.5 MB for 4 articles
+- Lazy loading implemented for below-fold images
+
+📊 **Content Generation Time:**
+- Blog curation (Gemini): ~30-60 seconds
+- Image generation (future Imagen): ~30 seconds per image (2 minutes total)
+- Upload to Firestore: ~5-10 seconds
+- Total workflow: ~3-4 minutes per blog post
+
+📊 **Cost per Blog Post:**
+- Current (Unsplash fallbacks): $0.10-0.30 (Gemini curation only)
+- Future (with Imagen): $0.18-0.46 (Gemini + 4 images)
+- Weekly: ~$1.50-2.00/month
+- Very affordable for fully automated, seasonal blog content
+
+### Next Steps & Recommendations
+
+📝 **Short-term (This Week):**
+- [ ] Test blog curation with Christmas prompts: `npm run curate:blog`
+- [ ] Upload blog post: `npm run upload:blog`
+- [ ] Verify Christmas-themed images appear on blog post page
+- [ ] Test that article links are removed and content flows well
+
+📝 **Medium-term (This Month):**
+- [ ] Generate 2-3 Christmas blog posts to build content library
+- [ ] Test different Christmas recipe themes (drinks, desserts, cocktails)
+- [ ] Prepare Spring recipe prompts for February transition
+- [ ] Add Valentine's Day coffee recipes (mid-February)
+
+📝 **Long-term (Next Quarter):**
+- [ ] Integrate Imagen API when available for direct image generation
+- [ ] Build seasonal recipe library (8-12 posts per season)
+- [ ] Add recipe difficulty ratings and preparation times
+- [ ] Consider adding recipe print functionality
+- [ ] Add social sharing for seasonal recipes
+
+### Troubleshooting
+
+**Issue: Blog recipes not seasonal enough**
+- **Solution**: Update `searchPrompt` in `curate-blog-content.ts` with more specific seasonal keywords
+- **Example**: Add "must include [seasonal ingredient]" to prompt
+
+**Issue: Images don't match recipe theme**
+- **Solution**: Check `imagePrompt` field in generated JSON, update if generic
+- **Prevention**: Add more specific visual elements to search prompt example
+
+**Issue: Christmas prompts in Spring**
+- **Solution**: Remember to update prompts seasonally!
+- **Schedule**: Update prompts 2 weeks before season change
+- **Calendar reminder**: Set recurring reminder to update seasonal prompts
+
+---
+
+## Blog Image Generation Troubleshooting (2025-11-12)
+
+### Context
+After implementing AI image generation for blog posts, images were not displaying in browsers even though they uploaded successfully to Firebase Storage. This was a critical bug preventing the AI-generated Christmas images from showing.
+
+### Root Cause: Base64 Encoding Issue
+
+**The Problem:**
+Images from Imagen API (`imageBytes`) are returned as **base64-encoded strings**, but the upload script was treating them as raw bytes. This caused Firebase Storage to store base64 text files instead of binary JPEG images.
+
+**How to Identify:**
+```bash
+# Download and check file type
+curl -s "FIREBASE_STORAGE_URL" | file -
+# Output: ASCII text (WRONG - should be JPEG image data)
+
+# The file starts with: /9j/4AAQSkZJRg... (base64-encoded JPEG)
+# Should start with: ÿØÿà (binary JPEG header)
+```
+
+**Symptoms:**
+- Images upload successfully to Firebase Storage
+- `curl -I` returns HTTP 200 with `content-type: image/jpeg`
+- Browser shows broken images (naturalWidth: 0)
+- File command shows "ASCII text" instead of "JPEG image data"
+
+### The Fix
+
+**File:** `scripts/upload-blog-post.ts:176-178`
+
+**Before (BROKEN):**
+```typescript
+const imageBytes = response.generatedImages[0].image.imageBytes
+const imageBuffer = Buffer.from(imageBytes)  // ❌ Treats base64 as raw bytes
+await uploadBytes(storageRef, imageBuffer, {
+  contentType: 'image/jpeg',
+})
+```
+
+**After (FIXED):**
+```typescript
+const imageBytes = response.generatedImages[0].image.imageBytes
+// imageBytes is base64-encoded, so decode it to binary
+const imageBuffer = Buffer.from(imageBytes, 'base64')  // ✅ Properly decodes base64
+await uploadBytes(storageRef, imageBuffer, {
+  contentType: 'image/jpeg',
+})
+```
+
+**Key Change:** Added `'base64'` parameter to `Buffer.from()` to decode the base64 string to binary data before uploading.
+
+### Additional Fixes Required
+
+**1. Firebase Storage Public Access**
+
+Images must be publicly readable for browsers to display them:
+
+```bash
+# Set CORS configuration
+gsutil cors set cors.json gs://BUCKET_NAME
+
+# Make bucket publicly readable
+gsutil iam ch allUsers:objectViewer gs://BUCKET_NAME
+
+# Verify
+gsutil iam get gs://BUCKET_NAME | grep allUsers
+```
+
+**CORS configuration (cors.json):**
+```json
+[
+  {
+    "origin": ["*"],
+    "method": ["GET", "HEAD"],
+    "maxAgeSeconds": 3600,
+    "responseHeader": ["Content-Type", "Cache-Control"]
+  }
+]
+```
+
+**2. Firebase Storage Rules**
+
+Update `storage.rules` to allow public read access for blog images:
+
+```javascript
+// Blog images - public read, write allowed (for scripts)
+match /blog-images/{fileName} {
+  allow read: if true; // Public read for displaying on website
+  allow write: if true; // Allow scripts to upload blog images
+}
+```
+
+Deploy rules:
+```bash
+firebase deploy --only storage
+```
+
+**3. Duplicate Blog Posts**
+
+When re-uploading fixed images, delete old posts with broken images to avoid confusion:
+
+```bash
+firebase firestore:delete blog-posts/OLD_POST_ID --project PROJECT_ID --force
+```
+
+Or use Firestore console to manually delete duplicate posts.
+
+### Testing & Verification
+
+**Test 1: Direct URL Access**
+```bash
+# Should return binary JPEG, not base64 text
+curl -s "FIREBASE_URL" > test.jpg
+file test.jpg
+# Expected: JPEG image data, JFIF standard...
+```
+
+**Test 2: Browser DevTools**
+```javascript
+// In browser console
+const img = document.querySelector('img[src*="firebase"]');
+console.log(img.naturalWidth);  // Should be > 0
+console.log(img.complete);      // Should be true
+```
+
+**Test 3: Playwright Test**
+```python
+img = page.locator('img[src*="firebase"]')
+print(f"Width: {img.evaluate('el => el.naturalWidth')}")  # Should be > 0
+```
+
+### Key Learnings
+
+🔑 **Always Decode Base64 from AI APIs**
+- Imagen API returns base64-encoded image bytes
+- Must use `Buffer.from(data, 'base64')` not `Buffer.from(data)`
+- Same issue applies to other Google AI APIs (Veo for videos, etc.)
+
+🔑 **Firebase Storage Needs Multiple Permission Layers**
+1. **Storage Rules** (`storage.rules`) - Allow read/write at rule level
+2. **IAM Permissions** (`allUsers:objectViewer`) - Allow public access at bucket level
+3. **CORS Configuration** - Allow cross-origin requests from browsers
+
+All three are required for public image hosting!
+
+🔑 **Test Image Files Directly**
+```bash
+# Quick test to verify image is valid binary
+curl URL | file -
+# Should show: JPEG/PNG image data
+# If shows: ASCII text - images are base64 encoded
+```
+
+🔑 **Browser Cache Issues**
+After fixing, users need hard refresh (Cmd+Shift+R) to see images. Consider:
+- Adding cache-busting query params to URLs
+- Setting proper cache headers with short max-age during development
+
+### Checklist for Future Image Generation Issues
+
+When images don't display:
+
+- [ ] Check if image file is binary or base64 text (`curl URL | file -`)
+- [ ] Verify CORS is configured (`gsutil cors get gs://BUCKET`)
+- [ ] Verify bucket is publicly readable (`gsutil iam get gs://BUCKET`)
+- [ ] Check Storage Rules allow public read (`firebase deploy --only storage`)
+- [ ] Test direct URL access in browser (should download/display image)
+- [ ] Check browser console for CORS or 403 errors
+- [ ] Verify Firebase Storage bucket name matches config
+- [ ] Hard refresh browser (Cmd+Shift+R) to clear cache
+
+### Performance Notes
+
+📊 **Image Sizes (Properly Encoded):**
+- Article images (800x600): ~300-500 KB each
+- Featured images (1200x800): ~400-600 KB
+- 4 article images per blog post: ~1.5-2.5 MB total
+
+📊 **Generation Time:**
+- Imagen 4.0: ~10-30 seconds per image
+- 4 images: ~40-120 seconds total
+- Upload to Firebase: ~5-10 seconds
+
+📊 **Costs:**
+- Imagen 4.0: ~$0.02-0.04 per image
+- 4 images per blog post: ~$0.08-0.16
+- Weekly blog: ~$0.32-0.64/month
+- Very affordable for high-quality themed images
+
+### Files Updated
+
+✅ **Fixed:**
+1. `scripts/upload-blog-post.ts:178` - Added base64 decoding
+2. Firebase Storage CORS configuration
+3. Firebase Storage IAM permissions (allUsers:objectViewer)
+4. `storage.rules` - Public read for blog-images
+
+✅ **Documentation:**
+5. `.claude/skills/ai-content-manager/LESSONS_LEARNED.md` - This section
+
+### Future Improvements
+
+**When Imagen API Stabilizes:**
+1. Generate images at optimal resolution (800x600 for articles)
+2. Add retry logic for failed generations
+3. Implement image optimization (compress JPEGs further)
+4. Add WebP format support for better compression
+5. Consider generating multiple sizes for responsive images
+
+**Content Management:**
+1. Build admin UI to regenerate specific blog images
+2. Add image moderation/approval workflow
+3. Store generated image prompts for regeneration
+4. Version control for blog post images
+
+---
+
+Last Updated: 2025-11-12
 Updated By: Claude Code
-Status: ✅ Performance Optimizations Complete - Load time reduced from 3-5s to <1s perceived
+Status: ✅ Blog Image Generation Complete - AI images displaying correctly with proper base64 decoding

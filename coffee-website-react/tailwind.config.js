@@ -64,7 +64,7 @@ export default {
         logo: ['Bebas Neue', 'sans-serif'],
         heading: ['Bebas Neue', 'sans-serif'],
         display: ['Cinzel', 'serif'],
-        serif: ['Playfair Display', 'serif'],
+        serif: ['Crimson Text', 'Libre Baskerville', 'Playfair Display', 'serif'],
         sans: ['Inter', 'sans-serif'],
       },
       boxShadow: {

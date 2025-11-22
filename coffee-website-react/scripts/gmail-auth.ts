@@ -9,15 +9,24 @@
  */
 
 import { google } from 'googleapis'
-import * as readline from 'readline'
+import * as http from 'http'
+import * as url from 'url'
 import * as fs from 'fs/promises'
 import * as dotenv from 'dotenv'
+import open from 'open'
 
 dotenv.config({ path: '.env.local' })
 
-const SCOPES = ['https://www.googleapis.com/auth/gmail.send']
+const SCOPES = [
+  'https://www.googleapis.com/auth/gmail.send',
+  'https://www.googleapis.com/auth/gmail.readonly',
+  'https://www.googleapis.com/auth/gmail.modify',
+  'https://www.googleapis.com/auth/gmail.compose',
+]
 const TOKEN_PATH = './gmail-token.json'
-const CREDENTIALS_PATH = './gmail-credentials.json'
+const CREDENTIALS_PATH = './scripts/credentials/gmail-credentials.json'
+const REDIRECT_URI = 'http://localhost:8888/oauth2callback'
+const PORT = 8888
 
 /**
  * Read credentials from file or environment
@@ -44,7 +53,7 @@ async function getCredentials() {
     return {
       client_id: clientId,
       client_secret: clientSecret,
-      redirect_uris: ['http://localhost:3000/oauth2callback'],
+      redirect_uris: [REDIRECT_URI],
     }
   }
 }
@@ -61,27 +70,45 @@ function getAuthUrl(oauth2Client: any): string {
 }
 
 /**
- * Prompt user for authorization code
+ * Start local server and wait for OAuth callback
  */
 function getAuthorizationCode(authUrl: string): Promise<string> {
-  console.log('')
-  console.log('🔐 Gmail OAuth Authorization')
-  console.log('='.repeat(50))
-  console.log('')
-  console.log('Please visit this URL to authorize the application:')
-  console.log('')
-  console.log(authUrl)
-  console.log('')
+  return new Promise((resolve, reject) => {
+    const server = http.createServer(async (req, res) => {
+      try {
+        if (req.url?.indexOf('/oauth2callback') > -1) {
+          const qs = new url.URL(req.url, `http://localhost:${PORT}`).searchParams
+          const code = qs.get('code')
 
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  })
+          if (code) {
+            res.end('Authentication successful! You can close this window and return to the terminal.')
+            server.close()
+            resolve(code)
+          } else {
+            res.end('Authentication failed: No code received')
+            server.close()
+            reject(new Error('No authorization code received'))
+          }
+        }
+      } catch (e) {
+        reject(e)
+      }
+    }).listen(PORT, () => {
+      console.log('')
+      console.log('🔐 Gmail OAuth Authorization')
+      console.log('='.repeat(50))
+      console.log('')
+      console.log(`Starting local server on port ${PORT}...`)
+      console.log('Opening browser for authentication...')
+      console.log('If browser does not open automatically, visit:')
+      console.log('')
+      console.log(authUrl)
+      console.log('')
 
-  return new Promise((resolve) => {
-    rl.question('Enter the authorization code from the page: ', (code) => {
-      rl.close()
-      resolve(code.trim())
+      // Automatically open browser
+      open(authUrl).catch(() => {
+        console.log('Could not open browser automatically. Please open the URL manually.')
+      })
     })
   })
 }
@@ -112,20 +139,34 @@ async function saveTokens(tokens: any, credentials: any) {
   console.log('📝 Add these to your .env.local file:')
   console.log('='.repeat(50))
   console.log('')
+  console.log('# For Newsletter (existing):')
   console.log(`GMAIL_USER=your-email@gmail.com`)
   console.log(`GMAIL_CLIENT_ID=${credentials.client_id}`)
   console.log(`GMAIL_CLIENT_SECRET=${credentials.client_secret}`)
   console.log(`GMAIL_REFRESH_TOKEN=${tokens.refresh_token}`)
+  console.log('')
+  console.log('# For Google Workspace (order notifications + AI email):')
+  console.log(`GOOGLE_WORKSPACE_USER=hello@stockbridgecoffee.co.uk`)
+  console.log(`GOOGLE_WORKSPACE_CLIENT_ID=${credentials.client_id}`)
+  console.log(`GOOGLE_WORKSPACE_CLIENT_SECRET=${credentials.client_secret}`)
+  console.log(`GOOGLE_WORKSPACE_REFRESH_TOKEN=${tokens.refresh_token}`)
   console.log('')
 
   // For GitHub Actions
   console.log('🔧 For GitHub Actions, add these secrets:')
   console.log('='.repeat(50))
   console.log('')
+  console.log('# Gmail (newsletter):')
   console.log('gh secret set GMAIL_USER --body "your-email@gmail.com"')
   console.log(`gh secret set GMAIL_CLIENT_ID --body "${credentials.client_id}"`)
   console.log(`gh secret set GMAIL_CLIENT_SECRET --body "${credentials.client_secret}"`)
   console.log(`gh secret set GMAIL_REFRESH_TOKEN --body "${tokens.refresh_token}"`)
+  console.log('')
+  console.log('# Google Workspace (order notifications + AI):')
+  console.log('gh secret set GOOGLE_WORKSPACE_USER --body "hello@stockbridgecoffee.co.uk"')
+  console.log(`gh secret set GOOGLE_WORKSPACE_CLIENT_ID --body "${credentials.client_id}"`)
+  console.log(`gh secret set GOOGLE_WORKSPACE_CLIENT_SECRET --body "${credentials.client_secret}"`)
+  console.log(`gh secret set GOOGLE_WORKSPACE_REFRESH_TOKEN --body "${tokens.refresh_token}"`)
   console.log('')
 }
 

@@ -806,10 +806,10 @@ npm run blog:auto
 **Location:** `scripts/curate-blog-content.ts`
 
 **What it does:**
-1. Uses Gemini 2.0 Flash to search for recent coffee articles
-2. Focuses on: brewing techniques, recipes, coffee culture
-3. Analyzes and summarizes each article
-4. Extracts 3-4 key takeaways per article
+1. Uses Gemini 2.0 Flash to search for seasonal/themed coffee recipe articles
+2. Focuses on: coffee recipes with seasonal themes (currently Christmas)
+3. Generates 400-600 word full blog articles for each recipe
+4. Creates detailed image prompts for AI image generation matching recipe themes
 5. Generates cohesive blog post introduction and conclusion
 6. Saves to `scripts/generated-blog-post.json`
 
@@ -823,10 +823,21 @@ npm run curate:blog -- --articles=5
 ```
 
 **Gemini Prompt Strategy:**
-- Requests specific, reputable sources (Perfect Daily Grind, Barista Magazine, James Hoffmann)
-- Focuses on practical, actionable content for home brewers
-- Avoids commercial reviews and business advice
-- Emphasizes brewing techniques and coffee science
+- Requests specific, reputable sources (Perfect Daily Grind, Barista Magazine, James Hoffmann, Serious Eats, Bon Appetit)
+- Focuses on **SEASONAL COFFEE RECIPES** (currently Christmas-themed)
+- Generates complete 400-600 word blog articles with detailed instructions
+- Creates detailed image prompts that match recipe themes and seasons
+- Includes festive/seasonal elements in both content and image descriptions
+- Emphasizes practical, achievable recipes for home coffee enthusiasts
+
+**Seasonal Theming:**
+The script is designed to be updated based on the current season or holiday:
+- **Christmas** (Nov-Dec): Peppermint mocha, gingerbread latte, eggnog latte, festive decorations
+- **Spring** (Mar-May): Floral lattes, iced coffee, light refreshing drinks
+- **Summer** (Jun-Aug): Cold brew, iced coffee cocktails, refreshing beverages
+- **Autumn** (Sep-Nov): Pumpkin spice, cinnamon, cozy warm drinks
+
+Update the search prompt in the script to match the current season for best results.
 
 ### Blog Upload Script
 
@@ -834,10 +845,26 @@ npm run curate:blog -- --articles=5
 
 **What it does:**
 1. Reads `generated-blog-post.json`
-2. Generates URL-friendly slug
-3. Calculates estimated read time
-4. Creates excerpt from introduction
-5. Uploads to Firestore with metadata
+2. Generates AI images for each recipe using imagePrompt field (with Christmas-themed fallbacks)
+3. Generates featured image for blog post (seasonal/themed)
+4. Generates URL-friendly slug
+5. Calculates estimated read time
+6. Creates excerpt from introduction
+7. Uploads to Firestore with metadata and images
+
+**Image Generation Strategy:**
+- Uses `article.imagePrompt` from curated content to generate matching images
+- Falls back to curated seasonal Unsplash images when Imagen API unavailable
+- Featured images rotate based on day of month for variety
+- All images use seasonal theming (currently Christmas with decorations, festive mugs, warm lighting)
+- Images are 800x600 for articles, 1200x800 for featured images
+
+**Future Enhancement:**
+When Google Imagen API becomes available for direct image generation:
+1. Replace fallback images with actual AI-generated images
+2. Use the detailed `imagePrompt` from each article
+3. Upload generated images to Firebase Storage
+4. Update Firestore with Firebase Storage URLs instead of Unsplash URLs
 
 **Firestore Schema:**
 ```typescript

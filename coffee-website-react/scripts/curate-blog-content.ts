@@ -62,32 +62,31 @@ async function searchCoffeeArticles(count: number = 4): Promise<CuratedArticle[]
 
   const searchPrompt = `You are an expert coffee content curator for Stockbridge Coffee, a premium Edinburgh-based coffee roastery.
 
-Search for and provide ${count} high-quality, recent (within the last 3 months) articles specifically about COFFEE RECIPES.
+Search for and provide ${count} high-quality CHRISTMAS-THEMED COFFEE RECIPES perfect for the holiday season.
 
 For each article, provide:
-1. Article title
+1. Article title (must be Christmas/holiday themed)
 2. URL (use real, reputable sources like: Perfect Daily Grind, Barista Magazine, James Hoffmann blog, Coffee Review, Sprudge, Serious Eats, Bon Appetit, etc.)
 3. Source/publication name
-4. A 2-3 sentence summary focusing on practical value
-5. FULL BLOG CONTENT (400-600 words): Write a complete, engaging blog article about this recipe that includes:
-   - Introduction to the recipe and why it's worth trying
+4. A 2-3 sentence summary focusing on practical value for holiday entertaining
+5. FULL BLOG CONTENT (400-600 words): Write a complete, engaging blog article about this CHRISTMAS recipe that includes:
+   - Introduction to the recipe and why it's perfect for Christmas
    - Detailed step-by-step instructions
    - Tips for achieving the best results
-   - Flavor profiles and what makes it special
-   - Any variations or customizations
-   - Why it's perfect for the season or occasion
-6. IMAGE PROMPT: A detailed prompt for AI image generation describing the finished recipe (be specific about composition, lighting, styling)
-7. A relevance score (1-10) for how useful this recipe is for coffee enthusiasts
+   - Flavor profiles and what makes it special for the holidays
+   - Any variations or customizations for Christmas parties
+   - Why it's the perfect festive coffee treat
+6. IMAGE PROMPT: A detailed prompt for AI image generation describing the finished recipe with CHRISTMAS DECORATIONS and festive styling (be specific about composition, lighting, holiday elements like pine branches, cinnamon sticks, fairy lights, festive mugs)
+7. A relevance score (1-10) for how useful this recipe is for Christmas coffee enthusiasts
 8. Approximate publish date
 
-FOCUS EXCLUSIVELY ON COFFEE RECIPES:
-- Coffee drink recipes (lattes, cappuccinos, macchiatos, seasonal drinks)
-- Iced coffee and cold brew recipes
-- Coffee cocktails and coffee-based beverages
-- Coffee dessert recipes (tiramisu, coffee cakes, etc.)
-- Coffee-infused food recipes
-- Specialty coffee preparations (affogato, Vietnamese coffee, etc.)
-- Seasonal coffee drinks (pumpkin spice, peppermint mocha, etc.)
+FOCUS EXCLUSIVELY ON CHRISTMAS COFFEE RECIPES:
+- Christmas coffee drinks (peppermint mocha, gingerbread latte, eggnog latte, Christmas spice cappuccino)
+- Festive iced coffee drinks with holiday flavors
+- Christmas coffee cocktails (Irish coffee, coffee martini with holiday spices)
+- Holiday coffee desserts (tiramisu with Christmas spices, coffee yule log, etc.)
+- Coffee-infused Christmas treats (coffee cookies, coffee brownies)
+- Specialty Christmas coffee preparations with seasonal spices
 
 AVOID:
 - General brewing techniques without specific recipes
@@ -105,7 +104,7 @@ Return the results in this EXACT JSON format (valid JSON only, no markdown):
       "source": "Publication Name",
       "summary": "Brief summary of the recipe and why it's valuable.",
       "fullContent": "Complete 400-600 word blog article with detailed recipe instructions, tips, and context...",
-      "imagePrompt": "Professional food photography of [specific recipe]: overhead shot of a beautiful [drink/dessert] on a rustic wooden table, warm lighting, shallow depth of field, steam rising, cozy cafe atmosphere, 4K quality, no text or watermarks",
+      "imagePrompt": "Professional food photography of [specific Christmas recipe]: overhead shot of a beautiful [drink/dessert] in a festive red mug on a rustic wooden table with Christmas decorations (pine branches, cinnamon sticks, star anise, cranberries), warm golden lighting from fairy lights, shallow depth of field, steam rising, cozy Christmas cafe atmosphere with bokeh lights in background, 4K quality, no text or watermarks",
       "relevanceScore": 9,
       "publishedDate": "2025-01"
     }
@@ -154,22 +153,22 @@ Full Content Preview: ${article.fullContent.substring(0, 300)}...
 
   const blogPrompt = `You are a content writer for Stockbridge Coffee, a premium Edinburgh-based coffee roastery known for quality and craftsmanship.
 
-Create a cohesive blog post that introduces and connects the following ${articles.length} curated COFFEE RECIPES:
+Create a cohesive blog post that introduces and connects the following ${articles.length} curated CHRISTMAS COFFEE RECIPES:
 
 ${articlesText}
 
 Generate:
-1. A compelling blog post title focused on coffee recipes (should be engaging and appetizing)
-2. An introduction paragraph (2-3 sentences) that makes readers excited to try these recipes
-3. A conclusion paragraph (2-3 sentences) that encourages readers to experiment and share their creations
-4. 3-5 relevant tags (focus on recipe types, ingredients, seasons)
+1. A compelling blog post title focused on CHRISTMAS coffee recipes (should be festive, engaging and appetizing)
+2. An introduction paragraph (2-3 sentences) that makes readers excited to try these Christmas recipes and brings holiday cheer
+3. A conclusion paragraph (2-3 sentences) that encourages readers to celebrate the holidays with these festive coffee creations
+4. 3-5 relevant tags (focus on Christmas, holiday recipes, festive drinks, seasonal ingredients)
 5. Category should be "coffee-recipes"
 
 The tone should be:
-- Warm and inviting
-- Inspiring and encouraging
-- Focused on the joy of creating coffee drinks and treats
-- Edinburgh/Stockbridge-friendly (mention our local coffee culture and community)
+- Warm, festive, and inviting
+- Inspiring and encouraging holiday cheer
+- Focused on the joy of creating Christmas coffee drinks and treats
+- Edinburgh/Stockbridge-friendly (mention our local Christmas markets and cozy winter coffee culture)
 
 Return the result in this EXACT JSON format (valid JSON only, no markdown):
 {

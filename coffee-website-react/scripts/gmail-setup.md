@@ -119,6 +119,8 @@ For automated newsletter sending in GitHub Actions:
 - Refresh token may have expired
 - Re-run `npm run gmail:auth`
 
+
+
 ### "Insufficient permissions"
 
 - Ensure `gmail.send` scope is added in OAuth consent screen

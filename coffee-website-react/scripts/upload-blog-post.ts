@@ -12,7 +12,7 @@
 import { initializeApp } from 'firebase/app'
 import { getFirestore, collection, addDoc, Timestamp } from 'firebase/firestore'
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import { GoogleGenAI } from '@google/genai'
 import { config } from 'dotenv'
 import * as fs from 'fs/promises'
 
@@ -45,11 +45,11 @@ const db = getFirestore(app)
 const storage = getStorage(app)
 
 // Initialize Gemini AI for image generation
-const GEMINI_API_KEY = process.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY
-if (!GEMINI_API_KEY) {
+const API_KEY = process.env.API_KEY || process.env.VITE_GEMINI_API_KEY
+if (!API_KEY) {
   console.error('⚠️  Warning: GEMINI_API_KEY not found. Blog images will not be generated.')
 }
-const genAI = GEMINI_API_KEY ? new GoogleGenerativeAI(GEMINI_API_KEY) : null
+const genAI = API_KEY ? new GoogleGenAI({ apiKey: API_KEY }) : null
 
 interface CuratedArticle {
   title: string
@@ -131,44 +131,102 @@ function generateExcerpt(introduction: string): string {
 }
 
 /**
- * Get coffee image URL - using Picsum for reliable image delivery
+ * Generate AI image for article using Gemini Imagen
  */
-async function fetchCoffeeImage(article: CuratedArticle, articleIndex: number): Promise<string | null> {
-  console.log(`   🎨 Fetching image for article ${articleIndex + 1}: "${article.title}"...`)
+async function generateCoffeeImage(article: CuratedArticle, articleIndex: number): Promise<string | null> {
+  console.log(`   🎨 Generating AI image for article ${articleIndex + 1}: "${article.title}"...`)
+
+  if (!genAI) {
+    console.log(`      ⚠️  Gemini API not configured, using fallback images`)
+    // Fallback to curated Christmas-themed coffee images
+    const christmasCoffeeImages = [
+      'https://images.unsplash.com/photo-1512568400610-62da28bc8a13?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1482146039114-f19e8b7d7889?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=800&h=600&fit=crop',
+    ]
+    return christmasCoffeeImages[articleIndex % christmasCoffeeImages.length]
+  }
 
   try {
-    // Use specific coffee-themed images from Unsplash via direct URLs
-    // These are curated coffee images that will reliably load
-    const coffeeImages = [
-      'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=800&h=600&fit=crop', // Pumpkin spice latte
-      'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800&h=600&fit=crop', // Espresso martini/cocktail
-      'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=800&h=600&fit=crop', // Iced coffee
-      'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&h=600&fit=crop', // Vietnamese coffee
-    ]
+    // Use the imagePrompt from the article, which includes Christmas theming
+    const imagePrompt = article.imagePrompt || `Professional food photography of ${article.title}: overhead shot of a beautiful coffee drink in a festive red mug on a rustic wooden table with Christmas decorations (pine branches, cinnamon sticks, star anise, cranberries), warm golden lighting from fairy lights, shallow depth of field, steam rising, cozy Christmas cafe atmosphere with bokeh lights in background, 4K quality, no text or watermarks`
 
-    const imageUrl = coffeeImages[articleIndex % coffeeImages.length]
-    console.log(`      ✅ Using curated coffee image`)
-    return imageUrl
+    console.log(`      📝 Prompt: ${imagePrompt.substring(0, 80)}...`)
+    console.log(`      ⏳ Generating image with Imagen 4.0 (this may take 10-30 seconds)...`)
+
+    // Generate image using Imagen (same as test-content-generation.ts)
+    const response = await genAI.models.generateImages({
+      model: 'imagen-4.0-generate-001',
+      prompt: imagePrompt,
+      config: {
+        numberOfImages: 1,
+        outputMimeType: 'image/jpeg',
+        aspectRatio: '4:3',
+      },
+    })
+
+    if (!response.generatedImages || response.generatedImages.length === 0) {
+      throw new Error('No images generated')
+    }
+
+    console.log(`      ✅ Image generated successfully!`)
+
+    // Upload to Firebase Storage
+    const imageBytes = response.generatedImages[0].image.imageBytes
+    // imageBytes is base64-encoded, so decode it to binary
+    const imageBuffer = Buffer.from(imageBytes, 'base64')
+    const timestamp = Date.now()
+    const storageRef = ref(storage, `blog-images/${timestamp}-${articleIndex}.jpg`)
+
+    console.log(`      📤 Uploading to Firebase Storage...`)
+    await uploadBytes(storageRef, imageBuffer, {
+      contentType: 'image/jpeg',
+      cacheControl: 'public, max-age=31536000',
+    })
+
+    const downloadURL = await getDownloadURL(storageRef)
+    console.log(`      ✅ Image uploaded: ${downloadURL.substring(0, 60)}...`)
+
+    return downloadURL
   } catch (error: any) {
-    console.error(`      ❌ Error fetching image: ${error.message || error}`)
-    return null
+    console.error(`      ❌ Error generating image: ${error.message || error}`)
+
+    // Fallback to Christmas-themed Unsplash images on error
+    console.log(`      ⚠️  Using fallback Unsplash image`)
+    const christmasCoffeeImages = [
+      'https://images.unsplash.com/photo-1512568400610-62da28bc8a13?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1482146039114-f19e8b7d7889?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800&h=600&fit=crop',
+      'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=800&h=600&fit=crop',
+    ]
+    return christmasCoffeeImages[articleIndex % christmasCoffeeImages.length]
   }
 }
 
 /**
- * Fetch featured image for blog post from Unsplash
+ * Generate featured image for blog post - Christmas themed
  */
-async function fetchFeaturedImage(blogPost: BlogPost): Promise<string | null> {
-  console.log('🎨 Fetching featured image...')
+async function generateFeaturedImage(blogPost: BlogPost): Promise<string | null> {
+  console.log('🎨 Generating featured image for blog post...')
 
   try {
-    // Use a curated featured image from Unsplash
-    const featuredImageUrl = 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&h=800&fit=crop'
+    // Use a curated Christmas-themed featured image from Unsplash
+    // When Imagen API is available, this can be generated dynamically
+    const christmasFeaturedImages = [
+      'https://images.unsplash.com/photo-1512568400610-62da28bc8a13?w=1200&h=800&fit=crop', // Christmas coffee setup
+      'https://images.unsplash.com/photo-1482146039114-f19e8b7d7889?w=1200&h=800&fit=crop', // Festive hot drinks
+      'https://images.unsplash.com/photo-1608398002239-e7f8830d4d10?w=1200&h=800&fit=crop', // Christmas cafe scene
+    ]
 
-    console.log(`   ✅ Using featured image`)
+    // Use first image as featured, or rotate based on day
+    const dayOfMonth = new Date().getDate()
+    const featuredImageUrl = christmasFeaturedImages[dayOfMonth % christmasFeaturedImages.length]
+
+    console.log(`   ✅ Using Christmas-themed featured image`)
     return featuredImageUrl
   } catch (error: any) {
-    console.error('   ❌ Error fetching featured image:', error.message || error)
+    console.error('   ❌ Error generating featured image:', error.message || error)
     return null
   }
 }
@@ -184,11 +242,11 @@ async function uploadBlogPost(blogPost: BlogPost): Promise<string> {
   const readTime = calculateReadTime(blogPost)
   const excerpt = generateExcerpt(blogPost.introduction)
 
-  // Fetch images for each article from Unsplash
-  console.log(`🎨 Fetching images for ${blogPost.articles.length} articles...`)
+  // Generate AI images for each article (or use Christmas-themed fallbacks)
+  console.log(`🎨 Generating images for ${blogPost.articles.length} articles...`)
   const articlesWithImages = await Promise.all(
     blogPost.articles.map(async (article, index) => {
-      const imageUrl = await fetchCoffeeImage(article, index)
+      const imageUrl = await generateCoffeeImage(article, index)
       return {
         ...article,
         imageUrl: imageUrl || undefined  // Always include imageUrl field
@@ -196,8 +254,8 @@ async function uploadBlogPost(blogPost: BlogPost): Promise<string> {
     })
   )
 
-  // Fetch featured image for the blog post
-  const featuredImage = await fetchFeaturedImage(blogPost)
+  // Generate featured image for the blog post
+  const featuredImage = await generateFeaturedImage(blogPost)
 
   const firestorePost: FirestoreBlogPost = {
     title: blogPost.title,

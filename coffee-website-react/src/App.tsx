@@ -1,8 +1,8 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { Navigation } from './components/Navigation'
 import { Hero } from './components/Hero'
-import { ProductGrid } from './components/ProductGrid'
+import { ProductShowcase } from './components/ProductShowcase'
 import { About } from './components/About'
 import { Testimonials } from './components/Testimonials'
 import { Newsletter } from './components/Newsletter'
@@ -18,70 +18,19 @@ import CoffeeCopilot from './components/CoffeeCopilot'
 import { BlogPost } from './pages/BlogPost'
 import { AdminDashboard } from './pages/AdminDashboard'
 import { useCart } from './hooks/useCart'
-import { useProductImages } from './hooks/useProductImages'
-import type { Product } from './types/product'
-
-const baseProducts: Omit<Product, 'image'>[] = [
-  {
-    id: '1',
-    name: 'Ethiopian Yirgacheffe',
-    description: 'Bright citrus notes with floral undertones and a smooth finish.',
-    price: 19.99,
-    weight: '250g',
-    category: 'Single Origin',
-    badge: 'Best Seller',
-  },
-  {
-    id: '2',
-    name: 'Colombian Supremo',
-    description: 'Rich and balanced with caramel sweetness and nutty complexity.',
-    price: 18.49,
-    weight: '250g',
-    category: 'Single Origin',
-    badge: 'New',
-  },
-  {
-    id: '3',
-    name: 'House Blend',
-    description: 'Our signature blend with chocolate notes and a velvety body.',
-    price: 15.99,
-    weight: '250g',
-    category: 'Signature Blend',
-  },
-  {
-    id: '4',
-    name: 'Espresso Forte',
-    description: 'Bold and intense with dark chocolate and smoky undertones.',
-    price: 21.49,
-    weight: '250g',
-    category: 'Espresso',
-  },
-  {
-    id: '5',
-    name: 'Kenya AA',
-    description: 'Bright acidity with berry notes and wine-like complexity.',
-    price: 22.49,
-    weight: '250g',
-    category: 'Single Origin',
-  },
-  {
-    id: '6',
-    name: 'Decaf Swiss Water',
-    description: 'Full flavor without the caffeine, processed naturally.',
-    price: 19.49,
-    weight: '250g',
-    category: 'Decaffeinated',
-  },
-]
 
 // Component to handle hash-based navigation scrolling
 interface HomePageProps {
-  products: Product[]
-  onAddToCart: (product: Product) => void
+  onAddToCart: (item: {
+    format: 'whole' | 'ground'
+    size: '250g' | '1kg'
+    quantity: number
+    price: number
+  }) => void
   onGiftCardClick: () => void
 }
 
-function HomePage({ products, onAddToCart, onGiftCardClick }: HomePageProps) {
+function HomePage({ onAddToCart, onGiftCardClick }: HomePageProps) {
   const location = useLocation()
 
   useEffect(() => {
@@ -105,7 +54,7 @@ function HomePage({ products, onAddToCart, onGiftCardClick }: HomePageProps) {
     <>
       <Hero />
       <About />
-      <ProductGrid products={products} onAddToCart={onAddToCart} />
+      <ProductShowcase onAddToCart={onAddToCart} />
       <GiftCardSection onPurchaseClick={onGiftCardClick} />
       <Testimonials />
       <BlogHighlights />
@@ -132,16 +81,29 @@ function App() {
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false)
   const [giftCardModalOpen, setGiftCardModalOpen] = useState(false)
 
-  // Get rotating product images from AI-generated content
-  const { productImages } = useProductImages(baseProducts.length)
+  // Handle adding coffee to cart (new format for single product with options)
+  const handleAddCoffeeToCart = (item: {
+    format: 'whole' | 'ground'
+    size: '250g' | '1kg'
+    quantity: number
+    price: number
+  }) => {
+    // Convert to Product type for cart
+    const product = {
+      id: 'stockbridge-signature',
+      name: `Stockbridge Signature - ${item.format === 'whole' ? 'Whole Bean' : 'Ground'}`,
+      description: 'Ethiopian Yirgacheffe',
+      price: item.price / item.quantity, // Unit price
+      weight: item.size,
+      category: 'Single Origin',
+      image: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=800&q=80',
+    }
 
-  // Combine base products with rotating images
-  const products = useMemo(() => {
-    return baseProducts.map((product, index) => ({
-      ...product,
-      image: productImages[index],
-    }))
-  }, [productImages])
+    // Add to cart with quantity
+    for (let i = 0; i < item.quantity; i++) {
+      addToCart(product)
+    }
+  }
 
   return (
     <>
@@ -162,8 +124,7 @@ function App() {
         {/* Home page */}
         <Route path="/" element={
           <HomePage
-            products={products}
-            onAddToCart={addToCart}
+            onAddToCart={handleAddCoffeeToCart}
             onGiftCardClick={() => setGiftCardModalOpen(true)}
           />
         } />

@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/davidmarkgardiner/coffe-beans-skills#readme",
   "dependencies": {
-    "@google/generative-ai": "^0.24.1"
+    "@google/generative-ai": "^0.24.1",
+    "react-hot-toast": "^2.6.0"
   }
 }

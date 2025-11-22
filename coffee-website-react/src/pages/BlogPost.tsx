@@ -145,7 +145,7 @@ export function BlogPost() {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-32 pb-20">
+    <div className="min-h-screen bg-background pt-40 pb-20">
       <div className="container mx-auto px-6">
         <article className="max-w-4xl mx-auto">
           {/* Back button */}
@@ -154,8 +154,8 @@ export function BlogPost() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4 }}
             onClick={() => {
-              // Navigate to home page
-              window.location.href = '/#blog'
+              // Navigate to home page blog section
+              navigate('/#blog')
             }}
             className="inline-flex items-center text-accent hover:text-accent-hover transition-colors mb-8"
           >
@@ -273,17 +273,6 @@ export function BlogPost() {
                       {article.fullContent}
                     </div>
                   </div>
-
-                  {/* Read Original Link */}
-                  <a
-                    href={article.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center text-sm font-semibold text-accent hover:text-accent-hover transition-colors"
-                  >
-                    Read Original Article
-                    <span className="ml-2">→</span>
-                  </a>
 
                   {/* Relevance Score */}
                   <div className="mt-4 flex items-center gap-2">
