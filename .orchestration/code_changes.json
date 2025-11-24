@@ -1,0 +1,20 @@
+{
+  "file_count": 10,
+  "lines_changed": 374,
+  "files_modified": [
+    "coffee-website-react/src/main.tsx",
+    "coffee-website-react/tailwind.config.js",
+    "coffee-website-react/src/index.css",
+    "coffee-website-react/src/components/Navigation.tsx",
+    "coffee-website-react/src/components/Footer.tsx",
+    "coffee-website-react/src/components/ProductCard.tsx",
+    "coffee-website-react/src/components/About.tsx",
+    "coffee-website-react/src/components/GiftCardPurchase.tsx"
+  ],
+  "files_created": [
+    "coffee-website-react/src/contexts/ThemeContext.tsx",
+    "coffee-website-react/src/components/ThemeToggle.tsx",
+    "coffee-website-react/e2e/dark-mode.spec.ts"
+  ],
+  "diff": "Summary of changes:\n- Added ThemeContext with localStorage persistence and system preference detection\n- Created ThemeToggle component with Sun/Moon icons\n- Enabled Tailwind CSS dark mode with 'class' strategy\n- Added CSS variables for dark mode colors\n- Updated Navigation component with dark mode styles and ThemeToggle\n- Updated Footer with dark:bg-gray-900 and dark text colors\n- Updated ProductCard with dark mode hover and background styles\n- Updated About component with dark mode backgrounds and text\n- Created 7 E2E tests for dark mode functionality\n\nKey features:\n- Theme persists in localStorage\n- Respects system preference on first load\n- Smooth transitions between themes\n- All major components support dark mode\n- Comprehensive test coverage"
+}

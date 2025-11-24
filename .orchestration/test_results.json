@@ -1,0 +1,54 @@
+{
+  "local": {
+    "lint": "failed (pre-existing issues unrelated to dark mode)",
+    "build": "passed",
+    "build_details": {
+      "bundle_size": "1,040 KB",
+      "gzipped_size": "277 KB",
+      "build_time": "3.41s"
+    },
+    "unit_tests": {
+      "passed": 0,
+      "total": 0,
+      "coverage": 0,
+      "note": "No unit test runner configured"
+    },
+    "e2e_tests": {
+      "passed": 0,
+      "total": 7,
+      "note": "E2E tests created but not executed (no Playwright test command run)",
+      "tests_created": [
+        "toggle between light and dark modes",
+        "persist theme preference across reloads",
+        "respect system preference on first load",
+        "apply dark mode to all components",
+        "provide accessible toggle button",
+        "have smooth transitions",
+        "sync with localStorage"
+      ]
+    }
+  },
+  "preview": {
+    "e2e_tests": {
+      "passed": 0,
+      "total": 0,
+      "note": "Not run - skipping preview deployment for this phase"
+    },
+    "lighthouse": {
+      "performance": 0,
+      "accessibility": 0,
+      "note": "Not run"
+    }
+  },
+  "production": {
+    "smoke_tests": {
+      "passed": 0,
+      "total": 0,
+      "note": "Not run"
+    },
+    "monitoring": {
+      "error_rate": 0,
+      "note": "Not applicable"
+    }
+  }
+}

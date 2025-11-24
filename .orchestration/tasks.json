@@ -1,0 +1,90 @@
+{
+  "feature": "google-maps-location",
+  "specification": "specs/google-maps-location.md",
+  "frontend_tasks": [
+    {
+      "id": "f1",
+      "description": "Create LocationMap component with Google Maps JavaScript API integration",
+      "dependencies": [],
+      "skills": ["premium-coffee-website"],
+      "estimated_complexity": "high",
+      "deliverables": [
+        "LocationMap.tsx component",
+        "TypeScript types for Google Maps",
+        "API key loading from environment",
+        "Custom marker with info window",
+        "Dark mode map styling"
+      ]
+    },
+    {
+      "id": "f2",
+      "description": "Create MapSection wrapper component with responsive layout",
+      "dependencies": ["f1"],
+      "skills": ["premium-coffee-website"],
+      "estimated_complexity": "low",
+      "deliverables": [
+        "MapSection.tsx component",
+        "Responsive layout with Tailwind",
+        "Loading state and error handling",
+        "Dark mode support"
+      ]
+    },
+    {
+      "id": "f3",
+      "description": "Integrate MapSection into homepage",
+      "dependencies": ["f2"],
+      "skills": ["premium-coffee-website"],
+      "estimated_complexity": "low",
+      "deliverables": [
+        "Updated homepage with map section",
+        "Proper section positioning",
+        "Mobile responsive layout"
+      ]
+    },
+    {
+      "id": "f4",
+      "description": "Write E2E tests for Google Maps component",
+      "dependencies": ["f3"],
+      "skills": ["premium-coffee-website"],
+      "estimated_complexity": "medium",
+      "deliverables": [
+        "E2E test file for map interactions",
+        "Test coverage for loading states",
+        "Test coverage for dark mode",
+        "Mobile responsive tests"
+      ]
+    }
+  ],
+  "google_tasks": [
+    {
+      "id": "g1",
+      "description": "Setup Google Maps API configuration and obtain API key",
+      "dependencies": [],
+      "skills": ["ai-content-manager"],
+      "estimated_complexity": "low",
+      "deliverables": [
+        "Google Cloud Console project setup",
+        "Maps JavaScript API enabled",
+        "API key with domain restrictions",
+        "Environment variable configuration guide"
+      ]
+    },
+    {
+      "id": "g2",
+      "description": "Geocode location address and configure custom map styles",
+      "dependencies": ["g1"],
+      "skills": ["ai-content-manager"],
+      "estimated_complexity": "low",
+      "deliverables": [
+        "Latitude/longitude for Top 8, EH4 2DP",
+        "Custom dark mode map styles JSON",
+        "Custom light mode map styles JSON",
+        "Marker icon customization"
+      ]
+    }
+  ],
+  "execution_strategy": "parallel_then_sequential",
+  "rationale": "Google tasks (API setup, geocoding, styling) can run in parallel with frontend component creation (f1). Once both complete, frontend integration (f2, f3) and testing (f4) run sequentially.",
+  "estimated_duration": "2-3 hours",
+  "quality_threshold": 85
+}

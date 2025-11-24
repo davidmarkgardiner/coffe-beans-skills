@@ -1,0 +1,272 @@
+YOLO mode is enabled. All tool calls will be automatically approved.
+Loaded cached credentials.
+[ERROR] [IDEClient] Failed to connect to IDE companion extension. Please ensure the extension is running. To install the extension, run /ide install.
+The --prompt (-p) flag has been deprecated and will be removed in a future version. Please use a positional argument for your prompt. See gemini --help for more information.
+Attempt 1 failed with status 429. Retrying with backoff... GaxiosError: [{
+  "error": {
+    "code": 429,
+    "message": "Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.",
+    "errors": [
+      {
+        "message": "Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.",
+        "domain": "global",
+        "reason": "rateLimitExceeded"
+      }
+    ],
+    "status": "RESOURCE_EXHAUSTED"
+  }
+}
+]
+    at Gaxios._request (/Users/davidgardiner/.nvm/versions/node/v22.16.0/lib/node_modules/@google/gemini-cli/node_modules/gaxios/build/src/gaxios.js:142:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async OAuth2Client.requestAsync (/Users/davidgardiner/.nvm/versions/node/v22.16.0/lib/node_modules/@google/gemini-cli/node_modules/google-auth-library/build/src/auth/oauth2client.js:429:18)
+    at async CodeAssistServer.requestStreamingPost (file:///Users/davidgardiner/.nvm/versions/node/v22.16.0/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:106:21)
+    at async CodeAssistServer.generateContentStream (file:///Users/davidgardiner/.nvm/versions/node/v22.16.0/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:25:23)
+    at async file:///Users/davidgardiner/.nvm/versions/node/v22.16.0/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/loggingContentGenerator.js:116:26
+    at async runInDevTraceSpan (file:///Users/davidgardiner/.nvm/versions/node/v22.16.0/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/telemetry/trace.js:33:16)
+    at async retryWithBackoff (file:///Users/davidgardiner/.nvm/versions/node/v22.16.0/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/utils/retry.js:75:28)
+    at async GeminiChat.makeApiCallAndProcessStream (file:///Users/davidgardiner/.nvm/versions/node/v22.16.0/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:297:32)
+    at async file:///Users/davidgardiner/.nvm/versions/node/v22.16.0/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:232:40 {
+  config: {
+    url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+    method: 'POST',
+    params: { alt: 'sse' },
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'GeminiCLI/v22.16.0 (darwin; x64) google-api-nodejs-client/9.15.1',
+      Authorization: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'x-goog-api-client': 'gl-node/22.16.0'
+    },
+    responseType: 'stream',
+    body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+    signal: AbortSignal { aborted: false },
+    paramsSerializer: [Function: paramsSerializer],
+    validateStatus: [Function: validateStatus],
+    errorRedactor: [Function: defaultErrorRedactor]
+  },
+  response: {
+    config: {
+      url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+      method: 'POST',
+      params: [Object],
+      headers: [Object],
+      responseType: 'stream',
+      body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      signal: [AbortSignal],
+      paramsSerializer: [Function: paramsSerializer],
+      validateStatus: [Function: validateStatus],
+      errorRedactor: [Function: defaultErrorRedactor]
+    },
+    data: '[{\n' +
+      '  "error": {\n' +
+      '    "code": 429,\n' +
+      '    "message": "Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.",\n' +
+      '    "errors": [\n' +
+      '      {\n' +
+      '        "message": "Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.",\n' +
+      '        "domain": "global",\n' +
+      '        "reason": "rateLimitExceeded"\n' +
+      '      }\n' +
+      '    ],\n' +
+      '    "status": "RESOURCE_EXHAUSTED"\n' +
+      '  }\n' +
+      '}\n' +
+      ']',
+    headers: {
+      'alt-svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000',
+      'content-length': '514',
+      'content-type': 'application/json; charset=UTF-8',
+      date: 'Mon, 24 Nov 2025 16:13:17 GMT',
+      server: 'ESF',
+      'server-timing': 'gfet4t7; dur=15587',
+      vary: 'Origin, X-Origin, Referer',
+      'x-cloudaicompanion-trace-id': 'dc638f2250a3b8ac',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-xss-protection': '0'
+    },
+    status: 429,
+    statusText: 'Too Many Requests',
+    request: {
+      responseURL: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse'
+    }
+  },
+  error: undefined,
+  status: 429,
+  [Symbol(gaxios-gaxios-error)]: '6.7.1'
+}
+Attempt 1 failed with status 429. Retrying with backoff... GaxiosError: [{
+  "error": {
+    "code": 429,
+    "message": "Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.",
+    "errors": [
+      {
+        "message": "Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.",
+        "domain": "global",
+        "reason": "rateLimitExceeded"
+      }
+    ],
+    "status": "RESOURCE_EXHAUSTED"
+  }
+}
+]
+    at Gaxios._request (/Users/davidgardiner/.nvm/versions/node/v22.16.0/lib/node_modules/@google/gemini-cli/node_modules/gaxios/build/src/gaxios.js:142:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async OAuth2Client.requestAsync (/Users/davidgardiner/.nvm/versions/node/v22.16.0/lib/node_modules/@google/gemini-cli/node_modules/google-auth-library/build/src/auth/oauth2client.js:429:18)
+    at async CodeAssistServer.requestStreamingPost (file:///Users/davidgardiner/.nvm/versions/node/v22.16.0/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:106:21)
+    at async CodeAssistServer.generateContentStream (file:///Users/davidgardiner/.nvm/versions/node/v22.16.0/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/code_assist/server.js:25:23)
+    at async file:///Users/davidgardiner/.nvm/versions/node/v22.16.0/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/loggingContentGenerator.js:116:26
+    at async runInDevTraceSpan (file:///Users/davidgardiner/.nvm/versions/node/v22.16.0/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/telemetry/trace.js:33:16)
+    at async retryWithBackoff (file:///Users/davidgardiner/.nvm/versions/node/v22.16.0/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/utils/retry.js:75:28)
+    at async GeminiChat.makeApiCallAndProcessStream (file:///Users/davidgardiner/.nvm/versions/node/v22.16.0/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:297:32)
+    at async file:///Users/davidgardiner/.nvm/versions/node/v22.16.0/lib/node_modules/@google/gemini-cli/node_modules/@google/gemini-cli-core/dist/src/core/geminiChat.js:232:40 {
+  config: {
+    url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+    method: 'POST',
+    params: { alt: 'sse' },
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'GeminiCLI/v22.16.0 (darwin; x64) google-api-nodejs-client/9.15.1',
+      Authorization: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      'x-goog-api-client': 'gl-node/22.16.0'
+    },
+    responseType: 'stream',
+    body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+    signal: AbortSignal { aborted: false },
+    paramsSerializer: [Function: paramsSerializer],
+    validateStatus: [Function: validateStatus],
+    errorRedactor: [Function: defaultErrorRedactor]
+  },
+  response: {
+    config: {
+      url: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse',
+      method: 'POST',
+      params: [Object],
+      headers: [Object],
+      responseType: 'stream',
+      body: '<<REDACTED> - See `errorRedactor` option in `gaxios` for configuration>.',
+      signal: [AbortSignal],
+      paramsSerializer: [Function: paramsSerializer],
+      validateStatus: [Function: validateStatus],
+      errorRedactor: [Function: defaultErrorRedactor]
+    },
+    data: '[{\n' +
+      '  "error": {\n' +
+      '    "code": 429,\n' +
+      '    "message": "Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.",\n' +
+      '    "errors": [\n' +
+      '      {\n' +
+      '        "message": "Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.",\n' +
+      '        "domain": "global",\n' +
+      '        "reason": "rateLimitExceeded"\n' +
+      '      }\n' +
+      '    ],\n' +
+      '    "status": "RESOURCE_EXHAUSTED"\n' +
+      '  }\n' +
+      '}\n' +
+      ']',
+    headers: {
+      'alt-svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000',
+      'content-length': '514',
+      'content-type': 'application/json; charset=UTF-8',
+      date: 'Mon, 24 Nov 2025 16:15:39 GMT',
+      server: 'ESF',
+      'server-timing': 'gfet4t7; dur=12788',
+      vary: 'Origin, X-Origin, Referer',
+      'x-cloudaicompanion-trace-id': '464e9c2e753cfc81',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-xss-protection': '0'
+    },
+    status: 429,
+    statusText: 'Too Many Requests',
+    request: {
+      responseURL: 'https://cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse'
+    }
+  },
+  error: undefined,
+  status: 429,
+  [Symbol(gaxios-gaxios-error)]: '6.7.1'
+}
+{
+  "response": "```json\n{\n  \"api_setup_guide\": \"1. Go to the Google Cloud Console (console.cloud.google.com) and create a new project. 2. Enable billing for your project. 3. Enable the 'Maps JavaScript API' and 'Geocoding API'. 4. Create an API key. 5. Restrict the API key to your website's domain and the enabled APIs.\",\n  \"location\": {\n    \"address\": \"Top 8, EH4 2DP, Edinburgh, UK\",\n    \"latitude\": 55.957966,\n    \"longitude\": -3.227706\n  },\n  \"map_styles\": {\n    \"light\": [\n      {\n        \"elementType\": \"geometry\",\n        \"stylers\": [\n          {\n            \"color\": \"#f5f5f5\"\n          }\n        ]\n      },\n      {\n        \"elementType\": \"labels.icon\",\n        \"stylers\": [\n          {\n            \"visibility\": \"off\"\n          }\n        ]\n      },\n      {\n        \"elementType\": \"labels.text.fill\",\n        \"stylers\": [\n          {\n            \"color\": \"#616161\"\n          }\n        ]\n      },\n      {\n        \"elementType\": \"labels.text.stroke\",\n        \"stylers\": [\n          {\n            \"color\": \"#f5f5f5\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"administrative.land_parcel\",\n        \"elementType\": \"labels.text.fill\",\n        \"stylers\": [\n          {\n            \"color\": \"#bdbdbd\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"poi\",\n        \"elementType\": \"geometry\",\n        \"stylers\": [\n          {\n            \"color\": \"#eeeeee\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"poi\",\n        \"elementType\": \"labels.text.fill\",\n        \"stylers\": [\n          {\n            \"color\": \"#757575\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"poi.business\",\n        \"stylers\": [\n          {\n            \"visibility\": \"off\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"poi.park\",\n        \"elementType\": \"geometry\",\n        \"stylers\": [\n          {\n            \"color\": \"#e5e5e5\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"poi.park\",\n        \"elementType\": \"labels.text.fill\",\n        \"stylers\": [\n          {\n            \"color\": \"#9e9e9e\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"road\",\n        \"elementType\": \"geometry\",\n        \"stylers\": [\n          {\n            \"color\": \"#ffffff\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"road.arterial\",\n        \"elementType\": \"labels.text.fill\",\n        \"stylers\": [\n          {\n            \"color\": \"#757575\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"road.highway\",\n        \"elementType\": \"geometry\",\n        \"stylers\": [\n          {\n            \"color\": \"#dadada\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"road.highway\",\n        \"elementType\": \"labels.text.fill\",\n        \"stylers\": [\n          {\n            \"color\": \"#616161\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"road.local\",\n        \"elementType\": \"labels.text.fill\",\n        \"stylers\": [\n          {\n            \"color\": \"#9e9e9e\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"transit.line\",\n        \"elementType\": \"geometry\",\n        \"stylers\": [\n          {\n            \"color\": \"#e5e5e5\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"transit.station\",\n        \"elementType\": \"geometry\",\n        \"stylers\": [\n          {\n            \"color\": \"#eeeeee\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"water\",\n        \"elementType\": \"geometry\",\n        \"stylers\": [\n          {\n            \"color\": \"#c9c9c9\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"water\",\n        \"elementType\": \"labels.text.fill\",\n        \"stylers\": [\n          {\n            \"color\": \"#9e9e9e\"\n          }\n        ]\n      }\n    ],\n    \"dark\": [\n      {\n        \"elementType\": \"geometry\",\n        \"stylers\": [\n          {\n            \"color\": \"#212121\"\n          }\n        ]\n      },\n      {\n        \"elementType\": \"labels.icon\",\n        \"stylers\": [\n          {\n            \"visibility\": \"off\"\n          }\n        ]\n      },\n      {\n        \"elementType\": \"labels.text.fill\",\n        \"stylers\": [\n          {\n            \"color\": \"#757575\"\n          }\n        ]\n      },\n      {\n        \"elementType\": \"labels.text.stroke\",\n        \"stylers\": [\n          {\n            \"color\": \"#212121\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"administrative\",\n        \"elementType\": \"geometry\",\n        \"stylers\": [\n          {\n            \"color\": \"#757575\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"administrative.country\",\n        \"elementType\": \"labels.text.fill\",\n        \"stylers\": [\n          {\n            \"color\": \"#9e9e9e\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"administrative.land_parcel\",\n        \"stylers\": [\n          {\n            \"visibility\": \"off\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"administrative.locality\",\n        \"elementType\": \"labels.text.fill\",\n        \"stylers\": [\n          {\n            \"color\": \"#bdbdbd\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"poi\",\n        \"elementType\": \"labels.text.fill\",\n        \"stylers\": [\n          {\n            \"color\": \"#757575\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"poi.business\",\n        \"stylers\": [\n          {\n            \"visibility\": \"off\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"poi.park\",\n        \"elementType\": \"geometry\",\n        \"stylers\": [\n          {\n            \"color\": \"#181818\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"poi.park\",\n        \"elementType\": \"labels.text.fill\",\n        \"stylers\": [\n          {\n            \"color\": \"#616161\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"poi.park\",\n        \"elementType\": \"labels.text.stroke\",\n        \"stylers\": [\n          {\n            \"color\": \"#1b1b1b\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"road\",\n        \"elementType\": \"geometry.fill\",\n        \"stylers\": [\n          {\n            \"color\": \"#2c2c2c\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"road\",\n        \"elementType\": \"labels.text.fill\",\n        \"stylers\": [\n          {\n            \"color\": \"#8a8a8a\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"road.arterial\",\n        \"elementType\": \"geometry\",\n        \"stylers\": [\n          {\n            \"color\": \"#373737\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"road.highway\",\n        \"elementType\": \"geometry\",\n        \"stylers\": [\n          {\n            \"color\": \"#3c3c3c\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"road.highway.controlled_access\",\n        \"elementType\": \"geometry\",\n        \"stylers\": [\n          {\n            \"color\": \"#4e4e4e\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"road.local\",\n        \"elementType\": \"labels.text.fill\",\n        \"stylers\": [\n          {\n            \"color\": \"#616161\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"transit\",\n        \"elementType\": \"labels.text.fill\",\n        \"stylers\": [\n          {\n            \"color\": \"#757575\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"water\",\n        \"elementType\": \"geometry\",\n        \"stylers\": [\n          {\n            \"color\": \"#000000\"\n          }\n        ]\n      },\n      {\n        \"featureType\": \"water\",\n        \"elementType\": \"labels.text.fill\",\n        \"stylers\": [\n          {\n            \"color\": \"#3d3d3d\"\n          }\n        ]\n      }\n    ]\n  },\n  \"marker_icon_suggestion\": \"Use a custom SVG icon of a coffee cup. This can be created with a design tool or sourced from an icon library. The SVG can be styled with CSS to match the map theme (e.g., a white icon for the dark map and a dark icon for the light map).\",\n  \"security_config\": {\n    \"domain_restrictions\": [\n      \"https://your-website.com/*\",\n      \"http://localhost:*/\"\n    ],\n    \"rate_limits\": \"Set a daily and per-minute quota for the Maps JavaScript API and Geocoding API in the Google Cloud Console to prevent unexpected charges. Monitor usage and adjust as needed.\"\n  },\n  \"environment_setup\": \"Store your API key in a '.env' file at the root of your project: VITE_GOOGLE_MAPS_API_KEY=your_api_key_here. Access it in your code using 'import.meta.env.VITE_GOOGLE_MAPS_API_KEY'.\"\n}\n```",
+  "stats": {
+    "models": {
+      "gemini-2.5-flash-lite": {
+        "api": {
+          "totalRequests": 1,
+          "totalErrors": 0,
+          "totalLatencyMs": 15939
+        },
+        "tokens": {
+          "prompt": 17025,
+          "candidates": 144,
+          "total": 17522,
+          "cached": 0,
+          "thoughts": 353,
+          "tool": 0
+        }
+      },
+      "gemini-2.5-pro": {
+        "api": {
+          "totalRequests": 6,
+          "totalErrors": 2,
+          "totalLatencyMs": 75667
+        },
+        "tokens": {
+          "prompt": 77308,
+          "candidates": 2613,
+          "total": 80538,
+          "cached": 28471,
+          "thoughts": 617,
+          "tool": 0
+        }
+      },
+      "gemini-2.5-flash": {
+        "api": {
+          "totalRequests": 6,
+          "totalErrors": 0,
+          "totalLatencyMs": 223809
+        },
+        "tokens": {
+          "prompt": 98107,
+          "candidates": 4357,
+          "total": 143264,
+          "cached": 1997,
+          "thoughts": 5820,
+          "tool": 34980
+        }
+      }
+    },
+    "tools": {
+      "totalCalls": 6,
+      "totalSuccess": 6,
+      "totalFail": 0,
+      "totalDurationMs": 223867,
+      "totalDecisions": {
+        "accept": 0,
+        "reject": 0,
+        "modify": 0,
+        "auto_accept": 6
+      },
+      "byName": {
+        "google_web_search": {
+          "count": 6,
+          "success": 6,
+          "fail": 0,
+          "durationMs": 223867,
+          "decisions": {
+            "accept": 0,
+            "reject": 0,
+            "modify": 0,
+            "auto_accept": 6
+          }
+        }
+      }
+    },
+    "files": {
+      "totalLinesAdded": 0,
+      "totalLinesRemoved": 0
+    }
+  }
+}
