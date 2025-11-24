@@ -5,7 +5,7 @@ export function About() {
   const displayImage = '/images/coffee-cup-seasonal.png'
 
   return (
-    <section id="about" className="relative py-32 bg-background overflow-hidden" aria-label="About Stockbridge Coffee">
+    <section id="about" className="relative py-32 bg-background dark:bg-grey-900 overflow-hidden transition-colors duration-300" aria-label="About Stockbridge Coffee">
       {/* Subtle background pattern */}
       <div className="absolute inset-0 opacity-[0.02]" aria-hidden="true" style={{
         backgroundImage: `radial-gradient(circle at 1px 1px, rgba(33, 47, 31, 0.15) 1px, transparent 0)`,
@@ -28,7 +28,7 @@ export function About() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="inline-block px-4 py-1.5 bg-white/60 border border-heading/10 rounded-full text-xs font-sans font-medium text-accent-dark tracking-[0.25em] uppercase mb-8 shadow-sm"
+              className="inline-block px-4 py-1.5 bg-white/60 dark:bg-grey-800/60 border border-heading/10 dark:border-grey-700/30 rounded-full text-xs font-sans font-medium text-accent-dark dark:text-accent-light tracking-[0.25em] uppercase mb-8 shadow-sm"
             >
               Our Story
             </motion.span>
@@ -39,11 +39,11 @@ export function About() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.3, duration: 0.6 }}
-              className="font-serif text-5xl md:text-6xl font-bold text-heading mb-8 leading-[1.1]"
+              className="font-serif text-5xl md:text-6xl font-bold text-heading dark:text-grey-100 mb-8 leading-[1.1]"
             >
               Crafted With
               <br />
-              <span className="text-accent-dark">Passion</span>
+              <span className="text-accent-dark dark:text-accent-light">Passion</span>
             </motion.h2>
 
             {/* Body text with refined spacing */}
@@ -52,7 +52,7 @@ export function About() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4, duration: 0.6 }}
-              className="space-y-6 text-base text-text/80 leading-relaxed"
+              className="space-y-6 text-base text-text/80 dark:text-grey-300 leading-relaxed"
             >
               <p>
                 At Stockbridge Coffee, we believe great coffee starts with great relationships. Our journey begins in Latin America, where we work directly with farmers to source the finest beans, supporting fair trade and sustainable practices.
@@ -60,7 +60,7 @@ export function About() {
               <p>
                 Based in Stockbridge, Edinburgh, our small-batch roasters bring decades of experience and a passion for craft to each bean. Every batch is carefully roasted to highlight the unique flavours, aromas, and character of its origin.
               </p>
-              <p className="font-medium text-heading/90">
+              <p className="font-medium text-heading/90 dark:text-grey-200">
                 For us, coffee is more than a drink. It's about connecting communities, celebrating craftsmanship, and sharing the warmth behind every cup.
               </p>
             </motion.div>
@@ -90,10 +90,10 @@ export function About() {
                   role="listitem"
                   aria-label={`${stat.value} ${stat.label}`}
                 >
-                  <p className="font-serif text-4xl md:text-5xl font-bold text-accent-dark mb-2 transition-transform duration-300 group-hover:scale-110">
+                  <p className="font-serif text-4xl md:text-5xl font-bold text-accent-dark dark:text-accent-light mb-2 transition-transform duration-300 group-hover:scale-110">
                     {stat.value}
                   </p>
-                  <p className="text-xs font-sans font-medium tracking-wider uppercase text-text/60">
+                  <p className="text-xs font-sans font-medium tracking-wider uppercase text-text/60 dark:text-grey-400">
                     {stat.label}
                   </p>
                 </motion.div>

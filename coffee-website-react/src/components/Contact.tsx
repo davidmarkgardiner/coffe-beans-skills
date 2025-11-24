@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Mail, Phone, MapPin, Clock } from 'lucide-react'
+import { Mail, MapPin } from 'lucide-react'
+import { LocationMap } from './LocationMap'
 
 type TabType = 'info' | 'form' | 'location'
 
@@ -78,84 +79,24 @@ export function Contact() {
         >
           {activeTab === 'info' && (
             <div className="bg-white rounded-2xl shadow-large p-8 md:p-12">
-              <div className="grid md:grid-cols-2 gap-8">
-                <div className="space-y-6">
+              <div className="flex justify-center">
+                <motion.div
+                  className="flex items-start gap-4 p-6 rounded-xl hover:bg-accent/5 transition-all duration-300 cursor-pointer group hover-lift max-w-md"
+                  whileHover={{ x: 4, scale: 1.02 }}
+                  transition={{ duration: 0.2 }}
+                >
                   <motion.div
-                    className="flex items-start gap-4 p-4 rounded-xl hover:bg-accent/5 transition-all duration-300 cursor-pointer group hover-lift"
-                    whileHover={{ x: 4, scale: 1.02 }}
-                    transition={{ duration: 0.2 }}
+                    className="p-3 bg-accent/10 rounded-lg group-hover:bg-accent group-hover:shadow-md transition-all duration-300"
+                    whileHover={{ scale: 1.1, rotate: 5 }}
                   >
-                    <motion.div
-                      className="p-3 bg-accent/10 rounded-lg group-hover:bg-accent group-hover:shadow-md transition-all duration-300"
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                    >
-                      <Mail className="w-6 h-6 text-accent group-hover:text-white transition-colors duration-300" />
-                    </motion.div>
-                    <div>
-                      <h3 className="font-semibold text-heading mb-1 group-hover:text-accent transition-colors duration-300">Email</h3>
-                      <p className="text-text">hello@stockbridgecoffee.com</p>
-                      <p className="text-text">support@stockbridgecoffee.com</p>
-                    </div>
+                    <Mail className="w-6 h-6 text-accent group-hover:text-white transition-colors duration-300" />
                   </motion.div>
-
-                  <motion.div
-                    className="flex items-start gap-4 p-4 rounded-xl hover:bg-accent/5 transition-all duration-300 cursor-pointer group hover-lift"
-                    whileHover={{ x: 4, scale: 1.02 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <motion.div
-                      className="p-3 bg-accent/10 rounded-lg group-hover:bg-accent group-hover:shadow-md transition-all duration-300"
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                    >
-                      <Phone className="w-6 h-6 text-accent group-hover:text-white transition-colors duration-300" />
-                    </motion.div>
-                    <div>
-                      <h3 className="font-semibold text-heading mb-1 group-hover:text-accent transition-colors duration-300">Phone</h3>
-                      <p className="text-text">+44 (0) 131 555 0123</p>
-                      <p className="text-text text-sm text-grey-600">Mon-Fri, 8am-6pm GMT</p>
-                    </div>
-                  </motion.div>
-                </div>
-
-                <div className="space-y-6">
-                  <motion.div
-                    className="flex items-start gap-4 p-4 rounded-xl hover:bg-accent/5 transition-all duration-300 cursor-pointer group hover-lift"
-                    whileHover={{ x: 4, scale: 1.02 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <motion.div
-                      className="p-3 bg-accent/10 rounded-lg group-hover:bg-accent group-hover:shadow-md transition-all duration-300"
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                    >
-                      <MapPin className="w-6 h-6 text-accent group-hover:text-white transition-colors duration-300" />
-                    </motion.div>
-                    <div>
-                      <h3 className="font-semibold text-heading mb-1 group-hover:text-accent transition-colors duration-300">Address</h3>
-                      <p className="text-text">123 High Street</p>
-                      <p className="text-text">Stockbridge, Edinburgh</p>
-                      <p className="text-text">EH3 6SS, Scotland</p>
-                    </div>
-                  </motion.div>
-
-                  <motion.div
-                    className="flex items-start gap-4 p-4 rounded-xl hover:bg-accent/5 transition-all duration-300 cursor-pointer group hover-lift"
-                    whileHover={{ x: 4, scale: 1.02 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <motion.div
-                      className="p-3 bg-accent/10 rounded-lg group-hover:bg-accent group-hover:shadow-md transition-all duration-300"
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                    >
-                      <Clock className="w-6 h-6 text-accent group-hover:text-white transition-colors duration-300" />
-                    </motion.div>
-                    <div>
-                      <h3 className="font-semibold text-heading mb-1 group-hover:text-accent transition-colors duration-300">Business Hours</h3>
-                      <p className="text-text">Monday - Friday: 8:00 AM - 6:00 PM</p>
-                      <p className="text-text">Saturday: 9:00 AM - 5:00 PM</p>
-                      <p className="text-text">Sunday: 10:00 AM - 4:00 PM</p>
-                    </div>
-                  </motion.div>
-                </div>
+                  <div>
+                    <h3 className="font-semibold text-heading mb-1 group-hover:text-accent transition-colors duration-300">Email</h3>
+                    <p className="text-text">hello@stockbridgecoffee.com</p>
+                    <p className="text-text">support@stockbridgecoffee.com</p>
+                  </div>
+                </motion.div>
               </div>
             </div>
           )}
@@ -227,33 +168,68 @@ export function Contact() {
           )}
 
           {activeTab === 'location' && (
-            <div className="bg-white rounded-2xl shadow-large overflow-hidden">
-              <div className="aspect-video bg-grey-200 relative">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <MapPin className="w-12 h-12 text-accent mx-auto mb-3" />
-                    <p className="text-heading font-semibold">Map View</p>
-                    <p className="text-text text-sm">123 High Street, Stockbridge, Edinburgh</p>
-                  </div>
-                </div>
+            <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-large overflow-hidden">
+              {/* Google Maps Component */}
+              <div className="aspect-video bg-grey-200 dark:bg-grey-800 relative">
+                <LocationMap />
               </div>
+
+              {/* Location Details */}
               <div className="p-8">
-                <h3 className="font-display text-2xl font-bold text-heading mb-4">Visit Our Shop</h3>
-                <p className="text-text mb-4">
-                  Located in the heart of Stockbridge, Edinburgh, our cozy coffee shop welcomes visitors daily.
-                  Stop by to browse our selection of premium beans, enjoy a freshly brewed cup, or chat with
-                  our expert baristas about the perfect roast for your taste.
+                <h3 className="font-display text-2xl font-bold text-heading mb-4">Our Location</h3>
+                <p className="text-text mb-6">
+                  We're an online coffee bean shop based in Stockbridge, Edinburgh. While we don't have a physical storefront, we're proud to serve customers across the UK with premium beans delivered straight to your door.
                 </p>
-                <div className="flex flex-wrap gap-4">
-                  <div>
-                    <h4 className="font-semibold text-heading mb-1">Parking</h4>
-                    <p className="text-text text-sm">Street parking available nearby</p>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-heading mb-1">Public Transport</h4>
-                    <p className="text-text text-sm">Bus routes 24, 29, 42 nearby</p>
+
+                <div className="grid md:grid-cols-2 gap-6 mb-6">
+                  <motion.div
+                    className="flex items-start gap-3 p-4 rounded-xl bg-accent/5 hover:bg-accent/10 transition-colors duration-200"
+                    whileHover={{ scale: 1.02 }}
+                  >
+                    <MapPin className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-semibold text-heading mb-1">Based In</h4>
+                      <p className="text-text text-sm">Stockbridge, Edinburgh</p>
+                      <p className="text-text text-sm">Scotland, UK</p>
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    className="flex items-start gap-3 p-4 rounded-xl bg-accent/5 hover:bg-accent/10 transition-colors duration-200"
+                    whileHover={{ scale: 1.02 }}
+                  >
+                    <svg className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                    </svg>
+                    <div>
+                      <h4 className="font-semibold text-heading mb-1">Delivery</h4>
+                      <p className="text-text text-sm">UK-wide delivery available</p>
+                      <p className="text-text text-sm">Order online anytime</p>
+                    </div>
+                  </motion.div>
+                </div>
+
+                <div className="flex flex-wrap gap-4 pt-4 border-t border-grey-200 dark:border-grey-700">
+                  <div className="flex-1">
+                    <p className="text-text text-sm leading-relaxed">
+                      <span className="font-semibold text-heading">Looking for our beans?</span><br />
+                      Browse our selection of premium single-origin and specialty blends in our online shop. We roast to order and deliver fresh beans directly to you.
+                    </p>
                   </div>
                 </div>
+
+                {/* Shop Beans Button */}
+                <motion.a
+                  href="#products"
+                  className="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent-dark transition-colors duration-200 shadow-md hover:shadow-lg"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
+                  Shop Beans
+                </motion.a>
               </div>
             </div>
           )}

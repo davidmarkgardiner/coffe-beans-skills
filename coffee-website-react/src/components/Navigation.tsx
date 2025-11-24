@@ -66,7 +66,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
       transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-heading/95 backdrop-blur-md shadow-medium'
+          ? 'bg-heading/95 dark:bg-grey-900/95 backdrop-blur-md shadow-medium'
           : 'bg-transparent'
       }`}
     >
@@ -166,13 +166,13 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-grey-200 py-2 z-50"
+                      className="absolute right-0 mt-2 w-48 bg-white dark:bg-grey-800 rounded-lg shadow-lg border border-grey-200 dark:border-grey-700 py-2 z-50"
                     >
-                      <div className="px-4 py-2 border-b border-grey-200">
-                        <p className="text-sm font-medium text-grey-900 truncate">
+                      <div className="px-4 py-2 border-b border-grey-200 dark:border-grey-700">
+                        <p className="text-sm font-medium text-grey-900 dark:text-grey-100 truncate">
                           {currentUser.displayName || 'User'}
                         </p>
-                        <p className="text-xs text-grey-500 truncate">
+                        <p className="text-xs text-grey-500 dark:text-grey-400 truncate">
                           {currentUser.email}
                         </p>
                         {userRole === 'admin' && (
@@ -187,7 +187,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                             setUserMenuOpen(false)
                             navigate('/admin')
                           }}
-                          className="w-full px-4 py-2 text-left text-sm text-grey-700 hover:bg-grey-50 transition-colors duration-200 flex items-center gap-2"
+                          className="w-full px-4 py-2 text-left text-sm text-grey-700 dark:text-grey-300 hover:bg-grey-50 dark:hover:bg-grey-700 transition-colors duration-200 flex items-center gap-2"
                         >
                           <Shield className="w-4 h-4 text-amber-600" />
                           Admin Dashboard
@@ -195,7 +195,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                       )}
                       <button
                         onClick={handleLogout}
-                        className="w-full px-4 py-2 text-left text-sm text-grey-700 hover:bg-grey-50 transition-colors duration-200 flex items-center gap-2"
+                        className="w-full px-4 py-2 text-left text-sm text-grey-700 dark:text-grey-300 hover:bg-grey-50 dark:hover:bg-grey-700 transition-colors duration-200 flex items-center gap-2"
                       >
                         <LogOut className="w-4 h-4" />
                         Sign Out
@@ -261,8 +261,8 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
               transition={{ duration: 0.3 }}
               className={`md:hidden border-t mt-4 ${
                 scrolled
-                  ? 'border-white/20 bg-heading/90'
-                  : 'border-white/20 bg-white/10 backdrop-blur-md'
+                  ? 'border-white/20 bg-heading/90 dark:bg-grey-900/90'
+                  : 'border-white/20 bg-white/10 dark:bg-grey-900/20 backdrop-blur-md'
               }`}
             >
               <div className="py-4 space-y-4">

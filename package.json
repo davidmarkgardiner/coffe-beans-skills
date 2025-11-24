@@ -23,6 +23,10 @@
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "ai-labs-claude-skills": "^2.0.1",
-    "react-hot-toast": "^2.6.0"
+    "react-hot-toast": "^2.6.0",
+    "react-intersection-observer": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/google.maps": "^3.58.1"
   }
 }

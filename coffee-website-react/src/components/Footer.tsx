@@ -42,43 +42,43 @@ export function Footer() {
     }
   }
   return (
-    <footer className="bg-white text-text py-16">
+    <footer className="bg-white dark:bg-grey-900 text-text dark:text-grey-100 py-16 transition-colors duration-300">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Column 1 */}
           <div>
-            <h4 className="font-display text-xl font-bold text-heading mb-4">Stockbridge Coffee</h4>
-            <p className="text-sm leading-relaxed">
+            <h4 className="font-display text-xl font-bold text-heading dark:text-accent-light mb-4">Stockbridge Coffee</h4>
+            <p className="text-sm leading-relaxed dark:text-grey-300">
               Bringing you the world's finest coffee beans, roasted to perfection.
             </p>
           </div>
 
           {/* Column 2 */}
           <div>
-            <h4 className="font-semibold text-heading mb-4">Quick Links</h4>
+            <h4 className="font-semibold text-heading dark:text-accent-light mb-4">Quick Links</h4>
             <ul className="space-y-2">
               <li>
-                <a href="#home" className="text-sm hover:text-accent transition-colors duration-200">
+                <a href="#home" className="text-sm dark:text-grey-300 hover:text-accent dark:hover:text-accent-light transition-colors duration-200">
                   Home
                 </a>
               </li>
               <li>
-                <a href="#products" className="text-sm hover:text-accent transition-colors duration-200">
+                <a href="#products" className="text-sm dark:text-grey-300 hover:text-accent dark:hover:text-accent-light transition-colors duration-200">
                   Products
                 </a>
               </li>
               <li>
-                <a href="#blog" className="text-sm hover:text-accent transition-colors duration-200">
+                <a href="#blog" className="text-sm dark:text-grey-300 hover:text-accent dark:hover:text-accent-light transition-colors duration-200">
                   Blog
                 </a>
               </li>
               <li>
-                <a href="#about" className="text-sm hover:text-accent transition-colors duration-200">
+                <a href="#about" className="text-sm dark:text-grey-300 hover:text-accent dark:hover:text-accent-light transition-colors duration-200">
                   About
                 </a>
               </li>
               <li>
-                <a href="#contact" className="text-sm hover:text-accent transition-colors duration-200">
+                <a href="#contact" className="text-sm dark:text-grey-300 hover:text-accent dark:hover:text-accent-light transition-colors duration-200">
                   Contact
                 </a>
               </li>
@@ -87,8 +87,8 @@ export function Footer() {
 
           {/* Column 3 */}
           <div>
-            <h4 className="font-semibold text-heading mb-4">Contact</h4>
-            <ul className="space-y-2 text-sm">
+            <h4 className="font-semibold text-heading dark:text-accent-light mb-4">Contact</h4>
+            <ul className="space-y-2 text-sm dark:text-grey-300">
               <li>Email: hello@stockbridgecoffee.com</li>
               <li>Phone: (555) 123-4567</li>
               <li>Hours: Mon-Fri 8am-6pm</li>
@@ -97,8 +97,8 @@ export function Footer() {
 
           {/* Column 4 */}
           <div>
-            <h4 className="font-semibold text-heading mb-4">Newsletter</h4>
-            <p className="text-sm mb-4">Subscribe for updates and special offers.</p>
+            <h4 className="font-semibold text-heading dark:text-accent-light mb-4">Newsletter</h4>
+            <p className="text-sm dark:text-grey-300 mb-4">Subscribe for updates and special offers.</p>
             <form onSubmit={handleSubmit} className="flex flex-col gap-2">
               <input
                 type="email"
@@ -108,7 +108,7 @@ export function Footer() {
                 required
                 disabled={status === 'loading'}
                 aria-label="Email address for newsletter"
-                className="px-4 py-2 rounded-lg bg-surface border border-accent text-heading placeholder-text/50 focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 rounded-lg bg-surface dark:bg-grey-800 border border-accent dark:border-accent text-heading dark:text-grey-100 placeholder-text/50 dark:placeholder-grey-400 focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               />
               <motion.button
                 type="submit"
@@ -141,8 +141,8 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="pt-8 border-t border-accent/20 text-center">
-          <p className="text-sm">&copy; 2025 Stockbridge Coffee. All rights reserved.</p>
+        <div className="pt-8 border-t border-accent/20 dark:border-accent/30 text-center">
+          <p className="text-sm dark:text-grey-300">&copy; 2025 Stockbridge Coffee. All rights reserved.</p>
         </div>
       </div>
     </footer>

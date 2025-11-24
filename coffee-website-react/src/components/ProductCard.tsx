@@ -41,9 +41,9 @@ export function ProductCard({ product, onAddToCart, onViewDetails }: ProductCard
       className="group cursor-pointer"
       onClick={handleViewDetails}
     >
-      <div className="relative rounded-2xl overflow-hidden bg-white/60 backdrop-blur-sm shadow-medium transition-all duration-300 hover:shadow-large border border-surface/50 hover:border-accent/20">
+      <div className="relative rounded-2xl overflow-hidden bg-white/60 dark:bg-grey-800/60 backdrop-blur-sm shadow-medium transition-all duration-300 hover:shadow-large border border-surface/50 dark:border-grey-700/50 hover:border-accent/20 dark:hover:border-accent/30">
         {/* Image */}
-        <div className="relative h-80 overflow-hidden bg-surface/30">
+        <div className="relative h-80 overflow-hidden bg-surface/30 dark:bg-grey-700/30">
           {/* Skeleton loader */}
           {!imageLoaded && (
             <div className="absolute inset-0 animate-pulse bg-surface/50">
@@ -141,29 +141,29 @@ export function ProductCard({ product, onAddToCart, onViewDetails }: ProductCard
 
         {/* Content */}
         <div className="p-6">
-          <p className="text-xs font-semibold tracking-[0.2em] uppercase text-accent mb-2">
+          <p className="text-xs font-semibold tracking-[0.2em] uppercase text-accent dark:text-accent-light mb-2">
             {product.category}
           </p>
 
-          <h3 className="font-serif text-3xl font-bold text-heading mb-3 leading-tight">
+          <h3 className="font-serif text-3xl font-bold text-heading dark:text-grey-100 mb-3 leading-tight">
             {product.name}
           </h3>
 
-          <p className="text-base text-text/70 leading-relaxed mb-5">{product.description}</p>
+          <p className="text-base text-text/70 dark:text-grey-300 leading-relaxed mb-5">{product.description}</p>
 
-          <div className="flex items-baseline justify-between pt-4 border-t border-grey-200">
+          <div className="flex items-baseline justify-between pt-4 border-t border-grey-200 dark:border-grey-700">
             <div>
-              <span className="font-serif text-4xl font-bold text-heading">
+              <span className="font-serif text-4xl font-bold text-heading dark:text-grey-100">
                 £{product.price.toFixed(2)}
               </span>
-              <span className="text-sm text-text/50 ml-2">/ {product.weight}</span>
+              <span className="text-sm text-text/50 dark:text-grey-400 ml-2">/ {product.weight}</span>
             </div>
             <button
               onClick={(e) => {
                 e.stopPropagation()
                 handleViewDetails()
               }}
-              className="text-sm font-medium text-accent-dark hover:text-accent transition-colors flex items-center gap-1 group"
+              className="text-sm font-medium text-accent-dark dark:text-accent-light hover:text-accent dark:hover:text-accent transition-colors flex items-center gap-1 group"
             >
               View Details
               <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

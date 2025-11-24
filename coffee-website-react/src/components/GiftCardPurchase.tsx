@@ -31,7 +31,7 @@ export function GiftCardPurchase({ isOpen, onClose }: GiftCardPurchaseProps) {
 
   const handleAmountSelect = (amount: number) => {
     setSelectedAmount(amount)
-    setCustomAmount('')
+    setCustomAmount(amount.toString())
   }
 
   const handleCustomAmountChange = (value: string) => {

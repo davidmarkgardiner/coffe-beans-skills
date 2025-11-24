@@ -268,3 +268,4 @@ coffee-website-react/test-generated-content/
 coffee-website-react/content/photo/
 coffee-website-react/scripts/README-CONTENT-TEST.md
 stockbridge-coffee---ai-creative-studio/
+.claude/skills/cloudflare-firebase-domain/scripts/purge-cloudflare-cache.sh
