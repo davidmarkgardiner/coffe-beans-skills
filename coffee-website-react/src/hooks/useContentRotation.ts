@@ -7,6 +7,7 @@ export interface UseContentRotationOptions {
   season?: Season | 'auto'
   maxPoolSize?: number
   preloadNext?: boolean
+  refreshInterval?: number // in milliseconds, interval to refresh content pool from Firestore
 }
 
 export interface UseContentRotationReturn {
@@ -31,6 +32,7 @@ export function useContentRotation(options: UseContentRotationOptions = {}): Use
     season = 'auto',
     maxPoolSize = 10,
     preloadNext = true,
+    refreshInterval = 3600000, // 1 hour default - refresh content pool periodically to pick up new videos
   } = options
 
   const [contentPool, setContentPool] = useState<ContentItem[]>([])
@@ -39,6 +41,7 @@ export function useContentRotation(options: UseContentRotationOptions = {}): Use
   const [error, setError] = useState<Error | null>(null)
 
   const intervalRef = useRef<number | null>(null)
+  const refreshIntervalRef = useRef<number | null>(null)
   const preloadedImages = useRef<Map<string, HTMLImageElement | HTMLVideoElement>>(new Map())
 
   /**
@@ -152,6 +155,34 @@ export function useContentRotation(options: UseContentRotationOptions = {}): Use
       }
     }
   }, [contentPool.length, rotationInterval, rotateNow])
+
+  /**
+   * Set up periodic refresh of content pool to pick up newly generated content
+   */
+  useEffect(() => {
+    if (refreshInterval === 0) {
+      return
+    }
+
+    // Clear existing refresh interval
+    if (refreshIntervalRef.current) {
+      clearInterval(refreshIntervalRef.current)
+    }
+
+    // Start new refresh interval
+    refreshIntervalRef.current = window.setInterval(async () => {
+      console.log(`🔄 Refreshing content pool from Firestore...`)
+      await fetchContentPool()
+    }, refreshInterval)
+
+    console.log(`⏰ Content refresh interval set to ${refreshInterval}ms (${Math.round(refreshInterval / 60000)} minutes)`)
+
+    return () => {
+      if (refreshIntervalRef.current) {
+        clearInterval(refreshIntervalRef.current)
+      }
+    }
+  }, [refreshInterval, fetchContentPool])
 
   /**
    * Initial fetch and preload

@@ -6,6 +6,7 @@ export function About() {
     contentType: 'photo',
     rotationInterval: 30000, // 30 seconds
     preloadNext: true,
+    refreshInterval: 5 * 60 * 1000, // Refresh content pool every 5 minutes to pick up newly generated photos
   })
 
   // Fallback to Unsplash if no content available
