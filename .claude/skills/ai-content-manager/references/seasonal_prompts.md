@@ -263,6 +263,10 @@ High-resolution photograph of coffee beans scattered artistically on rustic wood
 **Video Prompts:**
 
 ```
+Cinematic 4K video of a professional Probat G150 coffee roaster in operation. The metal drum rotates slowly with a glass inspection window showing fresh coffee beans being roasted inside. Steam and smoke rise dramatically from the beans, which glisten with natural oils in golden and brown hues under warm lighting. Camera focuses on the shiny roasted beans tumbling inside the drum, with visible heat and light reflections on the polished metal surfaces. The scene captures the premium, artisanal atmosphere of coffee roasting craftsmanship. Professional videography, 16:9 landscape, 6-second seamless loop, high detail.
+```
+
+```
 Cinematic video of coffee beans being poured from roasting equipment into a cooling tray, steam rising from the fresh-roasted beans. Warm lighting, focus on craftsmanship and artisanal process. Beans glow with fresh oils, rich brown color. Edinburgh specialty coffee roastery aesthetic, 4K, 16:9, seamless loop.
 ```
 
