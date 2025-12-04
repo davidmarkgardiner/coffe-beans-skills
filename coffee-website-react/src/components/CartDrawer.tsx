@@ -331,7 +331,7 @@ export default function CartDrawer({
       {/* Checkout Modal */}
       {showCheckout && (
         <Checkout
-          amount={total}
+          amount={Math.round(total * 100)}
           productName={`Cart Checkout (${cart.length} items)`}
           productId="cart-checkout"
           onClose={() => setShowCheckout(false)}

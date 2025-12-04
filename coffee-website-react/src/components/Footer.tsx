@@ -47,7 +47,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Column 1 */}
           <div>
-            <h4 className="font-display text-xl font-bold text-heading dark:text-accent-light mb-4">Stockbridge Coffee</h4>
+            <h3 className="font-display text-xl font-bold text-heading dark:text-accent-light mb-4">Stockbridge Coffee</h3>
             <p className="text-sm leading-relaxed dark:text-grey-300">
               Bringing you the world's finest coffee beans, roasted to perfection.
             </p>
@@ -55,7 +55,7 @@ export function Footer() {
 
           {/* Column 2 */}
           <div>
-            <h4 className="font-semibold text-heading dark:text-accent-light mb-4">Quick Links</h4>
+            <h3 className="font-semibold text-heading dark:text-accent-light mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
                 <a href="#home" className="text-sm dark:text-grey-300 hover:text-accent dark:hover:text-accent-light transition-colors duration-200">
@@ -87,7 +87,7 @@ export function Footer() {
 
           {/* Column 3 */}
           <div>
-            <h4 className="font-semibold text-heading dark:text-accent-light mb-4">Contact</h4>
+            <h3 className="font-semibold text-heading dark:text-accent-light mb-4">Contact</h3>
             <ul className="space-y-2 text-sm dark:text-grey-300">
               <li>Email: hello@stockbridgecoffee.com</li>
               <li>Phone: (555) 123-4567</li>
@@ -97,7 +97,7 @@ export function Footer() {
 
           {/* Column 4 */}
           <div>
-            <h4 className="font-semibold text-heading dark:text-accent-light mb-4">Newsletter</h4>
+            <h3 className="font-semibold text-heading dark:text-accent-light mb-4">Newsletter</h3>
             <p className="text-sm dark:text-grey-300 mb-4">Subscribe for updates and special offers.</p>
             <form onSubmit={handleSubmit} className="flex flex-col gap-2">
               <input
