@@ -33,6 +33,7 @@
     "@stripe/stripe-js": "^8.1.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "express-rate-limit": "^7.5.0",
     "firebase": "^12.4.0",
     "framer-motion": "^12.23.24",
     "googleapis": "^165.0.0",
@@ -44,7 +45,8 @@
     "react-hot-toast": "^2.6.0",
     "react-intersection-observer": "^10.0.0",
     "react-router-dom": "^7.9.5",
-    "stripe": "^19.1.0"
+    "stripe": "^19.1.0",
+    "zod": "^3.24.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",

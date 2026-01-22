@@ -395,6 +395,124 @@ export function useUserGiftCards(email: string | null, type: 'sent' | 'received'
   return useCollection('giftCards', constraints, realtime)
 }
 
+// Hook for product reviews
+export function useProductReviews(productId: string | null, realtime = true) {
+  const constraints = productId
+    ? [where('productId', '==', productId), where('status', '==', 'approved'), orderBy('createdAt', 'desc')]
+    : []
+
+  const { data, loading, error } = useCollection('reviews', constraints, realtime)
+
+  const refetch = () => {
+    // Trigger re-render by returning collection hook state
+  }
+
+  return { data, loading, error, refetch }
+}
+
+// Review operations
+export const reviewOperations = {
+  // Create a new review
+  async createReview(reviewData: {
+    productId: string
+    userId: string
+    userName: string
+    userEmail: string
+    rating: number
+    title: string
+    content: string
+  }): Promise<{ success: boolean; reviewId?: string; error?: string }> {
+    try {
+      // Check if user already reviewed this product
+      const existingReviewQuery = query(
+        collection(db, 'reviews'),
+        where('productId', '==', reviewData.productId),
+        where('userId', '==', reviewData.userId)
+      )
+      const existingReviews = await getDocs(existingReviewQuery)
+
+      if (!existingReviews.empty) {
+        return { success: false, error: 'You have already reviewed this product' }
+      }
+
+      // Create the review
+      const reviewDoc = await addDoc(collection(db, 'reviews'), {
+        ...reviewData,
+        status: 'approved', // Auto-approve for now; could be 'pending' for moderation
+        helpful: 0,
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+      })
+
+      // Update product average rating
+      await reviewOperations.updateProductRating(reviewData.productId)
+
+      return { success: true, reviewId: reviewDoc.id }
+    } catch (error) {
+      console.error('Error creating review:', error)
+      return { success: false, error: 'Failed to submit review' }
+    }
+  },
+
+  // Update product average rating
+  async updateProductRating(productId: string): Promise<void> {
+    try {
+      const reviewsQuery = query(
+        collection(db, 'reviews'),
+        where('productId', '==', productId),
+        where('status', '==', 'approved')
+      )
+      const reviewsSnapshot = await getDocs(reviewsQuery)
+
+      if (reviewsSnapshot.empty) return
+
+      const ratings = reviewsSnapshot.docs.map((doc) => doc.data().rating as number)
+      const averageRating = ratings.reduce((sum, r) => sum + r, 0) / ratings.length
+      const totalReviews = ratings.length
+
+      // Update product document with rating stats
+      const productRef = doc(db, 'products', productId)
+      await updateDoc(productRef, {
+        averageRating: Math.round(averageRating * 10) / 10, // Round to 1 decimal
+        totalReviews,
+        updatedAt: Timestamp.now(),
+      })
+    } catch (error) {
+      console.error('Error updating product rating:', error)
+    }
+  },
+
+  // Mark review as helpful
+  async markHelpful(reviewId: string, userId: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      const reviewRef = doc(db, 'reviews', reviewId)
+      const reviewSnap = await getDoc(reviewRef)
+
+      if (!reviewSnap.exists()) {
+        return { success: false, error: 'Review not found' }
+      }
+
+      const reviewData = reviewSnap.data()
+      const helpfulBy: string[] = reviewData.helpfulBy || []
+
+      if (helpfulBy.includes(userId)) {
+        return { success: false, error: 'Already marked as helpful' }
+      }
+
+      await updateDoc(reviewRef, {
+        helpful: (reviewData.helpful || 0) + 1,
+        helpfulBy: [...helpfulBy, userId],
+        updatedAt: Timestamp.now(),
+      })
+
+      return { success: true }
+    } catch (error) {
+      console.error('Error marking review as helpful:', error)
+      return { success: false, error: 'Failed to mark as helpful' }
+    }
+  },
+}
+
 // Email validation helper
 function isValidEmail(email: string): boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/

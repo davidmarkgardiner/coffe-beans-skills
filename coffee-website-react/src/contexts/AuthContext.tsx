@@ -106,7 +106,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   async function signup(email: string, password: string, displayName?: string) {
-    const { user } = await createUserWithEmailAndPassword(auth, email, password)
+    // Trim email to prevent auth/invalid-email errors from whitespace
+    const trimmedEmail = email.trim().toLowerCase()
+    const { user } = await createUserWithEmailAndPassword(auth, trimmedEmail, password)
 
     if (displayName) {
       await updateProfile(user, { displayName })
@@ -116,7 +118,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   async function login(email: string, password: string) {
-    const { user } = await signInWithEmailAndPassword(auth, email, password)
+    // Trim email to prevent auth/invalid-email errors from whitespace
+    const trimmedEmail = email.trim().toLowerCase()
+    const { user } = await signInWithEmailAndPassword(auth, trimmedEmail, password)
     await createUserDocument(user)
   }
 
@@ -131,7 +135,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   async function resetPassword(email: string) {
-    await sendPasswordResetEmail(auth, email)
+    // Trim email to prevent auth/invalid-email errors from whitespace
+    const trimmedEmail = email.trim().toLowerCase()
+    await sendPasswordResetEmail(auth, trimmedEmail)
   }
 
   async function updateUserProfile(displayName: string, photoURL?: string) {

@@ -84,12 +84,9 @@ export async function fetchActiveContent(
         } as ContentItem
       })
 
-      console.log(`✅ Fetched ${items.length} ${type} items for ${currentSeason}`)
-
       return items
     } catch (indexError: any) {
       // If index not ready, fall back to simple query and filter client-side
-      console.warn('Index not ready, using fallback query...')
 
       const snapshot = await getDocs(contentRef)
 
@@ -105,8 +102,6 @@ export async function fetchActiveContent(
         .filter(item => item.season === currentSeason && item.status === 'active')
         .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
         .slice(0, maxResults)
-
-      console.log(`✅ Fetched ${items.length} ${type} items for ${currentSeason} (fallback)`)
 
       return items
     }

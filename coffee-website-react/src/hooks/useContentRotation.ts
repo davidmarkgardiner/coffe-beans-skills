@@ -61,8 +61,6 @@ export function useContentRotation(options: UseContentRotationOptions = {}): Use
 
       setContentPool(items)
       setCurrentIndex(0)
-
-      console.log(`✅ Loaded ${items.length} content items for rotation`)
     } catch (err) {
       const error = err instanceof Error ? err : new Error('Failed to fetch content pool')
       setError(error)
@@ -92,11 +90,6 @@ export function useContentRotation(options: UseContentRotationOptions = {}): Use
       video.muted = true
       video.playsInline = true
 
-      // Start loading when video becomes visible soon
-      video.addEventListener('loadedmetadata', () => {
-        console.log(`📹 Video metadata loaded: ${content.id}`)
-      })
-
       preloadedImages.current.set(key, video)
     } else {
       const img = new Image()
@@ -104,8 +97,6 @@ export function useContentRotation(options: UseContentRotationOptions = {}): Use
       img.loading = 'lazy' // Use native lazy loading
       preloadedImages.current.set(key, img)
     }
-
-    console.log(`🔄 Preload initiated: ${content.id}`)
   }, [preloadNext])
 
   /**
@@ -122,8 +113,6 @@ export function useContentRotation(options: UseContentRotationOptions = {}): Use
       const preloadIndex = (nextIndex + 1) % contentPool.length
       preloadContent(contentPool[preloadIndex])
     }
-
-    console.log(`🔄 Rotated to content ${nextIndex + 1}/${contentPool.length}`)
   }, [contentPool, currentIndex, preloadNext, preloadContent])
 
   /**
@@ -143,8 +132,6 @@ export function useContentRotation(options: UseContentRotationOptions = {}): Use
     intervalRef.current = window.setInterval(() => {
       rotateNow()
     }, rotationInterval)
-
-    console.log(`⏰ Rotation interval set to ${rotationInterval}ms`)
 
     return () => {
       if (intervalRef.current) {
