@@ -274,3 +274,4 @@ ENVIRONMENT_SETUP.md
 .claude/hooks/install-security-hook.sh
 .claude/commands/orchestrate.md
 .claude/skills/orchestration-system/skill.md
+cmd.txt

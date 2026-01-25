@@ -349,6 +349,88 @@ Card: 4000 0025 0000 3155
 
 For more help, see `STRIPE_SETUP.md`.
 
+---
+
+## Improvement Roadmap
+
+### High Priority Issues
+
+| Issue | Location | Impact |
+|-------|----------|--------|
+| No payment failure recovery | `CheckoutForm.tsx` | Users can't retry failed payments |
+| Hardcoded single product | `ProductShowcase.tsx` | Can't add products without code changes |
+| Console.logs in production | Multiple files | Exposes internal logic, larger bundle |
+| Missing input validation | `LoginModal.tsx`, `GiftCardPurchase.tsx` | Security/UX concerns |
+| Hardcoded user ID in AI chat | `CoffeeCopilot.tsx:120` | Breaks analytics & personalization |
+| No rate limiting on API | `server/index.ts` | Risk of abuse, high costs |
+| No order confirmation emails | Server | Poor customer experience |
+
+### Missing E-commerce Features
+
+- [ ] **Customer account dashboard** - Order history, profile management
+- [ ] **Product reviews & ratings** - Social proof for products
+- [ ] **Wishlist/favorites** - Save products for later
+- [ ] **Order tracking** - Shipment status visibility
+- [ ] **Subscription model** - Recurring coffee deliveries
+- [ ] **Abandoned cart recovery** - Email reminders for incomplete purchases
+- [ ] **Search & filtering** - Better product discovery
+- [ ] **Multiple payment methods** - Apple Pay, Google Pay
+- [ ] **Product variants tracking** - SKU system for sizes/formats
+- [ ] **Dynamic tax calculation** - Location-based tax rates
+- [ ] **Return/exchange process** - RMA system
+
+### Quick Wins
+
+- [ ] Add email notifications using Nodemailer (already installed)
+- [ ] Remove console.log statements from production code
+- [ ] Add `loading="lazy"` to images for performance
+- [ ] Fix hardcoded user ID in CoffeeCopilot (`src/components/CoffeeCopilot.tsx:120`)
+- [ ] Add form validation with zod
+- [ ] Add proper error tracking (Sentry/LogRocket)
+
+### Medium Priority
+
+- [ ] Complete gift card balance persistence in Firestore
+- [ ] Add unit tests for critical functions (cart, payment, auth)
+- [ ] Implement image lazy-loading and optimization
+- [ ] Complete dark mode implementation
+- [ ] Add mobile-specific Playwright tests
+- [ ] Set up inventory monitoring alerts
+- [ ] Add real-time inventory listeners to admin dashboard
+
+### Security Improvements
+
+- [ ] Add helmet.js for security headers
+- [ ] Implement rate limiting with redis or in-memory store
+- [ ] Add request signing for webhook verification
+- [ ] Use GitHub Apps instead of personal token
+- [ ] Audit Firebase security rules
+
+### Code Quality Metrics
+
+| Metric | Status |
+|--------|--------|
+| TypeScript Coverage | 95%+ |
+| Test Coverage | <10% (needs improvement) |
+| Error Handling | 60% (gaps in critical paths) |
+| Bundle Size | Not analyzed |
+
+### Key File Locations
+
+| Component | Path |
+|-----------|------|
+| Authentication | `src/contexts/AuthContext.tsx` |
+| Cart Logic | `src/hooks/useCart.ts` |
+| Stripe Integration | `src/lib/stripe.ts`, `src/components/Checkout.tsx` |
+| Payment Backend | `server/index.ts` |
+| AI Copilot | `src/components/CoffeeCopilot.tsx` |
+| Firebase Config | `src/config/firebase.ts` |
+| Product Display | `src/components/ProductShowcase.tsx` |
+| Admin Dashboard | `src/pages/AdminDashboard.tsx` |
+| E2E Tests | `e2e/smoke.spec.ts` |
+
+---
+
 ## License
 
 Free to use for personal and commercial projects.
@@ -356,8 +438,6 @@ Free to use for personal and commercial projects.
 ---
 
 **Built with the Premium Coffee Website Skill**
-
-Enjoy your premium coffee website! ☕
 
 ## Firebase Deployment
 

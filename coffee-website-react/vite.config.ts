@@ -12,4 +12,34 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Core React - loaded first, cached long-term
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+
+          // Firebase SDK - large, split separately
+          'vendor-firebase': [
+            'firebase/app',
+            'firebase/auth',
+            'firebase/firestore',
+            'firebase/storage',
+            'firebase/analytics',
+          ],
+
+          // Stripe - payment processing
+          'vendor-stripe': ['@stripe/stripe-js', '@stripe/react-stripe-js'],
+
+          // Framer Motion - animations
+          'vendor-motion': ['framer-motion'],
+
+          // UI utilities
+          'vendor-ui': ['lucide-react', 'zod'],
+        },
+      },
+    },
+    // Increase chunk size warning limit since we're intentionally chunking
+    chunkSizeWarningLimit: 600,
+  },
 })

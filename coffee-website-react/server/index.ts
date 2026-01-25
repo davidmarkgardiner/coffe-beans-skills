@@ -8,6 +8,8 @@ import Stripe from 'stripe';
 import path from 'path';
 import fs from 'fs';
 import admin from 'firebase-admin';
+import nodemailer from 'nodemailer';
+import rateLimit from 'express-rate-limit';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -36,6 +38,221 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
+// ============================================================================
+// EMAIL CONFIGURATION (Nodemailer)
+// ============================================================================
+
+// Create email transporter
+const emailTransporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  port: parseInt(process.env.SMTP_PORT || '587'),
+  secure: process.env.SMTP_SECURE === 'true',
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
+
+// Verify email configuration on startup
+if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+  emailTransporter.verify((error, success) => {
+    if (error) {
+      console.warn('⚠️  Email configuration error:', error.message);
+    } else {
+      console.log('✅ Email transporter configured');
+    }
+  });
+} else {
+  console.warn('⚠️  SMTP credentials not set - order confirmation emails will not be sent');
+}
+
+interface OrderEmailData {
+  orderId: string;
+  customerEmail: string;
+  customerName?: string;
+  items: Array<{
+    name: string;
+    quantity: number;
+    price: number;
+  }>;
+  subtotal: number;
+  shipping: number;
+  total: number;
+  currency: string;
+  shippingAddress?: {
+    line1?: string;
+    line2?: string;
+    city?: string;
+    state?: string;
+    postal_code?: string;
+    country?: string;
+  } | null;
+}
+
+async function sendOrderConfirmationEmail(data: OrderEmailData): Promise<boolean> {
+  // Skip if email not configured
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    console.warn('📧 Skipping order confirmation email - SMTP not configured');
+    return false;
+  }
+
+  const {
+    orderId,
+    customerEmail,
+    customerName,
+    items,
+    subtotal,
+    shipping,
+    total,
+    currency,
+    shippingAddress,
+  } = data;
+
+  const currencySymbol = currency === 'gbp' ? '£' : currency === 'usd' ? '$' : currency.toUpperCase() + ' ';
+
+  // Build items HTML
+  const itemsHtml = items.map(item => `
+    <tr>
+      <td style="padding: 12px; border-bottom: 1px solid #eee;">${item.name}</td>
+      <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center;">${item.quantity}</td>
+      <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;">${currencySymbol}${item.price.toFixed(2)}</td>
+      <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;">${currencySymbol}${(item.price * item.quantity).toFixed(2)}</td>
+    </tr>
+  `).join('');
+
+  // Build shipping address HTML
+  const addressHtml = shippingAddress ? `
+    <p style="margin: 0; color: #666;">
+      ${shippingAddress.line1 || ''}<br>
+      ${shippingAddress.line2 ? shippingAddress.line2 + '<br>' : ''}
+      ${shippingAddress.city || ''}, ${shippingAddress.state || ''} ${shippingAddress.postal_code || ''}<br>
+      ${shippingAddress.country || ''}
+    </p>
+  ` : '<p style="margin: 0; color: #666;">No shipping address provided</p>';
+
+  // Estimated delivery (5-7 business days from now)
+  const deliveryStart = new Date();
+  deliveryStart.setDate(deliveryStart.getDate() + 5);
+  const deliveryEnd = new Date();
+  deliveryEnd.setDate(deliveryEnd.getDate() + 7);
+  const estimatedDelivery = `${deliveryStart.toLocaleDateString('en-GB', { weekday: 'short', month: 'short', day: 'numeric' })} - ${deliveryEnd.toLocaleDateString('en-GB', { weekday: 'short', month: 'short', day: 'numeric' })}`;
+
+  const emailHtml = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="text-align: center; padding: 20px 0; border-bottom: 2px solid #8B4513;">
+        <h1 style="color: #8B4513; margin: 0; font-size: 28px;">☕ Stockbridge Coffee</h1>
+        <p style="color: #666; margin: 5px 0 0 0;">Artisan Coffee Roastery</p>
+      </div>
+
+      <div style="padding: 30px 0;">
+        <h2 style="color: #333; margin: 0 0 10px 0;">Thank you for your order!</h2>
+        <p style="margin: 0; color: #666;">Hi ${customerName || 'there'},</p>
+        <p style="color: #666;">We've received your order and it's being prepared with care. Here's a summary of your purchase:</p>
+
+        <div style="background: #f9f9f9; border-radius: 8px; padding: 20px; margin: 20px 0;">
+          <p style="margin: 0 0 10px 0;"><strong>Order Number:</strong> #${orderId}</p>
+          <p style="margin: 0;"><strong>Estimated Delivery:</strong> ${estimatedDelivery}</p>
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+          <thead>
+            <tr style="background: #8B4513; color: white;">
+              <th style="padding: 12px; text-align: left;">Item</th>
+              <th style="padding: 12px; text-align: center;">Qty</th>
+              <th style="padding: 12px; text-align: right;">Price</th>
+              <th style="padding: 12px; text-align: right;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${itemsHtml}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3" style="padding: 12px; text-align: right;"><strong>Subtotal:</strong></td>
+              <td style="padding: 12px; text-align: right;">${currencySymbol}${subtotal.toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td colspan="3" style="padding: 12px; text-align: right;"><strong>Shipping:</strong></td>
+              <td style="padding: 12px; text-align: right;">${shipping > 0 ? currencySymbol + shipping.toFixed(2) : 'FREE'}</td>
+            </tr>
+            <tr style="background: #f9f9f9;">
+              <td colspan="3" style="padding: 12px; text-align: right;"><strong style="font-size: 18px;">Total:</strong></td>
+              <td style="padding: 12px; text-align: right;"><strong style="font-size: 18px; color: #8B4513;">${currencySymbol}${total.toFixed(2)}</strong></td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div style="margin: 30px 0;">
+          <h3 style="color: #333; margin: 0 0 10px 0;">Shipping Address</h3>
+          ${addressHtml}
+        </div>
+
+        <div style="background: #FFF8E7; border-left: 4px solid #8B4513; padding: 15px; margin: 20px 0;">
+          <p style="margin: 0; color: #666;"><strong>What's next?</strong></p>
+          <p style="margin: 10px 0 0 0; color: #666;">We'll send you another email with tracking information once your order ships.</p>
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid #eee; padding: 20px 0; text-align: center; color: #666; font-size: 14px;">
+        <p style="margin: 0 0 10px 0;"><strong>Questions about your order?</strong></p>
+        <p style="margin: 0;">Email us at <a href="mailto:support@stockbridgecoffee.co.uk" style="color: #8B4513;">support@stockbridgecoffee.co.uk</a></p>
+        <p style="margin: 20px 0 0 0; font-size: 12px; color: #999;">
+          Stockbridge Coffee Roastery<br>
+          Edinburgh, Scotland
+        </p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const emailText = `
+Thank you for your order!
+
+Hi ${customerName || 'there'},
+
+We've received your order and it's being prepared with care.
+
+Order Number: #${orderId}
+Estimated Delivery: ${estimatedDelivery}
+
+Items:
+${items.map(item => `- ${item.name} x${item.quantity} - ${currencySymbol}${(item.price * item.quantity).toFixed(2)}`).join('\n')}
+
+Subtotal: ${currencySymbol}${subtotal.toFixed(2)}
+Shipping: ${shipping > 0 ? currencySymbol + shipping.toFixed(2) : 'FREE'}
+Total: ${currencySymbol}${total.toFixed(2)}
+
+We'll send you another email with tracking information once your order ships.
+
+Questions? Email us at support@stockbridgecoffee.co.uk
+
+Stockbridge Coffee Roastery
+Edinburgh, Scotland
+  `;
+
+  try {
+    await emailTransporter.sendMail({
+      from: `"Stockbridge Coffee" <${process.env.SMTP_USER}>`,
+      to: customerEmail,
+      subject: `Order Confirmation - #${orderId}`,
+      text: emailText,
+      html: emailHtml,
+    });
+
+    console.log(`📧 Order confirmation email sent to ${customerEmail} for order #${orderId}`);
+    return true;
+  } catch (error) {
+    console.error('📧 Failed to send order confirmation email:', error);
+    return false;
+  }
+}
+
 // Initialize OpenAI
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || ''
@@ -51,6 +268,56 @@ app.use(cors({
   ]
 }));
 app.use(express.json());
+
+// ============================================================================
+// RATE LIMITING CONFIGURATION
+// ============================================================================
+
+// Stripe endpoints - most restrictive (10 requests per minute)
+const stripeRateLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 10,
+  message: {
+    error: 'Too many payment requests. Please wait a moment and try again.',
+    retryAfter: 60,
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// AI/Chat endpoints - moderate (20 requests per minute)
+const aiRateLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 20,
+  message: {
+    error: 'Too many requests. Please slow down.',
+    retryAfter: 60,
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// General API endpoints - permissive (100 requests per minute)
+const generalRateLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 100,
+  message: {
+    error: 'Too many requests. Please try again later.',
+    retryAfter: 60,
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Apply rate limiters to specific route groups
+app.use('/api/create-payment-intent', stripeRateLimiter);
+app.use('/api/stripe-webhook', stripeRateLimiter);
+app.use('/api/chat', aiRateLimiter);
+app.use('/api/feedback', aiRateLimiter);
+app.use('/api/admin', generalRateLimiter);
+app.use('/api/health', generalRateLimiter);
+
+console.log('✅ Rate limiting configured');
 
 // Configure multer for file uploads
 const upload = multer({
@@ -582,6 +849,35 @@ async function fulfillOrder(paymentIntent: Stripe.PaymentIntent) {
       read: false,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
+
+    // Send order confirmation email
+    try {
+      await sendOrderConfirmationEmail({
+        orderId: orderRef.id,
+        customerEmail,
+        customerName: metadata.customerName,
+        items: cartItems.map(item => ({
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+        subtotal,
+        shipping,
+        total,
+        currency: paymentIntent.currency,
+        shippingAddress: orderData.shippingAddress,
+      });
+    } catch (emailError) {
+      console.error('Failed to send order confirmation email:', emailError);
+      // Don't fail the order if email fails - log it for manual follow-up
+      await db.collection('email_failures').add({
+        orderId: orderRef.id,
+        customerEmail,
+        type: 'order_confirmation',
+        error: emailError instanceof Error ? emailError.message : 'Unknown error',
+        timestamp: admin.firestore.FieldValue.serverTimestamp(),
+      });
+    }
 
     console.log('✅ Order fulfillment complete:', orderRef.id);
     return orderRef.id;
