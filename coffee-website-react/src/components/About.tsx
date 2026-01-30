@@ -1,7 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
 
 export function About() {
-  // Use static seasonal coffee cup image instead of Firebase rotation
   const displayImage = '/images/coffee-cup-seasonal.png'
 
   return (

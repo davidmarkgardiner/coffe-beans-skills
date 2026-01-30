@@ -47,7 +47,11 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Column 1 */}
           <div>
-            <h3 className="font-display text-xl font-bold text-heading dark:text-accent-light mb-4">Stockbridge Coffee</h3>
+            <img
+              src="/images/stockbridge-fox-logo.png"
+              alt="Stockbridge Coffee"
+              className="h-20 w-auto mb-4 opacity-90"
+            />
             <p className="text-sm leading-relaxed dark:text-grey-300">
               Bringing you the world's finest coffee beans, roasted to perfection.
             </p>

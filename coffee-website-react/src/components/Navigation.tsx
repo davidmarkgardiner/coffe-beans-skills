@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { ShoppingCart, Menu, X, User, LogOut, Shield } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../contexts/AuthContext'
 import { useLocation, useNavigate } from 'react-router-dom'
+// Fox logo image replaces SVG StockbridgeLogo
 
 interface NavigationProps {
   itemCount: number
@@ -15,12 +16,24 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [imageError, setImageError] = useState(false)
+  const videoRef = useRef<HTMLVideoElement>(null)
   const { currentUser, userRole, logout } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
 
   // Check if we're on the homepage
   const isHomePage = location.pathname === '/'
+
+  // Pause video when scrolled down (40px circle wastes GPU rendering animation)
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+    if (scrolled) {
+      video.pause()
+    } else {
+      video.play().catch(() => {})
+    }
+  }, [scrolled])
 
   // Handle navigation clicks - navigate to homepage with hash if not already there
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, section: string) => {
@@ -70,7 +83,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
           : 'bg-transparent'
       }`}
     >
-      <div className="container mx-auto px-6 py-0">
+      <div className="container mx-auto px-6 py-0 overflow-visible">
         <div className="flex items-center justify-between gap-8">
           <a
             href="/"
@@ -82,50 +95,42 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
             className="flex items-center transition-all duration-300 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coffee-700 focus-visible:ring-offset-2 rounded-lg relative z-50"
             aria-label="Stockbridge Coffee"
           >
-            <img
-              src="/images/stockbridge-logo4.png"
-              alt="Stockbridge Coffee"
-              className="h-34 md:h-44 w-auto transition-transform duration-300 group-hover:scale-105 drop-shadow-lg mt-2 -mb-8"
-            />
+            <div
+              className={`rounded-full overflow-hidden border-2 border-[#B8975A]/30 shadow-[0_0_60px_rgba(184,151,90,0.15)] transition-all duration-300 group-hover:scale-105 will-change-transform ${
+              scrolled
+                ? 'w-10 h-10'
+                : 'w-36 h-36'
+            }`}
+              style={{ transform: 'translateZ(0)' }}
+            >
+              <video
+                ref={videoRef}
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="auto"
+                poster="/images/stockbridge-fox-poster.webp"
+                className="w-full h-full object-cover scale-110"
+                style={{ transform: 'translateZ(0)' }}
+              >
+                <source src="/images/stockbridge-fox-optimised.webm" type="video/webm" />
+                <source src="/images/stockbridge-fox-optimised.mp4" type="video/mp4" />
+              </video>
+            </div>
           </a>
 
           <div className="hidden md:flex items-center gap-10">
-            <a
-              href="#products"
-              onClick={(e) => handleNavClick(e, 'products')}
-              className={`text-xl font-logo transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded ${
-                scrolled ? 'text-white hover:text-accent-light' : 'text-white hover:text-accent-light'
-              }`}
-            >
-              Shop
-            </a>
-            <a
-              href="#blog"
-              onClick={(e) => handleNavClick(e, 'blog')}
-              className={`text-xl font-logo transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded ${
-                scrolled ? 'text-white hover:text-accent-light' : 'text-white hover:text-accent-light'
-              }`}
-            >
-              Blog
-            </a>
-            <a
-              href="#about"
-              onClick={(e) => handleNavClick(e, 'about')}
-              className={`text-xl font-logo transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded ${
-                scrolled ? 'text-white hover:text-accent-light' : 'text-white hover:text-accent-light'
-              }`}
-            >
-              About
-            </a>
-            <a
-              href="#contact"
-              onClick={(e) => handleNavClick(e, 'contact')}
-              className={`text-xl font-logo transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded ${
-                scrolled ? 'text-white hover:text-accent-light' : 'text-white hover:text-accent-light'
-              }`}
-            >
-              Contact
-            </a>
+            {['Shop', 'Blog', 'About', 'Contact'].map((label) => (
+              <a
+                key={label}
+                href={`#${label === 'Shop' ? 'products' : label.toLowerCase()}`}
+                onClick={(e) => handleNavClick(e, label === 'Shop' ? 'products' : label.toLowerCase())}
+                className="text-sm font-logo uppercase tracking-widest text-white hover:text-accent-light transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+              >
+                {label}
+              </a>
+            ))}
           </div>
 
           <div className="flex items-center gap-4">
