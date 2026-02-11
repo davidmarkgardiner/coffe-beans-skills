@@ -11,6 +11,7 @@
     "test:inventory": "tsx scripts/test-inventory.ts",
     "test:checkout": "tsx scripts/test-checkout.ts",
     "test:stripe": "tsx scripts/test-stripe.ts",
+    "test:bug-report": "tsx scripts/test-bug-report.ts",
     "test:content": "tsx scripts/test-content-generation.ts",
     "test:video": "tsx scripts/test-video-generation.ts",
     "upload:content": "tsx scripts/upload-content-to-firebase.ts",
