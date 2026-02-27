@@ -126,7 +126,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                 key={label}
                 href={`#${label === 'Shop' ? 'products' : label.toLowerCase()}`}
                 onClick={(e) => handleNavClick(e, label === 'Shop' ? 'products' : label.toLowerCase())}
-                className="text-sm font-logo uppercase tracking-widest text-white hover:text-accent-light transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+                className="text-base font-logo font-bold uppercase tracking-widest text-white hover:text-accent-light transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
               >
                 {label}
               </a>

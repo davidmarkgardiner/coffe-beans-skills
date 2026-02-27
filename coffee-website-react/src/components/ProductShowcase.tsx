@@ -72,14 +72,16 @@ export function ProductShowcase({ onAddToCart }: ProductShowcaseProps) {
             className="relative group"
           >
             <div className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500 hover-lift">
-              {/* Product Image */}
-              <motion.img
-                src="/images/coffee-cup-seasonal.png"
-                alt="Stockbridge Coffee - Seasonal coffee cup with latte art"
+              {/* Rotating bag video */}
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
                 className="w-full h-full object-cover"
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              />
+              >
+                <source src="/video/rotating-bag.mp4" type="video/mp4" />
+              </video>
 
               {/* Badge */}
               <motion.div
