@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { ShoppingCart, Menu, X, User, LogOut, Shield } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../contexts/AuthContext'
@@ -109,7 +109,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                 loop
                 muted
                 playsInline
-                preload="auto"
+                preload="metadata"
                 poster="/images/stockbridge-fox-poster.webp"
                 className="w-full h-full object-cover scale-110"
                 style={{ transform: 'translateZ(0)' }}
