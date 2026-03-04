@@ -47,11 +47,13 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Column 1 */}
           <div>
-            <img
-              src="/images/stockbridge-fox-logo.png"
-              alt="Stockbridge Coffee"
-              className="h-20 w-auto mb-4 opacity-90"
-            />
+            <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#B8975A]/30 mb-4">
+              <img
+                src="/images/stockbridge-fox-poster.webp"
+                alt="Stockbridge Coffee"
+                className="w-full h-full object-cover scale-110"
+              />
+            </div>
             <p className="text-sm leading-relaxed dark:text-grey-300">
               Bringing you the world's finest coffee beans, roasted to perfection.
             </p>

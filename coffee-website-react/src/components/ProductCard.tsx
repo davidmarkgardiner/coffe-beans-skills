@@ -56,9 +56,8 @@ export function ProductCard({ product, onAddToCart, onViewDetails }: ProductCard
             loading="lazy"
             decoding="async"
             onLoad={() => setImageLoaded(true)}
-            className={`w-full h-full object-cover transition-all duration-500 ${
-              imageLoaded ? 'opacity-100' : 'opacity-0'
-            }`}
+            className={`w-full h-full object-cover transition-all duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'
+              }`}
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
           />
@@ -84,13 +83,12 @@ export function ProductCard({ product, onAddToCart, onViewDetails }: ProductCard
               whileHover={!isLoading && !added ? { scale: 1.05 } : {}}
               whileTap={!isLoading && !added ? { scale: 0.95 } : {}}
               aria-label={`Add ${product.name} to cart`}
-              className={`px-5 py-2.5 rounded-lg font-semibold text-sm shadow-xl transition-all duration-200 disabled:opacity-75 disabled:cursor-not-allowed ${
-                isLoading
-                  ? 'bg-accent-dark text-background'
-                  : added
+              className={`px-5 py-2.5 rounded-lg font-semibold text-sm shadow-xl transition-all duration-200 disabled:opacity-75 disabled:cursor-not-allowed ${isLoading
+                ? 'bg-accent-dark text-background'
+                : added
                   ? 'bg-green-600 text-white'
                   : 'bg-accent-dark text-background hover:bg-accent-dark/90'
-              }`}
+                }`}
             >
               {isLoading ? (
                 <span className="flex items-center gap-2">

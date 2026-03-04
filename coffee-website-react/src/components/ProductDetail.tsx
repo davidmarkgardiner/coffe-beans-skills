@@ -157,11 +157,10 @@ export function ProductDetail({ product, onAddToCart, onClose }: ProductDetailPr
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 + index * 0.1 }}
                       onClick={() => setSelectedRoast(variant.id)}
-                      className={`relative p-4 rounded-xl border-2 transition-all duration-300 ${
-                        selectedRoast === variant.id
-                          ? 'border-accent-dark bg-accent-dark/5 shadow-md scale-105'
-                          : 'border-surface hover:border-accent/50 bg-white/50'
-                      }`}
+                      className={`relative p-4 rounded-xl border-2 transition-all duration-300 ${selectedRoast === variant.id
+                        ? 'border-accent-dark bg-accent-dark/5 shadow-md scale-105'
+                        : 'border-surface hover:border-accent/50 bg-white/50'
+                        }`}
                     >
                       {/* Mini coffee bag illustration */}
                       <div className={`aspect-[3/4] rounded-lg bg-gradient-to-br ${variant.imageBg} mb-3 flex items-center justify-center overflow-hidden`}>
@@ -188,16 +187,14 @@ export function ProductDetail({ product, onAddToCart, onClose }: ProductDetailPr
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.5 }}
                   onClick={() => setPurchaseType('one-time')}
-                  className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-300 ${
-                    purchaseType === 'one-time'
-                      ? 'border-accent-dark bg-accent-dark/5'
-                      : 'border-grey-200 hover:border-accent/50 bg-white/50'
-                  }`}
+                  className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-300 ${purchaseType === 'one-time'
+                    ? 'border-accent-dark bg-accent-dark/5'
+                    : 'border-grey-200 hover:border-accent/50 bg-white/50'
+                    }`}
                 >
                   <div className="flex items-center gap-4">
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                      purchaseType === 'one-time' ? 'border-accent-dark' : 'border-grey-400'
-                    }`}>
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${purchaseType === 'one-time' ? 'border-accent-dark' : 'border-grey-400'
+                      }`}>
                       {purchaseType === 'one-time' && (
                         <div className="w-3 h-3 rounded-full bg-accent-dark" />
                       )}
@@ -216,16 +213,14 @@ export function ProductDetail({ product, onAddToCart, onClose }: ProductDetailPr
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.6 }}
                   onClick={() => setPurchaseType('subscribe')}
-                  className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-300 ${
-                    purchaseType === 'subscribe'
-                      ? 'border-accent-dark bg-accent-dark/5'
-                      : 'border-grey-200 hover:border-accent/50 bg-white/50'
-                  }`}
+                  className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-300 ${purchaseType === 'subscribe'
+                    ? 'border-accent-dark bg-accent-dark/5'
+                    : 'border-grey-200 hover:border-accent/50 bg-white/50'
+                    }`}
                 >
                   <div className="flex items-center gap-4">
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                      purchaseType === 'subscribe' ? 'border-accent-dark' : 'border-grey-400'
-                    }`}>
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${purchaseType === 'subscribe' ? 'border-accent-dark' : 'border-grey-400'
+                      }`}>
                       {purchaseType === 'subscribe' && (
                         <div className="w-3 h-3 rounded-full bg-accent-dark" />
                       )}
