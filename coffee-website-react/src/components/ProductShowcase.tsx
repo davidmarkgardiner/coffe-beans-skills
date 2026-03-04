@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 interface ProductShowcaseProps {
   onAddToCart: (item: {
@@ -19,6 +19,8 @@ export function ProductShowcase({ onAddToCart }: ProductShowcaseProps) {
   const [format, setFormat] = useState<'whole' | 'ground'>('whole')
   const [size, setSize] = useState<'250g' | '1kg'>('250g')
   const [quantity, setQuantity] = useState(1)
+  const [videoReady, setVideoReady] = useState(false)
+  const videoRef = useRef<HTMLVideoElement>(null)
 
   const currentPrice = prices[size]
   const totalPrice = (currentPrice * quantity).toFixed(2)
@@ -72,14 +74,26 @@ export function ProductShowcase({ onAddToCart }: ProductShowcaseProps) {
             className="relative group"
           >
             <div className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500 hover-lift">
-              {/* Rotating bag video */}
+              {/* Poster fallback while video loads */}
+              <img
+                src="https://images.unsplash.com/photo-1459755486867-b55449bb39ff?w=1200&q=80"
+                alt=""
+                aria-hidden="true"
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${videoReady ? 'opacity-0' : 'opacity-100'}`}
+              />
+              {/* Rotating bag video - optimised */}
               <video
+                ref={videoRef}
                 autoPlay
                 muted
                 loop
                 playsInline
-                className="w-full h-full object-cover"
+                preload="metadata"
+                onCanPlay={() => setVideoReady(true)}
+                onError={() => setVideoReady(false)}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${videoReady ? 'opacity-100' : 'opacity-0'}`}
               >
+                <source src="/video/rotating-bag-optimised.mp4" type="video/mp4" />
                 <source src="/video/rotating-bag.mp4" type="video/mp4" />
               </video>
 
