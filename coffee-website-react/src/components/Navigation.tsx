@@ -87,7 +87,7 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
       animate={{ y: 0 }}
       transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
-        ? 'bg-heading/95 dark:bg-grey-900/95 backdrop-blur-md shadow-medium'
+        ? 'bg-heading/95 dark:bg-grey-900/95 backdrop-blur-xl shadow-medium'
         : 'bg-transparent'
         }`}
     >
@@ -133,9 +133,10 @@ export function Navigation({ itemCount, onOpenLogin, onOpenCart }: NavigationPro
                 key={label}
                 href={`#${label === 'Shop' ? 'products' : label.toLowerCase()}`}
                 onClick={(e) => handleNavClick(e, label === 'Shop' ? 'products' : label.toLowerCase())}
-                className="text-base font-logo font-bold uppercase tracking-widest text-white hover:text-accent-light transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+                className="relative group text-base font-logo font-bold uppercase tracking-widest text-white hover:text-accent-light transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
               >
                 {label}
+                <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-accent-light transition-all duration-300 group-hover:w-full"></span>
               </a>
             ))}
           </div>

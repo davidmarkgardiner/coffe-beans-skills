@@ -33,10 +33,11 @@ export function ProductCard({ product, onAddToCart, onViewDetails }: ProductCard
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
-      whileHover={{ y: -8 }}
+      variants={{
+        hidden: { opacity: 0, y: 30 },
+        show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] } }
+      }}
+      whileHover={{ y: -8, scale: 1.02 }}
       transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
       className="group cursor-pointer"
       onClick={handleViewDetails}

@@ -52,10 +52,15 @@ export function ProductDetail({ product, onAddToCart, onClose }: ProductDetailPr
       onClick={onClose}
     >
       <motion.div
-        initial={{ scale: 0.95, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.95, opacity: 0 }}
-        transition={{ type: 'spring', duration: 0.5 }}
+        initial={{ scale: 0.95, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.95, opacity: 0, y: 20 }}
+        transition={{
+          type: 'spring',
+          stiffness: 300,
+          damping: 30,
+          mass: 1.2
+        }}
         onClick={(e) => e.stopPropagation()}
         className="relative bg-background rounded-3xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto"
       >
@@ -71,7 +76,15 @@ export function ProductDetail({ product, onAddToCart, onClose }: ProductDetailPr
 
         <div className="grid lg:grid-cols-2 gap-0">
           {/* Left side - Product imagery */}
-          <div className="bg-surface/50 p-8 lg:p-12 flex flex-col gap-6">
+          <motion.div
+            initial="hidden"
+            animate="show"
+            variants={{
+              hidden: { opacity: 0 },
+              show: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.2 } }
+            }}
+            className="bg-surface/50 p-8 lg:p-12 flex flex-col gap-6"
+          >
             {/* Main product image */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -113,10 +126,18 @@ export function ProductDetail({ product, onAddToCart, onClose }: ProductDetailPr
                 />
               </motion.div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Right side - Product details */}
-          <div className="p-8 lg:p-12 flex flex-col">
+          <motion.div
+            initial="hidden"
+            animate="show"
+            variants={{
+              hidden: { opacity: 0 },
+              show: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.3 } }
+            }}
+            className="p-8 lg:p-12 flex flex-col"
+          >
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -326,7 +347,7 @@ export function ProductDetail({ product, onAddToCart, onClose }: ProductDetailPr
                 </button>
               </motion.div>
             </motion.div>
-          </div>
+          </motion.div>
         </div>
       </motion.div>
     </motion.div>
