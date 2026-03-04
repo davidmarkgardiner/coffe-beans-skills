@@ -103,7 +103,7 @@ export function Contact() {
 
           {activeTab === 'form' && (
             <div className="bg-white rounded-2xl shadow-large p-8 md:p-12">
-              <form className="space-y-6">
+              <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
                 <div className="grid md:grid-cols-2 gap-6">
                   <motion.div whileHover={{ scale: 1.01 }} transition={{ duration: 0.2 }}>
                     <label htmlFor="name" className="block text-sm font-semibold text-heading mb-2">

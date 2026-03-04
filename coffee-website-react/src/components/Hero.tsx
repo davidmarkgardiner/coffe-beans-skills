@@ -21,7 +21,7 @@ export function Hero() {
   }, [])
 
   return (
-    <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
+    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden scroll-mt-28 md:scroll-mt-32">
       {/* Background video */}
       <motion.div
         initial={{ scale: 1.1 }}

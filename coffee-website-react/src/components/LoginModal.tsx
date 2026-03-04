@@ -95,7 +95,11 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={(e) => {
+              e.stopPropagation()
+              e.preventDefault()
+              onClose()
+            }}
             className="fixed inset-0 bg-charcoal/70 backdrop-blur-md z-[9999]"
           />
 
@@ -107,7 +111,12 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-[10000] flex items-center justify-center p-4 overflow-y-auto"
             style={{ alignItems: 'center' }}
-            onClick={onClose}
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                e.stopPropagation();
+                onClose();
+              }
+            }}
           >
             <div
               onClick={(e) => e.stopPropagation()}
@@ -123,7 +132,11 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     {mode === 'reset' && 'Reset Password'}
                   </h2>
                   <button
-                    onClick={onClose}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      e.preventDefault()
+                      onClose()
+                    }}
                     className="p-2 hover:bg-accent-light/50 rounded-full transition-colors duration-200"
                     aria-label="Close modal"
                   >
