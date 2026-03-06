@@ -95,7 +95,7 @@ export function Footer() {
           <div>
             <h3 className="font-semibold text-heading dark:text-accent-light mb-4">Contact</h3>
             <ul className="space-y-2 text-sm dark:text-grey-300">
-              <li>Email: hello@stockbridgecoffee.com</li>
+              <li>Email: hello@stockbridgecoffee.co.uk</li>
               <li>Phone: (555) 123-4567</li>
               <li>Hours: Mon-Fri 8am-6pm</li>
             </ul>
