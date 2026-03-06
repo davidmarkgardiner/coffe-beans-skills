@@ -21,7 +21,8 @@ export default defineConfig({
     },
   ],
 
-  webServer: process.env.CI ? undefined : {
+  /* Skip webServer when testing against a live/remote URL */
+  webServer: (process.env.CI || process.env.PLAYWRIGHT_TEST_BASE_URL) ? undefined : {
     command: 'npm run dev',
     url: 'http://localhost:5173',
     reuseExistingServer: !process.env.CI,

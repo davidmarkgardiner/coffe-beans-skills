@@ -649,8 +649,12 @@ app.post('/api/create-payment-intent', async (req: Request, res: Response) => {
     const { amount, currency = 'gbp', metadata = {} } = req.body;
 
     // Validate amount
+    const MAX_PAYMENT_AMOUNT_PENCE = 50000; // £500 safety cap
     if (!amount || amount <= 0) {
       return res.status(400).json({ error: 'Invalid amount' });
+    }
+    if (amount > MAX_PAYMENT_AMOUNT_PENCE) {
+      return res.status(400).json({ error: `Amount exceeds maximum allowed (${MAX_PAYMENT_AMOUNT_PENCE} pence / £${MAX_PAYMENT_AMOUNT_PENCE / 100})` });
     }
 
     // Ensure amount is in cents (integer)
@@ -689,8 +693,8 @@ app.post('/api/stripe-webhook', express.raw({ type: 'application/json' }), async
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
   if (!webhookSecret) {
-    console.warn('STRIPE_WEBHOOK_SECRET not set, skipping webhook verification');
-    return res.status(400).send('Webhook secret not configured');
+    console.error('STRIPE_WEBHOOK_SECRET is not set — refusing to process webhook. Set this environment variable to enable webhook verification.');
+    return res.status(500).json({ error: 'Webhook endpoint not configured: STRIPE_WEBHOOK_SECRET is required' });
   }
 
   try {
