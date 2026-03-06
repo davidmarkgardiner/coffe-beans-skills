@@ -9,7 +9,7 @@ export function MapSection() {
   const businessInfo = {
     address: 'Top 8, EH4 2DP, Edinburgh, UK',
     hours: 'Mon-Sat: 7:30 AM - 6:00 PM\nSun: 8:00 AM - 5:00 PM',
-    phone: '+44 131 XXX XXXX',
+    phone: '',
   }
 
   const handleMapError = (error: Error) => {
