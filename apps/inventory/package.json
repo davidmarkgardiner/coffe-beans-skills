@@ -1,0 +1,14 @@
+{
+  "name": "bean-ledger-inventory",
+  "version": "1.0.0",
+  "description": "Stockbridge Coffee — Bean Ledger Inventory Management",
+  "type": "module",
+  "scripts": {
+    "add-roast": "node add-roast.js",
+    "check-stock": "node check-stock.js",
+    "deduct-sale": "node deduct-sale.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.6.0"
+  }
+}

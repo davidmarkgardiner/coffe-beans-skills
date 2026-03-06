@@ -71,7 +71,7 @@ export default function CheckoutForm({ amount, onSuccess, onError }: CheckoutFor
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
             </div>
           ) : (
-            `Pay $${amount.toFixed(2)}`
+            `Pay £${(amount / 100).toFixed(2)}`
           )}
         </span>
       </button>
