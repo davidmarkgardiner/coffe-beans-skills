@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet-async'
 import { useCollection } from '../hooks/useFirestore'
 import { newsletterOperations } from '../hooks/useFirestore'
 import { where, limit } from 'firebase/firestore'
@@ -144,8 +145,78 @@ export function BlogPost() {
     )
   }
 
+  // Generate Schema.org structured data for the blog post
+  const generateSchemaData = () => {
+    if (!post) return null
+    
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: post.title,
+      description: post.excerpt,
+      image: post.featuredImage || 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&q=80',
+      url: `https://stockbridgecoffee.co.uk/blog/${post.slug}`,
+      datePublished: post.publishedAt?.toDate?.()?.toISOString(),
+      dateModified: post.publishedAt?.toDate?.()?.toISOString(),
+      author: {
+        '@type': 'Organization',
+        name: post.author || 'Stockbridge Coffee',
+        url: 'https://stockbridgecoffee.co.uk',
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'Stockbridge Coffee',
+        logo: {
+          '@type': 'ImageObject',
+          url: 'https://stockbridgecoffee.co.uk/coffee-icon.svg',
+        },
+      },
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': `https://stockbridgecoffee.co.uk/blog/${post.slug}`,
+      },
+      keywords: post.tags?.join(', ') || 'coffee, recipes, brewing',
+      articleSection: post.category?.replace('-', ' ') || 'Coffee',
+    }
+  }
+
   return (
     <div className="min-h-screen bg-background pt-40 pb-20">
+      {/* SEO Meta Tags */}
+      {post && (
+        <Helmet>
+          <title>{`${post.title} | Stockbridge Coffee Blog`}</title>
+          <meta name="description" content={post.excerpt} />
+          <meta name="keywords" content={post.tags?.join(', ') || 'coffee, recipes, brewing'} />
+          <link rel="canonical" href={`https://stockbridgecoffee.co.uk/blog/${post.slug}`} />
+          
+          {/* Open Graph */}
+          <meta property="og:type" content="article" />
+          <meta property="og:title" content={post.title} />
+          <meta property="og:description" content={post.excerpt} />
+          <meta property="og:image" content={post.featuredImage || 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&q=80'} />
+          <meta property="og:url" content={`https://stockbridgecoffee.co.uk/blog/${post.slug}`} />
+          <meta property="og:site_name" content="Stockbridge Coffee" />
+          <meta property="article:published_time" content={post.publishedAt?.toDate?.()?.toISOString()} />
+          <meta property="article:author" content={post.author || 'Stockbridge Coffee'} />
+          <meta property="article:section" content={post.category?.replace('-', ' ') || 'Coffee'} />
+          {post.tags?.map((tag) => (
+            <meta key={tag} property="article:tag" content={tag} />
+          ))}
+          
+          {/* Twitter Card */}
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content={post.title} />
+          <meta name="twitter:description" content={post.excerpt} />
+          <meta name="twitter:image" content={post.featuredImage || 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&q=80'} />
+          
+          {/* Schema.org Structured Data */}
+          <script type="application/ld+json">
+            {JSON.stringify(generateSchemaData())}
+          </script>
+        </Helmet>
+      )}
+
       <div className="container mx-auto px-6">
         <article className="max-w-4xl mx-auto">
           {/* Back button */}

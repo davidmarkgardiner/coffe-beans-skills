@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { Navigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast, Toaster } from 'react-hot-toast'
+import { Helmet } from 'react-helmet-async'
 
 interface Order {
   id: string
@@ -143,8 +144,14 @@ export function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-text pt-24 pb-12">
-      <Toaster position="top-right" />
+    <>
+      <Helmet>
+        <title>Admin Dashboard | Stockbridge Coffee</title>
+        <meta name="description" content="Admin dashboard for managing orders, inventory, and analytics." />
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+      <div className="min-h-screen bg-background text-text pt-24 pb-12">
+        <Toaster position="top-right" />
 
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
@@ -393,6 +400,7 @@ export function AdminDashboard() {
         </AnimatePresence>
       </div>
     </div>
+    </>
   )
 }
 

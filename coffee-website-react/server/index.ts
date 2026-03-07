@@ -319,6 +319,65 @@ app.use('/api/health', generalRateLimiter);
 
 console.log('✅ Rate limiting configured');
 
+// ============================================================================
+// ELEVENLABS CONVERSATIONAL AI ENDPOINTS
+// ============================================================================
+
+// Generate WebRTC token for Stoxy voice agent
+app.post('/api/elevenlabs-token', async (req: Request, res: Response) => {
+  try {
+    const { agent_id } = req.body;
+
+    if (!agent_id) {
+      return res.status(400).json({ error: 'agent_id is required' });
+    }
+
+    const apiKey = process.env.ELEVENLABS_API_KEY;
+
+    if (!apiKey) {
+      console.warn('⚠️  ELEVENLABS_API_KEY not set - WebRTC token generation unavailable');
+      return res.status(503).json({ 
+        error: 'ElevenLabs not configured',
+        message: 'Voice agent token generation is unavailable'
+      });
+    }
+
+    // Request token from ElevenLabs API
+    const response = await fetch(
+      `https://api.elevenlabs.io/v1/convai/conversation/token?agent_id=${agent_id}`,
+      {
+        method: 'POST',
+        headers: {
+          'xi-api-key': apiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.text();
+      console.error('ElevenLabs token error:', error);
+      return res.status(response.status).json({
+        error: 'Failed to generate conversation token',
+        details: error,
+      });
+    }
+
+    const data = await response.json();
+    
+    res.json({
+      token: data.token,
+      expires_at: data.expires_at,
+    });
+  } catch (error) {
+    console.error('Error generating ElevenLabs token:', error);
+    res.status(500).json({
+      error: 'Failed to generate conversation token',
+      message: error instanceof Error ? error.message : 'Internal server error',
+    });
+  }
+});
+
 // Configure multer for file uploads
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -1282,6 +1341,9 @@ app.listen(PORT, () => {
   console.log(`   OpenAI: ${process.env.OPENAI_API_KEY ? '✅ Configured' : '❌ Missing'}`);
   console.log(`   - POST /api/chat (AI chat endpoint)`);
   console.log(`   - POST /api/feedback (Bug reports with screenshots)`);
+  console.log(`\n🎙️  Stoxy Voice Agent:`);
+  console.log(`   ElevenLabs: ${process.env.ELEVENLABS_API_KEY ? '✅ Configured' : '❌ Missing'}`);
+  console.log(`   - POST /api/elevenlabs-token (WebRTC token generation)`);
   console.log(`\n💳 Stripe Payments:`);
   console.log(`   Stripe: ${stripe ? '✅ Configured' : '⚠️  Not configured'}`);
   console.log(`   - POST /api/create-payment-intent`);

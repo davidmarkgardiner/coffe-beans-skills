@@ -1,5 +1,6 @@
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { Helmet } from 'react-helmet-async'
 
 export function OrderConfirmation() {
   const navigate = useNavigate()
@@ -7,7 +8,13 @@ export function OrderConfirmation() {
   const sessionId = searchParams.get('session_id')
 
   return (
-    <section className="relative min-h-screen py-32 bg-background dark:bg-grey-900 overflow-hidden transition-colors duration-300">
+    <>
+      <Helmet>
+        <title>Order Confirmed | Stockbridge Coffee</title>
+        <meta name="description" content="Thank you for your order! Your premium coffee is being prepared with care." />
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+      <section className="relative min-h-screen py-32 bg-background dark:bg-grey-900 overflow-hidden transition-colors duration-300">
       {/* Subtle background pattern */}
       <div className="absolute inset-0 opacity-[0.02]" aria-hidden="true" style={{
         backgroundImage: `radial-gradient(circle at 1px 1px, rgba(33, 47, 31, 0.15) 1px, transparent 0)`,
@@ -137,5 +144,6 @@ export function OrderConfirmation() {
         </div>
       </div>
     </section>
+    </>
   )
 }

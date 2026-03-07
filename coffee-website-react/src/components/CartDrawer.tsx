@@ -38,7 +38,7 @@ export default function CartDrawer({
     setShowCheckout(true);
   };
 
-  const handleCheckoutSuccess = (paymentIntentId: string) => {
+  const handleCheckoutSuccess = (_paymentIntentId: string) => {
     // Payment successful - cart cleared by webhook handler
     // Clear cart after successful payment
     cart.forEach(item => removeFromCart(item.id));

@@ -163,7 +163,10 @@ function App() {
       />
 
       {/* Stoxy - ElevenLabs Conversational AI Mascot */}
-      <StoxyAgent />
+      <StoxyAgent 
+        onOpenLogin={() => setLoginModalOpen(true)}
+        onOpenCart={() => setCartDrawerOpen(true)}
+      />
     </>
   )
 }
