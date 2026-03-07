@@ -54,13 +54,13 @@ export function About() {
               className="space-y-6 text-base text-text/80 dark:text-grey-300 leading-relaxed"
             >
               <p>
-                At Stockbridge Coffee, we believe great coffee starts with great relationships. Our journey begins in Latin America, where we work directly with farmers to source the finest beans, supporting fair trade and sustainable practices.
+                If you've wandered Stockbridge at dusk, you've probably spotted one — a flash of russet fur slipping between the cobbles, bold and unhurried. The urban fox is as much a part of this neighbourhood as the Sunday markets and the Water of Leith. That's why we chose the fox as our emblem.
               </p>
               <p>
-                Based in Stockbridge, Edinburgh, our small-batch roasters bring decades of experience and a passion for craft to each bean. Every batch is carefully roasted to highlight the unique flavours, aromas, and character of its origin.
+                Like the Stockbridge Fox, we're curious, resourceful, and a little bit wild. We source single-origin beans from small farms, roast them in micro-batches right here in Edinburgh, and deliver them fresh to your door. No shortcuts, no compromise — just honest coffee with real character.
               </p>
               <p className="font-medium text-heading/90 dark:text-grey-200">
-                For us, coffee is more than a drink. It's about connecting communities, celebrating craftsmanship, and sharing the warmth behind every cup.
+                Every bag carries the spirit of this neighbourhood: independent, welcoming, and just the right amount of bold. Welcome to the pack.
               </p>
             </motion.div>
 
@@ -75,9 +75,9 @@ export function About() {
               aria-label="Company statistics"
             >
               {[
-                { value: '15+', label: 'Countries' },
-                { value: '50K+', label: 'Happy Customers' },
+                { value: '1', label: 'Single Origin' },
                 { value: '100%', label: 'Sustainable' },
+                { value: 'Edinburgh', label: 'Roasted' },
               ].map((stat, index) => (
                 <motion.div
                   key={stat.label}

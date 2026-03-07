@@ -20,6 +20,9 @@ export const getStripe = () => {
 };
 
 // API endpoint for creating payment intents
+// IMPORTANT: `amount` must be provided in the smallest currency unit (pence for GBP).
+// Callers (e.g. CartDrawer) already convert pounds to pence before calling this function.
+// Do NOT multiply by 100 here — that was a double-conversion bug (fixed 2026-03-06).
 export const createPaymentIntent = async (amount: number, currency: string = 'gbp', metadata: Record<string, string> = {}) => {
   try {
     const response = await fetch('/api/create-payment-intent', {
@@ -28,7 +31,7 @@ export const createPaymentIntent = async (amount: number, currency: string = 'gb
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        amount: Math.round(amount * 100), // Convert to cents
+        amount: Math.round(amount), // Already in pence/cents — do not multiply by 100
         currency,
         metadata,
       }),

@@ -17,6 +17,7 @@ import CartDrawer from './components/CartDrawer'
 import StoxyAgent from './components/StoxyAgent'
 import { BlogPost } from './pages/BlogPost'
 import { AdminDashboard } from './pages/AdminDashboard'
+import { OrderConfirmation } from './pages/OrderConfirmation'
 import { useCart } from './hooks/useCart'
 
 // Component to handle hash-based navigation scrolling
@@ -117,6 +118,9 @@ function App() {
       <Routes>
         {/* Admin Dashboard */}
         <Route path="/admin" element={<AdminDashboard />} />
+
+        {/* Order confirmation (Stripe redirect) */}
+        <Route path="/order-confirmation" element={<OrderConfirmation />} />
 
         {/* Blog detail page */}
         <Route path="/blog/:slug" element={<BlogPost />} />

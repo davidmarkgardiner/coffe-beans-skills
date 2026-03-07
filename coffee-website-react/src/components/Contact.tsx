@@ -93,8 +93,8 @@ export function Contact() {
                   </motion.div>
                   <div>
                     <h3 className="font-semibold text-heading mb-1 group-hover:text-accent transition-colors duration-300">Email</h3>
-                    <p className="text-text">hello@stockbridgecoffee.com</p>
-                    <p className="text-text">support@stockbridgecoffee.com</p>
+                    <p className="text-text">hello@stockbridgecoffee.co.uk</p>
+                    <p className="text-text">support@stockbridgecoffee.co.uk</p>
                   </div>
                 </motion.div>
               </div>

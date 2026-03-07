@@ -1,0 +1,16 @@
+{
+  "name": "stockbridge-newsletter",
+  "version": "1.0.0",
+  "description": "Stockbridge Coffee newsletter management",
+  "scripts": {
+    "draft": "node draft-newsletter.js",
+    "preview": "node draft-newsletter.js --preview",
+    "subscribers": "node manage-subscribers.js list",
+    "count": "node manage-subscribers.js count",
+    "export": "node manage-subscribers.js export"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.0.0",
+    "googleapis": "^140.0.0"
+  }
+}
