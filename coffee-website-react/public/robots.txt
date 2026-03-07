@@ -9,4 +9,4 @@ Allow: /
 Disallow: /admin/
 
 # Sitemap location
-Sitemap: https://stockbridgecoffee.com/sitemap.xml
+Sitemap: https://stockbridgecoffee.co.uk/sitemap.xml

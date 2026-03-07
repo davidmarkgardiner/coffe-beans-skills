@@ -949,10 +949,17 @@ app.post('/api/create-payment-intent', async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Invalid amount' });
     }
 
-    // Ensure amount is in cents (integer)
+    // Ensure amount is in pence (integer)
     const amountInCents = Math.round(amount);
 
-    console.log(`Creating payment intent for $${amountInCents / 100} ${currency}`);
+    // Max payment cap: £500 (50000 pence) — safety guardrail
+    const MAX_AMOUNT_PENCE = 50000;
+    if (amountInCents > MAX_AMOUNT_PENCE) {
+      console.warn(`Payment rejected: amount ${amountInCents}p exceeds cap of ${MAX_AMOUNT_PENCE}p`);
+      return res.status(400).json({ error: 'Amount exceeds maximum allowed payment of £500' });
+    }
+
+    console.log(`Creating payment intent for £${(amountInCents / 100).toFixed(2)} ${currency}`);
 
     // Create PaymentIntent
     const paymentIntent = await stripe.paymentIntents.create({

@@ -172,12 +172,7 @@ export default function Checkout({ amount, productName, productId, onClose, onSu
           </div>
         )}
 
-        <div className="mt-6 pt-6 border-t border-gray-200">
-          <div className="flex justify-between text-sm text-gray-600 mb-2">
-            <span>Test Mode</span>
-            <span>Use card: 4242 4242 4242 4242</span>
-          </div>
-        </div>
+
       </div>
     </div>
   );

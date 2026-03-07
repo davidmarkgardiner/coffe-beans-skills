@@ -1,0 +1,283 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - navigation [ref=e3]:
+    - generic [ref=e5]:
+      - link "Stockbridge Coffee" [ref=e6]:
+        - /url: /
+      - generic [ref=e9]:
+        - link "Shop" [ref=e10]:
+          - /url: "#products"
+          - text: Shop
+        - link "Blog" [ref=e11]:
+          - /url: "#blog"
+          - text: Blog
+        - link "About" [ref=e12]:
+          - /url: "#about"
+          - text: About
+        - link "Contact" [ref=e13]:
+          - /url: "#contact"
+          - text: Contact
+      - generic [ref=e14]:
+        - button "Sign In" [ref=e15]:
+          - img [ref=e16]
+          - text: Sign In
+        - button "Shopping cart with 0 items" [ref=e19]:
+          - img [ref=e20]
+  - generic [ref=e24]:
+    - img [ref=e26]
+    - generic [ref=e30]:
+      - heading "STOCKBRIDGE COFFEE" [level=1] [ref=e31]
+      - paragraph [ref=e32]: Edinburgh
+  - region "About Stockbridge Coffee" [ref=e33]:
+    - generic [ref=e36]:
+      - generic [ref=e37]:
+        - generic [ref=e38]: Our Story
+        - heading "Crafted With Passion" [level=2] [ref=e39]:
+          - text: Crafted With
+          - text: Passion
+        - generic [ref=e40]:
+          - paragraph [ref=e41]: At Stockbridge Coffee, we believe great coffee starts with great relationships. Our journey begins in Latin America, where we work directly with farmers to source the finest beans, supporting fair trade and sustainable practices.
+          - paragraph [ref=e42]: Based in Stockbridge, Edinburgh, our small-batch roasters bring decades of experience and a passion for craft to each bean. Every batch is carefully roasted to highlight the unique flavours, aromas, and character of its origin.
+          - paragraph [ref=e43]: For us, coffee is more than a drink. It's about connecting communities, celebrating craftsmanship, and sharing the warmth behind every cup.
+        - list "Company statistics" [ref=e44]:
+          - listitem "15+ Countries" [ref=e45]:
+            - paragraph [ref=e46]: 15+
+            - paragraph [ref=e47]: Countries
+          - listitem "50K+ Happy Customers" [ref=e48]:
+            - paragraph [ref=e49]: 50K+
+            - paragraph [ref=e50]: Happy Customers
+          - listitem "100% Sustainable" [ref=e51]:
+            - paragraph [ref=e52]: 100%
+            - paragraph [ref=e53]: Sustainable
+      - generic [ref=e54]:
+        - img "Coffee roasting process - artisan coffee beans being carefully roasted" [ref=e56]
+        - complementary "Artisan roasted badge" [ref=e58]:
+          - paragraph [ref=e59]:
+            - text: Artisan
+            - text: Roasted
+          - paragraph [ref=e61]: Every batch is carefully crafted by hand
+          - img [ref=e63]
+  - region "Coffee products" [ref=e66]:
+    - generic [ref=e67]:
+      - generic [ref=e68]:
+        - generic [ref=e69]: Our Collection
+        - heading "Today's Offering" [level=2] [ref=e70]
+        - paragraph [ref=e71]: We believe in doing one thing extraordinarily well. Our single-origin coffee is carefully selected, expertly roasted, and available in your preferred format.
+      - generic [ref=e72]:
+        - generic [ref=e74]:
+          - generic:
+            - generic: Single Origin
+        - generic [ref=e79]:
+          - generic [ref=e80]:
+            - heading "Stockbridge Signature" [level=3] [ref=e81]
+            - paragraph [ref=e82]: Ethiopian Yirgacheffe
+          - generic [ref=e83]:
+            - generic [ref=e84]: Tasting Notes
+            - generic [ref=e85]:
+              - generic [ref=e86]: Floral
+              - generic [ref=e87]: Citrus
+              - generic [ref=e88]: Honey
+              - generic [ref=e89]: Tea-like
+          - paragraph [ref=e90]: A bright, clean coffee with delicate floral aromatics and vibrant citrus acidity. This naturally processed Ethiopian coffee delivers a tea-like body with sweet honey notes that linger beautifully on the palate.
+          - generic [ref=e91]:
+            - generic [ref=e92]:
+              - generic [ref=e93]: Altitude
+              - text: 1,800-2,000m
+            - generic [ref=e94]:
+              - generic [ref=e95]: Process
+              - text: Washed
+            - generic [ref=e96]:
+              - generic [ref=e97]: Roast
+              - text: Light-Medium
+          - generic [ref=e98]:
+            - generic [ref=e99]: Format
+            - group "Format" [ref=e100]:
+              - button "Select Whole Bean format" [pressed] [ref=e101]:
+                - generic [ref=e102]:
+                  - generic [ref=e103]: ◯
+                  - generic [ref=e104]: Whole Bean
+              - button "Select Ground format" [ref=e107]:
+                - generic [ref=e108]:
+                  - generic [ref=e109]: ◐
+                  - generic [ref=e110]: Ground
+          - generic [ref=e113]:
+            - generic [ref=e114]: Size & Price
+            - group "Size & Price" [ref=e115]:
+              - button "Select 250g - £8.50" [pressed] [ref=e116]:
+                - generic [ref=e118]:
+                  - generic [ref=e119]: 250g
+                  - generic [ref=e120]: Small Batch
+                  - generic [ref=e121]: £8.50
+              - button "Select 1kg - £28.00" [ref=e124]:
+                - generic [ref=e126]:
+                  - generic [ref=e127]: 1kg
+                  - generic [ref=e128]: Value Pack
+                  - generic [ref=e129]: £28.00
+          - generic [ref=e132]:
+            - generic [ref=e133]:
+              - button "Decrease quantity" [ref=e134]:
+                - img [ref=e135]
+              - generic [ref=e136]: "1"
+              - button "Increase quantity" [ref=e137]:
+                - img [ref=e138]
+            - button "Add 1 whole 250g coffee to cart for £8.50" [ref=e140]:
+              - generic [ref=e143]:
+                - generic [ref=e144]: Add to Cart
+                - generic [ref=e145]:
+                  - generic [ref=e146]: £
+                  - generic [ref=e147]: "8.50"
+  - generic [ref=e150]:
+    - generic [ref=e151]:
+      - generic [ref=e152]:
+        - img [ref=e153]
+        - generic [ref=e157]: Perfect Gift
+      - heading "Give the Gift of Premium Coffee" [level=2] [ref=e158]:
+        - text: Give the Gift of
+        - text: Premium Coffee
+      - paragraph [ref=e159]: Share the joy of exceptional coffee with friends and family. Our digital gift cards are delivered instantly and never expire.
+    - generic [ref=e165]:
+      - generic [ref=e166]:
+        - generic [ref=e167]:
+          - img [ref=e169]
+          - generic [ref=e173]: Gift Card
+        - img [ref=e174]
+      - generic [ref=e177]:
+        - paragraph [ref=e178]: Balance
+        - paragraph [ref=e179]: £50.00
+      - generic [ref=e180]:
+        - generic [ref=e181]:
+          - paragraph [ref=e182]: Gift Code
+          - paragraph [ref=e183]: GIFT-XXXX-XXXX
+        - img [ref=e184]
+    - generic [ref=e186]:
+      - generic [ref=e187]:
+        - img [ref=e189]
+        - heading "Instant Delivery" [level=3] [ref=e193]
+        - paragraph [ref=e194]: Sent via email immediately after purchase
+      - generic [ref=e195]:
+        - img [ref=e197]
+        - heading "Personal Message" [level=3] [ref=e199]
+        - paragraph [ref=e200]: Add a custom note to make it special
+      - generic [ref=e201]:
+        - img [ref=e203]
+        - heading "Never Expires" [level=3] [ref=e206]
+        - paragraph [ref=e207]: Valid for one year from purchase date
+    - generic [ref=e208]:
+      - button "Purchase Gift Card" [ref=e209]:
+        - img [ref=e210]
+        - text: Purchase Gift Card
+      - paragraph [ref=e214]: Choose from £25, £50, £100 or enter a custom amount
+  - generic [ref=e216]:
+    - generic [ref=e217]:
+      - paragraph [ref=e218]: Testimonials
+      - heading "What Our Customers Say" [level=2] [ref=e219]
+      - paragraph [ref=e220]: Join thousands of satisfied coffee lovers who trust Stockbridge for their daily brew
+    - generic [ref=e221]:
+      - generic [ref=e222]:
+        - generic [ref=e224]:
+          - generic [ref=e225]:
+            - img "Sarah Mitchell" [ref=e226]
+            - generic [ref=e227]:
+              - heading "Sarah Mitchell" [level=4] [ref=e228]
+              - paragraph [ref=e229]: Coffee Enthusiast
+          - paragraph [ref=e230]: "\"The Ethiopian Yirgacheffe is absolutely divine. The citrus notes are perfectly balanced, and the quality is unmatched.\""
+        - generic [ref=e231]: "\""
+      - generic [ref=e232]:
+        - generic [ref=e234]:
+          - generic [ref=e235]:
+            - img "Michael Chen" [ref=e236]
+            - generic [ref=e237]:
+              - heading "Michael Chen" [level=4] [ref=e238]
+              - paragraph [ref=e239]: Cafe Owner
+          - paragraph [ref=e240]: "\"We've been sourcing from Stockbridge for two years. Their consistency and customer service are exceptional.\""
+        - generic [ref=e241]: "\""
+      - generic [ref=e242]:
+        - generic [ref=e244]:
+          - generic [ref=e245]:
+            - img "Emma Rodriguez" [ref=e246]
+            - generic [ref=e247]:
+              - heading "Emma Rodriguez" [level=4] [ref=e248]
+              - paragraph [ref=e249]: Home Barista
+          - paragraph [ref=e250]: "\"The House Blend has become my daily ritual. Rich, smooth, and perfectly roasted every single time.\""
+        - generic [ref=e251]: "\""
+  - generic [ref=e253]:
+    - generic [ref=e254]:
+      - paragraph [ref=e255]: Stockbridge Stories
+      - heading "From Our Blog" [level=2] [ref=e256]
+      - paragraph [ref=e257]: Brew notes, neighbourhood spotlights, and behind-the-scenes reflections from the team crafting the Stockbridge Coffee experience.
+    - article [ref=e259]:
+      - 'img "Brew Up Christmas Cheer: 4 Festive Coffee Recipes to Delight Your Holiday Season" [ref=e261]'
+      - generic [ref=e264]:
+        - paragraph [ref=e265]: 12 Nov 2025 · 11 min read
+        - 'heading "Brew Up Christmas Cheer: 4 Festive Coffee Recipes to Delight Your Holiday Season" [level=3] [ref=e266]'
+        - paragraph [ref=e267]: The scent of pine, the twinkle of lights, and the warmth of a perfectly brewed cup – Christmas in Edinburgh is pure magic! This year, Stockbridge Coffee is b...
+        - link "Read Recipes" [ref=e268]:
+          - /url: /blog/brew-up-christmas-cheer-4-festive-coffee-recipes-to-delight-your-holiday-season
+          - text: Read Recipes
+          - generic [ref=e269]: →
+  - generic [ref=e272]:
+    - paragraph [ref=e273]: Newsletter
+    - heading "Stay Brew-tiful" [level=2] [ref=e274]
+    - paragraph [ref=e275]: Subscribe to our newsletter for exclusive offers, brewing tips, and early access to new blends.
+    - generic [ref=e276]:
+      - textbox "Email address" [ref=e277]:
+        - /placeholder: Enter your email
+      - button "Subscribe" [ref=e278]
+    - paragraph [ref=e279]: We respect your privacy. Unsubscribe at any time.
+  - generic [ref=e281]:
+    - generic [ref=e282]:
+      - paragraph [ref=e283]: Get In Touch
+      - heading "Contact Us" [level=2] [ref=e284]
+      - paragraph [ref=e285]: Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+    - generic [ref=e286]:
+      - button "Contact Info" [ref=e287]
+      - button "Send Message" [ref=e288]
+      - button "Location" [ref=e289]
+    - generic [ref=e293]:
+      - img [ref=e295]
+      - generic [ref=e298]:
+        - heading "Email" [level=3] [ref=e299]
+        - paragraph [ref=e300]: hello@stockbridgecoffee.com
+        - paragraph [ref=e301]: support@stockbridgecoffee.com
+  - contentinfo [ref=e302]:
+    - generic [ref=e303]:
+      - generic [ref=e304]:
+        - generic [ref=e305]:
+          - img "Stockbridge Coffee" [ref=e307]
+          - paragraph [ref=e308]: Bringing you the world's finest coffee beans, roasted to perfection.
+        - generic [ref=e309]:
+          - heading "Quick Links" [level=3] [ref=e310]
+          - list [ref=e311]:
+            - listitem [ref=e312]:
+              - link "Home" [ref=e313]:
+                - /url: "#home"
+            - listitem [ref=e314]:
+              - link "Products" [ref=e315]:
+                - /url: "#products"
+            - listitem [ref=e316]:
+              - link "Blog" [ref=e317]:
+                - /url: "#blog"
+            - listitem [ref=e318]:
+              - link "About" [ref=e319]:
+                - /url: "#about"
+            - listitem [ref=e320]:
+              - link "Contact" [ref=e321]:
+                - /url: "#contact"
+        - generic [ref=e322]:
+          - heading "Contact" [level=3] [ref=e323]
+          - list [ref=e324]:
+            - listitem [ref=e325]: "Email: hello@stockbridgecoffee.com"
+            - listitem [ref=e326]: "Phone: (555) 123-4567"
+            - listitem [ref=e327]: "Hours: Mon-Fri 8am-6pm"
+        - generic [ref=e328]:
+          - heading "Newsletter" [level=3] [ref=e329]
+          - paragraph [ref=e330]: Subscribe for updates and special offers.
+          - generic [ref=e331]:
+            - textbox "Email address for newsletter" [ref=e332]:
+              - /placeholder: Your email
+            - button "Subscribe" [ref=e333]
+      - paragraph [ref=e335]: © 2025 Stockbridge Coffee. All rights reserved.
+  - button "Open Coffee Copilot chat" [ref=e336]: ☕️
+```

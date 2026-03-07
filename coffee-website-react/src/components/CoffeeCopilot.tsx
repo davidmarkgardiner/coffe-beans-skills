@@ -117,7 +117,7 @@ export default function CoffeeCopilot() {
               content: m.content
             })),
             user: {
-              id: 'user-123' // TODO: Replace with actual authenticated user ID
+              id: 'guest'
             },
             allowGithubIssues: false
           })

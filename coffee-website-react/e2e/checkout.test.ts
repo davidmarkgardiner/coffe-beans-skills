@@ -17,7 +17,7 @@ const BASE_URL = process.env.BASE_URL || 'http://localhost:5173';
 
 test.describe('Stockbridge Coffee — Checkout Flow', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+    await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
   });
 
   test('homepage loads with key sections', async ({ page }) => {
