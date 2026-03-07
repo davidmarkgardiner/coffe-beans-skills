@@ -14,7 +14,7 @@ import { LoginModal } from './components/LoginModal'
 import { GiftCardSection } from './components/GiftCardSection'
 import { GiftCardPurchase } from './components/GiftCardPurchase'
 import CartDrawer from './components/CartDrawer'
-import CoffeeCopilot from './components/CoffeeCopilot'
+import StoxyAgent from './components/StoxyAgent'
 import { BlogPost } from './pages/BlogPost'
 import { AdminDashboard } from './pages/AdminDashboard'
 import { useCart } from './hooks/useCart'
@@ -158,8 +158,8 @@ function App() {
         onClose={() => setGiftCardModalOpen(false)}
       />
 
-      {/* Coffee Copilot - AI Assistant */}
-      <CoffeeCopilot />
+      {/* Stoxy - ElevenLabs Conversational AI Mascot */}
+      <StoxyAgent />
     </>
   )
 }

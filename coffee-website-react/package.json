@@ -28,6 +28,7 @@
     "dev:all": "npm run server & npm run dev"
   },
   "dependencies": {
+    "@elevenlabs/react": "^0.14.1",
     "@google/genai": "^1.27.0",
     "@stripe/react-stripe-js": "^5.2.0",
     "@stripe/stripe-js": "^8.1.0",
