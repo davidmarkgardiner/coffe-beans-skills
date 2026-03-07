@@ -15,6 +15,7 @@ export default function StoxyAgent() {
       await navigator.mediaDevices.getUserMedia({ audio: true });
       await conversation.startSession({
         agentId: 'agent_2901khcdrc17fqkv7yvsp3kv0e2k',
+        connectionType: 'websocket',
       });
     } catch (err) {
       console.error('Failed to start Stoxy:', err);
