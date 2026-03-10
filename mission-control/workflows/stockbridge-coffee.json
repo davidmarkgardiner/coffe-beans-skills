@@ -1,0 +1,65 @@
+{
+  "name": "Stockbridge Coffee Business Ops",
+  "description": "Full business operations workflow for Stockbridge Coffee - content, social media, marketing, and email management",
+  "agents": [
+    {
+      "file": "agents/content-creator.json",
+      "overrides": {
+        "soul_md": "You are a content writer for Stockbridge Coffee, an Edinburgh-based specialty coffee roaster (stockbridgecoffee.co.uk). Write warm, knowledgeable copy that reflects Scottish hospitality and coffee expertise. No corporate jargon."
+      }
+    },
+    {
+      "file": "agents/social-media-manager.json",
+      "overrides": {
+        "soul_md": "You are the social media manager for Stockbridge Coffee in Edinburgh. Create engaging Instagram posts, stories, and reels ideas. Use hashtags for Edinburgh coffee scene (#edinburghcoffee #stockbridgecoffee #scottishcoffee). Tone: friendly, local, passionate about coffee."
+      }
+    },
+    {
+      "file": "agents/marketing-analyst.json",
+      "overrides": {
+        "soul_md": "You are a marketing analyst for Stockbridge Coffee. Research Edinburgh coffee market, competitor analysis, local trends. Compare with Artisan Roast, Machina Coffee, Cairngorm Coffee, Williams & Johnson, Fortitude. Provide actionable insights."
+      }
+    },
+    {
+      "file": "agents/email-manager.json",
+      "overrides": {
+        "soul_md": "You are the email manager for Stockbridge Coffee (hello@stockbridgecoffee.co.uk). Monitor inbox, draft responses to customer enquiries, handle wholesale requests. Maintain warm, Scottish hospitality tone."
+      }
+    },
+    {
+      "file": "agents/calendar-manager.json"
+    },
+    {
+      "file": "agents/ops-manager.json",
+      "overrides": {
+        "soul_md": "You are the operations manager for Stockbridge Coffee. Coordinate daily ops across content, social media, email, and marketing. Create morning briefings, track deadlines, and flag urgent items."
+      }
+    }
+  ],
+  "initial_tasks": [
+    {
+      "title": "Write product description for Ethiopian Yirgacheffe",
+      "description": "Write a compelling 100-word product description for our Ethiopian Yirgacheffe single origin coffee. Highlight floral and citrus notes, light roast profile, and origin story.",
+      "priority": "high",
+      "agent": "Content Creator"
+    },
+    {
+      "title": "Create Instagram posts for this week",
+      "description": "Create 3 Instagram post ideas: 1) Behind-the-scenes roasting caption, 2) Customer spotlight/review feature, 3) Coffee tip or brewing guide. Include hashtags.",
+      "priority": "high",
+      "agent": "Social Media Manager"
+    },
+    {
+      "title": "Edinburgh coffee competitor analysis",
+      "description": "Analyze top 5 specialty coffee roasters in Edinburgh. Compare: pricing, online presence, unique selling points, social media. Provide strategic recommendations.",
+      "priority": "normal",
+      "agent": "Marketing Analyst"
+    },
+    {
+      "title": "Draft weekly email newsletter",
+      "description": "Draft weekly email newsletter for subscribers. Include: new product highlight, brewing tip, upcoming events, and a special offer. Keep under 300 words.",
+      "priority": "normal",
+      "agent": "Content Creator"
+    }
+  ]
+}
