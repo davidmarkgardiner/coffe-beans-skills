@@ -267,7 +267,16 @@ app.use(cors({
     'https://stockbridgecoffee.co.uk'
   ]
 }));
-app.use(express.json());
+// IMPORTANT: Do NOT apply express.json() to the Stripe webhook endpoint.
+// Stripe signature verification requires the raw request body.
+// express.json() is applied to all routes EXCEPT /api/stripe-webhook.
+app.use((req, res, next) => {
+  if (req.originalUrl === '/api/stripe-webhook') {
+    next(); // Skip JSON parsing — webhook handler uses express.raw()
+  } else {
+    express.json()(req, res, next);
+  }
+});
 
 // ============================================================================
 // RATE LIMITING CONFIGURATION
@@ -1051,8 +1060,8 @@ app.post('/api/stripe-webhook', express.raw({ type: 'application/json' }), async
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
   if (!webhookSecret) {
-    console.warn('STRIPE_WEBHOOK_SECRET not set, skipping webhook verification');
-    return res.status(400).send('Webhook secret not configured');
+    console.error('STRIPE_WEBHOOK_SECRET is not set — refusing to process webhook. Set this environment variable to enable webhook verification.');
+    return res.status(500).json({ error: 'Webhook endpoint not configured: STRIPE_WEBHOOK_SECRET is required' });
   }
 
   try {

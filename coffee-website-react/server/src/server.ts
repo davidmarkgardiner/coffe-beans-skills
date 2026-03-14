@@ -50,7 +50,15 @@ app.use(cors({
     'https://stockbridgecoffee.co.uk'
   ]
 }));
-app.use(express.json());
+// IMPORTANT: Do NOT apply express.json() to the Stripe webhook endpoint.
+// Stripe signature verification requires the raw request body.
+app.use((req, res, next) => {
+  if (req.originalUrl === '/api/stripe-webhook') {
+    next(); // Skip JSON parsing — webhook handler uses express.raw()
+  } else {
+    express.json()(req, res, next);
+  }
+});
 
 // Configure multer for file uploads
 const upload = multer({
