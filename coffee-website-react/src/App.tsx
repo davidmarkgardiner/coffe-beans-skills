@@ -12,6 +12,7 @@ import { BlogHighlights } from './components/BlogHighlights'
 import { CustomCursor } from './components/CustomCursor'
 import { LoginModal } from './components/LoginModal'
 import { GiftCardSection } from './components/GiftCardSection'
+import { BrewingInstructions } from './components/BrewingInstructions'
 import { GiftCardPurchase } from './components/GiftCardPurchase'
 import CartDrawer from './components/CartDrawer'
 import StoxyAgent from './components/StoxyAgent'
@@ -56,6 +57,7 @@ function HomePage({ onAddToCart, onGiftCardClick }: HomePageProps) {
       <Hero />
       <About />
       <ProductShowcase onAddToCart={onAddToCart} />
+      <BrewingInstructions />
       <GiftCardSection onPurchaseClick={onGiftCardClick} />
       <Testimonials />
       <BlogHighlights />

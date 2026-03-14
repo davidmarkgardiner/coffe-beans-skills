@@ -199,6 +199,52 @@ export function ProductShowcase({ onAddToCart }: ProductShowcaseProps) {
               ))}
             </div>
 
+            {/* Roast Level Indicator */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.6, duration: 0.5 }}
+              className="p-5 bg-background border border-heading/10 rounded-xl"
+            >
+              <p className="text-sm font-sans font-medium text-heading mb-3 tracking-wide uppercase">Roast Level</p>
+              <div className="flex gap-1.5">
+                {['Light', 'Medium-Light', 'Medium', 'Medium-Dark', 'Dark'].map((level) => (
+                  <div key={level} className="flex-1">
+                    <div
+                      className={`h-3 rounded-full transition-all duration-300 ${
+                        level === 'Medium' ? 'bg-accent shadow-sm' : 'bg-heading/15'
+                      }`}
+                    />
+                    <p className="text-xs text-center mt-1.5 text-text/50 leading-tight">{level}</p>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Farm Info */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.65, duration: 0.5 }}
+              className="grid grid-cols-2 gap-3 p-5 bg-background border border-heading/10 rounded-xl"
+            >
+              {[
+                { label: 'Origin', value: 'Honduras, Western Region' },
+                { label: 'Farm', value: 'Monte Cristo Mountain' },
+                { label: 'Altitude', value: '1,400–1,700m' },
+                { label: 'Process', value: 'Washed' },
+                { label: 'Variety', value: 'SHG (Strictly High Grown)' },
+                { label: 'Harvest', value: '2025/2026 Season' },
+              ].map((item) => (
+                <div key={item.label}>
+                  <p className="text-xs font-sans text-text/50 uppercase tracking-wider mb-0.5">{item.label}</p>
+                  <p className="text-sm font-sans font-medium text-heading">{item.value}</p>
+                </div>
+              ))}
+            </motion.div>
+
             {/* Format Selection - Enhanced with micro-interactions */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
