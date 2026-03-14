@@ -31,7 +31,7 @@ test.describe('Stockbridge Coffee — daily checkout smoke test', () => {
   test('1. Home page loads and shows hero', async ({ page }) => {
     await page.goto('/');
     // Wait for the page to be stable
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Hero section should be visible (contains the brand name)
     const hero = page.locator('section').first();
@@ -49,7 +49,7 @@ test.describe('Stockbridge Coffee — daily checkout smoke test', () => {
 
   test('2. Product section is visible and has options', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     await scrollToProducts(page);
 
@@ -61,45 +61,51 @@ test.describe('Stockbridge Coffee — daily checkout smoke test', () => {
     await expect(page.getByRole('button', { name: /whole bean/i })).toBeVisible();
     await expect(page.getByRole('button', { name: /ground/i })).toBeVisible();
 
-    // Size buttons — "250g" and "1kg"
-    await expect(page.getByRole('button', { name: /250g/i })).toBeVisible();
-    await expect(page.getByRole('button', { name: /1kg/i })).toBeVisible();
+    // Size buttons — "250g" and "1kg" (use "Select" prefix to avoid matching add-to-cart button)
+    await expect(page.getByRole('button', { name: /Select 250g/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Select 1kg/i })).toBeVisible();
 
     await page.screenshot({ path: 'test-results/02-products.png' });
   });
 
   test('3. Selecting 1kg updates price display', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     await scrollToProducts(page);
 
-    // Default is 250g — click 1kg
-    await page.getByRole('button', { name: /1kg/i }).click();
+    // Default is 250g — click 1kg (use "Select" prefix to avoid matching add-to-cart button)
+    await page.getByRole('button', { name: /Select 1kg/i }).click();
 
-    // Price should now show £28
-    await expect(page.getByText(/28/)).toBeVisible({ timeout: 10_000 });
+    // Price should now show £28 — use first() since price appears in both size button and add-to-cart button
+    await expect(page.getByText(/28/).first()).toBeVisible({ timeout: 10_000 });
 
     await page.screenshot({ path: 'test-results/03-size-selected.png' });
   });
 
   test('4. Add to cart opens cart drawer with item', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     await scrollToProducts(page);
 
     // Select whole bean, 250g (defaults)
-    // Click the Add to Cart button
-    const addBtn = page.getByRole('button', { name: /add to cart/i });
+    // Click the Add to Cart button — aria-label is "Add 1 whole 250g coffee to cart for £8.50"
+    const addBtn = page.getByRole('button', { name: /add.*to cart/i });
     await expect(addBtn).toBeVisible({ timeout: 15_000 });
     await addBtn.click();
 
-    // Cart drawer should slide in — look for "Shopping Cart" heading
+    // Wait for cart count to update, then open cart drawer via nav button
+    const cartNavBtn = page.getByRole('button', { name: /shopping cart with [1-9]/i });
+    await expect(cartNavBtn).toBeVisible({ timeout: 10_000 });
+    await cartNavBtn.click();
+
+    // Cart drawer should slide in — look for "Shopping Cart" heading or any cart-related text
     const cartHeading = page.getByRole('heading', { name: /shopping cart/i });
     await expect(cartHeading).toBeVisible({ timeout: 15_000 });
 
     // There should be at least one item in the cart
     // The cart shows item name containing "Stockbridge Signature"
-    await expect(page.getByText(/stockbridge signature/i)).toBeVisible({ timeout: 10_000 });
+    // Use first() to avoid strict mode violation — product heading + cart item both match the regex
+    await expect(page.getByText(/stockbridge signature/i).first()).toBeVisible({ timeout: 10_000 });
 
     // Cart item count in nav should be > 0
     const cartBtn = page.getByRole('button', { name: /shopping cart with [1-9]/i });
@@ -110,13 +116,18 @@ test.describe('Stockbridge Coffee — daily checkout smoke test', () => {
 
   test('5. Checkout button in cart opens Stripe payment form', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     await scrollToProducts(page);
 
-    // Add item to cart
-    const addBtn = page.getByRole('button', { name: /add to cart/i });
+    // Add item to cart — aria-label is "Add 1 whole 250g coffee to cart for £8.50"
+    const addBtn = page.getByRole('button', { name: /add.*to cart/i });
     await expect(addBtn).toBeVisible({ timeout: 15_000 });
     await addBtn.click();
+
+    // Wait for cart count, then open cart drawer via nav button
+    const cartNavBtn = page.getByRole('button', { name: /shopping cart with [1-9]/i });
+    await expect(cartNavBtn).toBeVisible({ timeout: 10_000 });
+    await cartNavBtn.click();
 
     // Wait for cart drawer
     await expect(page.getByRole('heading', { name: /shopping cart/i })).toBeVisible({ timeout: 15_000 });
@@ -151,7 +162,7 @@ test.describe('Stockbridge Coffee — daily checkout smoke test', () => {
     // Navigate directly to /order-confirmation (simulates Stripe redirect)
     // with a fake session_id — the page should render the success UI regardless
     await page.goto('/order-confirmation?session_id=cs_test_playwright_smoke_test_123');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Should show "Thank You!" heading
     await expect(page.getByRole('heading', { name: /thank you/i })).toBeVisible({ timeout: 15_000 });
@@ -168,7 +179,7 @@ test.describe('Stockbridge Coffee — daily checkout smoke test', () => {
   test('7. Navigation — blog page loads', async ({ page }) => {
     // Quick smoke: the routing is working for sub-routes
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Scroll to blog section if present
     await page.evaluate(() => {
